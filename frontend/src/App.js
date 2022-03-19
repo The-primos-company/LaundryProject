@@ -4,7 +4,7 @@ import { Order, Client } from "./wailsjs/go/models";
 
 function App() {
   const [orderIdentifier, setOrderIdentifier] = useState([]);
-  const [orderRecivedDate, setOrderRecivedDate] = useState([]);
+  const [orderReceivedDate, setOrderReceivedDate] = useState([]);
   const [orderDeliveryDate, setOrderDeliveryDate] = useState([]);
 
   const [clientName, setClientName] = useState([]);
@@ -21,7 +21,7 @@ function App() {
 
     const order = new Order({
       number: orderIdentifier,
-      recivedDate: orderRecivedDate,
+      receivedDate: orderReceivedDate,
       deliveryDate: orderDeliveryDate,
       client,
     })
@@ -51,7 +51,7 @@ function App() {
       </div>
       <div className="input-box" id="input" data-wails-no-drag>
         Fecha de recibido:
-        <input className="input" id="orderRecivedDate" type="text" autoComplete="off" onChange={e => { setOrderRecivedDate(e.target.value) }}></input>
+        <input className="input" id="orderReceivedDate" type="text" autoComplete="off" onChange={e => { setOrderReceivedDate(e.target.value) }}></input>
       </div>
       <div className="input-box" id="input" data-wails-no-drag>
         Fecha de entrega:

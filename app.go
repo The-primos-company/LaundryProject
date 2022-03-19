@@ -32,7 +32,7 @@ func (a *App) shutdown(ctx context.Context) {
 
 type Order struct {
 	Identifier   string  `json:"identifier"`
-	RecivedDate  string  `json:"recivedDate"`
+	ReceivedDate string  `json:"receivedDate"`
 	DeliveryDate string  `json:"deliveryDate"`
 	Client       *Client `json:"client"`
 }
@@ -45,5 +45,4 @@ type Client struct {
 
 func (a *App) CreateOrder(order Order) Order {
 	return order
-	//return fmt.Sprintf("Order: (number: %s, recived date: %s, delivery date: %s) Client: (name: %s, address: %s, phone: %s)", order.identifier, order.recivedDate, order.deliveryDate, order.client.name, order.client.address, order.client.phone)
 }

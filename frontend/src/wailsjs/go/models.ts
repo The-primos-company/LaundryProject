@@ -20,7 +20,7 @@ export class Client {
 }
 export class Order {
     identifier: string;
-    recivedDate: string;
+    receivedDate: string;
     deliveryDate: string;
     client?: Client;
 
@@ -31,7 +31,7 @@ export class Order {
     constructor(source: any = {}) {
         if ('string' === typeof source) source = JSON.parse(source);
         this.identifier = source["identifier"];
-        this.recivedDate = source["recivedDate"];
+        this.receivedDate = source["receivedDate"];
         this.deliveryDate = source["deliveryDate"];
         this.client = this.convertValues(source["client"], Client);
     }
