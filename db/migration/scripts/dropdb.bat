@@ -1,0 +1,1 @@
+docker exec -it postgres14 dropdb project-l
