@@ -1,7 +1,7 @@
 export interface go {
   "main": {
     "App": {
-		Greet(arg1:string):Promise<string>
+		CreateOrder(arg1:Order):Promise<Order>
     },
   }
 

@@ -5,12 +5,12 @@ const go = {
   "main": {
     "App": {
       /**
-       * Greet
-       * @param {string} arg1 - Go Type: string
-       * @returns {Promise<string>}  - Go Type: string
+       * CreateOrder
+       * @param {Order} arg1 - Go Type: main.Order
+       * @returns {Promise<Order>}  - Go Type: main.Order
        */
-      "Greet": (arg1) => {
-        return window.go.main.App.Greet(arg1);
+      "CreateOrder": (arg1) => {
+        return window.go.main.App.CreateOrder(arg1);
       },
     },
   },

@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 )
 
 // App struct
@@ -16,22 +15,35 @@ func NewApp() *App {
 }
 
 // startup is called at application startup
-func (b *App) startup(ctx context.Context) {
+func (a *App) startup(ctx context.Context) {
 	// Perform your setup here
-	b.ctx = ctx
+	a.ctx = ctx
 }
 
 // domReady is called after the front-end dom has been loaded
-func (b *App) domReady(ctx context.Context) {
+func (a App) domReady(ctx context.Context) {
 	// Add your action here
 }
 
 // shutdown is called at application termination
-func (b *App) shutdown(ctx context.Context) {
+func (a *App) shutdown(ctx context.Context) {
 	// Perform your teardown here
 }
 
-// Greet returns a greeting for the given name
-func (b *App) Greet(name string) string {
-	return fmt.Sprintf("Hello %s, It's show time!", name)
+type Order struct {
+	Identifier   string  `json:"identifier"`
+	RecivedDate  string  `json:"recivedDate"`
+	DeliveryDate string  `json:"deliveryDate"`
+	Client       *Client `json:"client"`
+}
+
+type Client struct {
+	Name    string `json:"name"`
+	Address string `json:"address"`
+	Phone   string `json:"phone"`
+}
+
+func (a *App) CreateOrder(order Order) Order {
+	return order
+	//return fmt.Sprintf("Order: (number: %s, recived date: %s, delivery date: %s) Client: (name: %s, address: %s, phone: %s)", order.identifier, order.recivedDate, order.deliveryDate, order.client.name, order.client.address, order.client.phone)
 }

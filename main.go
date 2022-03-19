@@ -12,7 +12,7 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/options/windows"
 )
 
-//go:embed frontend/src
+//go:embed frontend/build
 var assets embed.FS
 
 //go:embed build/appicon.png
@@ -24,19 +24,19 @@ func main() {
 
 	// Create application with options
 	err := wails.Run(&options.App{
-		Title:             "LaundryProject",
-		Width:             720,
-		Height:            570,
-		MinWidth:          720,
-		MinHeight:         570,
-		MaxWidth:          1280,
-		MaxHeight:         740,
+		Title:  "LaundryProject",
+		Width:  1024,
+		Height: 768,
+		// MinWidth:          720,
+		// MinHeight:         570,
+		// MaxWidth:          1280,
+		// MaxHeight:         740,
 		DisableResize:     false,
 		Fullscreen:        false,
 		Frameless:         false,
 		StartHidden:       false,
 		HideWindowOnClose: false,
-		RGBA:              &options.RGBA{R: 33, G: 37, B: 43, A: 255},
+		RGBA:              &options.RGBA{255, 255, 255, 255},
 		Assets:            assets,
 		LogLevel:          logger.DEBUG,
 		OnStartup:         app.startup,
@@ -56,7 +56,7 @@ func main() {
 			WebviewIsTransparent: true,
 			WindowIsTranslucent:  true,
 			About: &mac.AboutInfo{
-				Title:   "Vanilla Template",
+				Title:   "ReactJS Template",
 				Message: "Part of the Wails projects",
 				Icon:    icon,
 			},
