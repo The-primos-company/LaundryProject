@@ -1,12 +1,14 @@
 package main
 
 import (
+	db "The_primos_company/project_L/db/sqlc"
 	"context"
 )
 
 // App struct
 type App struct {
-	ctx context.Context
+	ctx   context.Context
+	store *db.Store
 }
 
 // NewApp creates a new App application struct
