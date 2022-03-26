@@ -1,8 +1,8 @@
-CREATE TABLE "orders" (
+  CREATE TABLE "orders" (
   "id" uuid UNIQUE PRIMARY KEY NOT NULL,
   "identifier" SERIAL NOT NULL,
-  "recievedDate" date NOT NULL,
-  "deliveryDate" date NOT NULL,
+  "recieved_date" date NOT NULL,
+  "delivery_date" date NOT NULL,
   "client_id" uuid NOT NULL,
   "created_at" timestamptz NOT NULL DEFAULT (now())
 );
