@@ -68,6 +68,17 @@ const rows1 = [
 const total = subtotal(rows1);
 const sumOfItems = sumItems(rows1);
 
+// Funciones a go
+function greet() {
+  window.greet = function () {
+    // Call App.Greet(name)
+    window.go.main.App.Greate().then((result) => {
+      // Update result with data back from App.Greet()
+      console.log(result);
+    });
+  };
+}
+
 // End tables
 const App = () => {
   return (
@@ -172,7 +183,9 @@ const App = () => {
       </Box>
       {/* Generar orden */}
       <Box sx={{ display: "flex", justifyContent: "center", marginTop: 5 }}>
-        <Button variant="text">Generar orden</Button>
+        <Button variant="text" onClick={greet}>
+          Generar orden
+        </Button>
       </Box>
     </Container>
   );
