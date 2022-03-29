@@ -41,10 +41,10 @@ const App = () => {
 
     console.log(order);
 
-    // window.go.main.App.CreateOrder(order).then((result) => {
-    //   // Update result with data back from App.Greet()
-    //   console.log(result);
-    // });
+    window.go.main.App.CreateOrder(order).then((result) => {
+      // Update result with data back from App.Greet()
+      console.log(result);
+    });
   }
 
   return (
