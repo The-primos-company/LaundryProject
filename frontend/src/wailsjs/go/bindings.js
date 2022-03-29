@@ -12,6 +12,13 @@ const go = {
       "CreateOrder": (arg1) => {
         return window.go.main.App.CreateOrder(arg1);
       },
+      /**
+       * GetNextOrderIdentifier
+       * @returns {Promise<number>}  - Go Type: int32
+       */
+      "GetNextOrderIdentifier": () => {
+        return window.go.main.App.GetNextOrderIdentifier();
+      },
     },
   },
 

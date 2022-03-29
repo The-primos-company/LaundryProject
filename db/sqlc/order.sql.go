@@ -76,6 +76,24 @@ func (q *Queries) DeleteOrder(ctx context.Context, id uuid.UUID) error {
 	return err
 }
 
+const getNextOrderIdentifier = `-- name: GetNextOrderIdentifier :one
+SELECT
+    identifier + 1
+FROM
+    orders
+ORDER BY
+    identifier
+DESC
+LIMIT 1
+`
+
+func (q *Queries) GetNextOrderIdentifier(ctx context.Context) (int32, error) {
+	row := q.db.QueryRowContext(ctx, getNextOrderIdentifier)
+	var column_1 int32
+	err := row.Scan(&column_1)
+	return column_1, err
+}
+
 const getOrder = `-- name: GetOrder :one
 SELECT
     id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, created_at
