@@ -1,95 +1,49 @@
-import React from "react";
 import styles from "./App.module.css";
 import {
   Button,
   Checkbox,
   Container,
   FormControlLabel,
-  FormGroup,
   Input,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   TextField,
 } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
 import logo from "./logo.svg";
 import PrendasComponent from "./components/PrendasComponent";
 import { Box } from "@mui/system";
 import { Order } from "./wailsjs/go/models";
-
-// Tables
-const columns = [
-  { field: "id", headerName: "ID", width: 70 },
-  { field: "type", headerName: "Tipo", width: 130 },
-  { field: "genre", headerName: "Genero", width: 130 },
-  { field: "color", headerName: "Color", width: 130 },
-  { field: "brand", headerName: "Marca", width: 130 },
-  { field: "price", headerName: "Precio", width: 130 },
-];
-
-const rows = [
-  { id: 1, type: "Snow", genre: "Jon", color: 35, brand: 5, price: 1500 },
-  { id: 2, type: "Snow", genre: "Jon", color: 35, brand: 5, price: 1500 },
-];
-
-const TAX_RATE = 0.07;
-
-function ccyFormat(num) {
-  return `${num.toFixed(2)}`;
-}
-
-function priceRow(qty, unit) {
-  return qty * unit;
-}
-
-function createRow(id, cantidad, tipo, genero, color, marca, realPrice) {
-  const totalPrice = priceRow(cantidad, realPrice);
-
-  return { id, cantidad, tipo, genero, color, marca, precio: totalPrice };
-}
-
-function subtotal(items) {
-  return items.map(({ precio }) => precio).reduce((sum, i) => sum + i, 0);
-}
-
-function sumItems(items) {
-  return items.map(({ cantidad }) => cantidad).reduce((sum, i) => sum + i, 0);
-}
-
-const rows1 = [
-  createRow(1, 2, "pantalon", "caballero", "azul", "Hugo Bross", 14000),
-  createRow(2, 1, "pantalon", "caballero", "gris", "Hugo Bross", 14000),
-];
-
-const total = subtotal(rows1);
-const sumOfItems = sumItems(rows1);
+import { useState } from "react";
 
 // Funciones a go
-function greet() {
+function greet(clientName) {
   // Call App.Greet(name)
-  console.log("entra");
-  var order = new Order({
-        recieved_date : Date.now().toLocaleString,
-        delivery_date : Date.now().toLocaleString,
-        client_name : "Gokusita",
-        client_id : "123214123",
-        client_address : "avenida siempre viva",
-        client_phone : "41123123",
-        client_email : "gokusita.lamejor@correo.com",
-  })
+  let order = new Order({
+    recieved_date: Date.now().toLocaleString,
+    delivery_date: Date.now().toLocaleString,
+    client_name: clientName,
+    client_id: "123214123",
+    client_address: "avenida siempre viva",
+    client_phone: "41123123",
+    client_email: "gokusita.lamejor@correo.com",
+  });
   window.go.main.App.CreateOrder(order).then((result) => {
     // Update result with data back from App.Greet()
     console.log(result);
   });
 }
 
+function handleSubmit(clientName) {
+  greet(clientName);
+}
+
 // End tables
 const App = () => {
+  const [clientName, setClientName] = useState("");
+  const [clientId, setClientId] = useState("");
+  const [clientAddress, setClientAddress] = useState("");
+  const [clientPhone, setClientPhone] = useState("");
+  const [clientEmail, setClientEmail] = useState("");
+
+  console.log(clientName);
   return (
     <Container>
       {/* Header */}
@@ -110,7 +64,8 @@ const App = () => {
             id="outlined-name"
             label="Cliente"
             className={styles["input"]}
-
+            value={clientName}
+            onChange={(event) => setClientName(event.target.value)}
             // value={name}
             // onChange={handleChange}
           />
@@ -192,57 +147,12 @@ const App = () => {
       </Box>
       {/* Generar orden */}
       <Box sx={{ display: "flex", justifyContent: "center", marginTop: 5 }}>
-        <Button variant="text" onClick={greet}>
+        <Button variant="text" onClick={handleSubmit}>
           Generar orden
         </Button>
       </Box>
     </Container>
   );
 };
-
-function SpanningTable() {
-  return (
-    <TableContainer component={Paper} sx={{ marginBottom: 5 }}>
-      <Table sx={{ minWidth: 700 }} aria-label="spanning table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Cantidad</TableCell>
-            <TableCell align="right">Tipo</TableCell>
-            <TableCell align="right">Genero</TableCell>
-            <TableCell align="right">Color</TableCell>
-            <TableCell align="right">Marca</TableCell>
-            <TableCell align="right">Precio</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {/* id,cantidad, tipo, genero, color, marca, precio */}
-          {rows1.map((row) => (
-            <TableRow key={row.id}>
-              <TableCell>{row.cantidad}</TableCell>
-              <TableCell align="right">{row.tipo}</TableCell>
-              <TableCell align="right">{row.genero}</TableCell>
-              <TableCell align="right">{row.color}</TableCell>
-              <TableCell align="right">{row.marca}</TableCell>
-              <TableCell align="right">{row.precio}</TableCell>
-            </TableRow>
-          ))}
-
-          <TableRow>
-            <TableCell colSpan={5}>{sumOfItems}</TableCell>
-            <TableCell align="right">
-              <strong>Total prendas</strong>
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell colSpan={5}>
-              <strong>Total a pagar</strong>
-            </TableCell>
-            <TableCell align="right">{total}</TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
-    </TableContainer>
-  );
-}
 
 export default App;
