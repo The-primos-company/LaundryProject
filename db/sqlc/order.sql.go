@@ -10,9 +10,75 @@ import (
 	"github.com/google/uuid"
 )
 
-const getorder = `-- name: Getorder :one
+const createOrder = `-- name: CreateOrder :one
+INSERT INTO
+    orders (
+        id,
+        recieved_date,
+        delivery_date,
+        client_name,
+        client_id,
+        client_address,
+        client_phone,
+        client_email
+    )
+VALUES
+    ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, created_at
+`
+
+type CreateOrderParams struct {
+	ID            uuid.UUID `json:"id"`
+	RecievedDate  time.Time `json:"recieved_date"`
+	DeliveryDate  time.Time `json:"delivery_date"`
+	ClientName    string    `json:"client_name"`
+	ClientID      string    `json:"client_id"`
+	ClientAddress string    `json:"client_address"`
+	ClientPhone   string    `json:"client_phone"`
+	ClientEmail   string    `json:"client_email"`
+}
+
+func (q *Queries) CreateOrder(ctx context.Context, arg CreateOrderParams) (Order, error) {
+	row := q.db.QueryRowContext(ctx, createOrder,
+		arg.ID,
+		arg.RecievedDate,
+		arg.DeliveryDate,
+		arg.ClientName,
+		arg.ClientID,
+		arg.ClientAddress,
+		arg.ClientPhone,
+		arg.ClientEmail,
+	)
+	var i Order
+	err := row.Scan(
+		&i.ID,
+		&i.Identifier,
+		&i.RecievedDate,
+		&i.DeliveryDate,
+		&i.ClientName,
+		&i.ClientID,
+		&i.ClientAddress,
+		&i.ClientPhone,
+		&i.ClientEmail,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const deleteOrder = `-- name: DeleteOrder :exec
+DELETE
+FROM
+    orders
+WHERE id = $1
+`
+
+func (q *Queries) DeleteOrder(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.ExecContext(ctx, deleteOrder, id)
+	return err
+}
+
+const getOrder = `-- name: GetOrder :one
 SELECT
-    id, identifier, recieved_date, delivery_date, client_id, created_at
+    id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, created_at
 FROM
     orders
 WHERE
@@ -21,15 +87,19 @@ LIMIT
     1
 `
 
-func (q *Queries) Getorder(ctx context.Context, id uuid.UUID) (Order, error) {
-	row := q.db.QueryRowContext(ctx, getorder, id)
+func (q *Queries) GetOrder(ctx context.Context, id uuid.UUID) (Order, error) {
+	row := q.db.QueryRowContext(ctx, getOrder, id)
 	var i Order
 	err := row.Scan(
 		&i.ID,
 		&i.Identifier,
 		&i.RecievedDate,
 		&i.DeliveryDate,
+		&i.ClientName,
 		&i.ClientID,
+		&i.ClientAddress,
+		&i.ClientPhone,
+		&i.ClientEmail,
 		&i.CreatedAt,
 	)
 	return i, err
@@ -37,7 +107,7 @@ func (q *Queries) Getorder(ctx context.Context, id uuid.UUID) (Order, error) {
 
 const listOrders = `-- name: ListOrders :many
 SELECT
-    id, identifier, recieved_date, delivery_date, client_id, created_at
+    id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, created_at
 FROM
     orders
 ORDER BY
@@ -65,7 +135,11 @@ func (q *Queries) ListOrders(ctx context.Context, arg ListOrdersParams) ([]Order
 			&i.Identifier,
 			&i.RecievedDate,
 			&i.DeliveryDate,
+			&i.ClientName,
 			&i.ClientID,
+			&i.ClientAddress,
+			&i.ClientPhone,
+			&i.ClientEmail,
 			&i.CreatedAt,
 		); err != nil {
 			return nil, err
@@ -81,88 +155,55 @@ func (q *Queries) ListOrders(ctx context.Context, arg ListOrdersParams) ([]Order
 	return items, nil
 }
 
-const createOrder = `-- name: createOrder :one
-INSERT INTO
-    orders (
-        id,
-        identifier,
-        recieved_date,
-        delivery_date,
-        client_id,
-        created_at
-    )
-VALUES
-    ($1, $2, $3, $4, $5, $6) RETURNING id, identifier, recieved_date, delivery_date, client_id, created_at
-`
-
-type createOrderParams struct {
-	ID           uuid.UUID `json:"id"`
-	Identifier   int32     `json:"identifier"`
-	RecievedDate time.Time `json:"recieved_date"`
-	DeliveryDate time.Time `json:"delivery_date"`
-	ClientID     uuid.UUID `json:"client_id"`
-	CreatedAt    time.Time `json:"created_at"`
-}
-
-func (q *Queries) createOrder(ctx context.Context, arg createOrderParams) (Order, error) {
-	row := q.db.QueryRowContext(ctx, createOrder,
-		arg.ID,
-		arg.Identifier,
-		arg.RecievedDate,
-		arg.DeliveryDate,
-		arg.ClientID,
-		arg.CreatedAt,
-	)
-	var i Order
-	err := row.Scan(
-		&i.ID,
-		&i.Identifier,
-		&i.RecievedDate,
-		&i.DeliveryDate,
-		&i.ClientID,
-		&i.CreatedAt,
-	)
-	return i, err
-}
-
-const deleteOrder = `-- name: deleteOrder :exec
-DELETE
-FROM
-    orders
-WHERE id = $1
-`
-
-func (q *Queries) deleteOrder(ctx context.Context, id uuid.UUID) error {
-	_, err := q.db.ExecContext(ctx, deleteOrder, id)
-	return err
-}
-
-const updateOrder = `-- name: updateOrder :one
+const updateOrder = `-- name: UpdateOrder :one
 UPDATE
     orders
 SET
-    recieved_date = $2,
-    delivery_date = $3
+    client_name = $2,
+    client_id = $3,
+    client_address = $4,
+    client_phone = $5,
+    client_email = $6,
+    recieved_date = $7,
+    delivery_date = $8
 WHERE
     id = $1
-RETURNING id, identifier, recieved_date, delivery_date, client_id, created_at
+RETURNING id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, created_at
 `
 
-type updateOrderParams struct {
-	ID           uuid.UUID `json:"id"`
-	RecievedDate time.Time `json:"recieved_date"`
-	DeliveryDate time.Time `json:"delivery_date"`
+type UpdateOrderParams struct {
+	ID            uuid.UUID `json:"id"`
+	ClientName    string    `json:"client_name"`
+	ClientID      string    `json:"client_id"`
+	ClientAddress string    `json:"client_address"`
+	ClientPhone   string    `json:"client_phone"`
+	ClientEmail   string    `json:"client_email"`
+	RecievedDate  time.Time `json:"recieved_date"`
+	DeliveryDate  time.Time `json:"delivery_date"`
 }
 
-func (q *Queries) updateOrder(ctx context.Context, arg updateOrderParams) (Order, error) {
-	row := q.db.QueryRowContext(ctx, updateOrder, arg.ID, arg.RecievedDate, arg.DeliveryDate)
+func (q *Queries) UpdateOrder(ctx context.Context, arg UpdateOrderParams) (Order, error) {
+	row := q.db.QueryRowContext(ctx, updateOrder,
+		arg.ID,
+		arg.ClientName,
+		arg.ClientID,
+		arg.ClientAddress,
+		arg.ClientPhone,
+		arg.ClientEmail,
+		arg.RecievedDate,
+		arg.DeliveryDate,
+	)
 	var i Order
 	err := row.Scan(
 		&i.ID,
 		&i.Identifier,
 		&i.RecievedDate,
 		&i.DeliveryDate,
+		&i.ClientName,
 		&i.ClientID,
+		&i.ClientAddress,
+		&i.ClientPhone,
+		&i.ClientEmail,
 		&i.CreatedAt,
 	)
 	return i, err

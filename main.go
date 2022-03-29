@@ -1,6 +1,8 @@
 package main
 
 import (
+	db "The_primos_company/project_L/db/sqlc"
+	"database/sql"
 	"embed"
 	"log"
 
@@ -19,12 +21,24 @@ var assets embed.FS
 //go:embed build/appicon.png
 var icon []byte
 
+var dataBase *sql.DB
+
+const (
+	dbDriver = "postgres"
+	dbSource = "postgresql://root:secret@localhost:5432/project-l?sslmode=disable"
+)
+
 func main() {
 	// Create an instance of the app structure
-	app := NewApp()
+	dataBase, err := sql.Open(dbDriver, dbSource)
+	if err != nil {
+		log.Fatal("cannot connect to db:", err)
+	}
+	store := db.NewStore(dataBase)
+	app := NewApp(store)
 
 	// Create application with options
-	err := wails.Run(&options.App{
+	err = wails.Run(&options.App{
 		Title:  "LaundryProject",
 		Width:  1024,
 		Height: 768,

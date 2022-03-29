@@ -1,28 +1,35 @@
--- name: createOrder :one
+-- name: CreateOrder :one
 INSERT INTO
     orders (
         id,
-        identifier,
         recieved_date,
         delivery_date,
+        client_name,
         client_id,
-        created_at
+        client_address,
+        client_phone,
+        client_email
     )
 VALUES
-    ($1, $2, $3, $4, $5, $6) RETURNING *;
+    ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *;
 
 
--- name: updateOrder :one
+-- name: UpdateOrder :one
 UPDATE
     orders
 SET
-    recieved_date = $2,
-    delivery_date = $3
+    client_name = $2,
+    client_id = $3,
+    client_address = $4,
+    client_phone = $5,
+    client_email = $6,
+    recieved_date = $7,
+    delivery_date = $8
 WHERE
     id = $1
 RETURNING *;
 
--- name: Getorder :one
+-- name: GetOrder :one
 SELECT
     *
 FROM
@@ -42,7 +49,7 @@ ORDER BY
 LIMIT
     $1 OFFSET $2;
 
--- name: deleteOrder :exec
+-- name: DeleteOrder :exec
 DELETE
 FROM
     orders

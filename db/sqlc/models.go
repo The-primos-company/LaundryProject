@@ -8,18 +8,15 @@ import (
 	"github.com/google/uuid"
 )
 
-type Client struct {
-	ID      uuid.UUID `json:"id"`
-	Name    string    `json:"name"`
-	Phone   string    `json:"phone"`
-	Address string    `json:"address"`
-}
-
 type Order struct {
-	ID           uuid.UUID `json:"id"`
-	Identifier   int32     `json:"identifier"`
-	RecievedDate time.Time `json:"recieved_date"`
-	DeliveryDate time.Time `json:"delivery_date"`
-	ClientID     uuid.UUID `json:"client_id"`
-	CreatedAt    time.Time `json:"created_at"`
+	ID            uuid.UUID `json:"id"`
+	Identifier    int32     `json:"identifier"`
+	RecievedDate  time.Time `json:"recieved_date"`
+	DeliveryDate  time.Time `json:"delivery_date"`
+	ClientName    string    `json:"client_name"`
+	ClientID      string    `json:"client_id"`
+	ClientAddress string    `json:"client_address"`
+	ClientPhone   string    `json:"client_phone"`
+	ClientEmail   string    `json:"client_email"`
+	CreatedAt     time.Time `json:"created_at"`
 }

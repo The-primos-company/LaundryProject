@@ -20,6 +20,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import logo from "./logo.svg";
 import PrendasComponent from "./components/PrendasComponent";
 import { Box } from "@mui/system";
+import { Order } from "./wailsjs/go/models";
 
 // Tables
 const columns = [
@@ -70,13 +71,21 @@ const sumOfItems = sumItems(rows1);
 
 // Funciones a go
 function greet() {
-  window.greet = function () {
-    // Call App.Greet(name)
-    window.go.main.App.Greate().then((result) => {
-      // Update result with data back from App.Greet()
-      console.log(result);
-    });
-  };
+  // Call App.Greet(name)
+  console.log("entra");
+  var order = new Order({
+        recieved_date : Date.now().toLocaleString,
+        delivery_date : Date.now().toLocaleString,
+        client_name : "Gokusita",
+        client_id : "123214123",
+        client_address : "avenida siempre viva",
+        client_phone : "41123123",
+        client_email : "gokusita.lamejor@correo.com",
+  })
+  window.go.main.App.CreateOrder(order).then((result) => {
+    // Update result with data back from App.Greet()
+    console.log(result);
+  });
 }
 
 // End tables

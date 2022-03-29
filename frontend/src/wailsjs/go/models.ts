@@ -2,27 +2,27 @@
 
 export {};
 
-export class Client {
-    name: string;
-    address: string;
-    phone: string;
+export class Time {
+
 
     static createFrom(source: any = {}) {
-        return new Client(source);
+        return new Time(source);
     }
 
     constructor(source: any = {}) {
         if ('string' === typeof source) source = JSON.parse(source);
-        this.name = source["name"];
-        this.address = source["address"];
-        this.phone = source["phone"];
+
     }
 }
 export class Order {
-    identifier: string;
-    receivedDate: string;
-    deliveryDate: string;
-    client?: Client;
+    ID: number[];
+    recieved_date: Time;
+    delivery_date: Time;
+    client_name: string;
+    client_id: string;
+    client_address: string;
+    client_phone: string;
+    client_email: string;
 
     static createFrom(source: any = {}) {
         return new Order(source);
@@ -30,10 +30,14 @@ export class Order {
 
     constructor(source: any = {}) {
         if ('string' === typeof source) source = JSON.parse(source);
-        this.identifier = source["identifier"];
-        this.receivedDate = source["receivedDate"];
-        this.deliveryDate = source["deliveryDate"];
-        this.client = this.convertValues(source["client"], Client);
+        this.ID = source["ID"];
+        this.recieved_date = this.convertValues(source["recieved_date"], Time);
+        this.delivery_date = this.convertValues(source["delivery_date"], Time);
+        this.client_name = source["client_name"];
+        this.client_id = source["client_id"];
+        this.client_address = source["client_address"];
+        this.client_phone = source["client_phone"];
+        this.client_email = source["client_email"];
     }
 
 	convertValues(a: any, classs: any, asMap: boolean = false): any {

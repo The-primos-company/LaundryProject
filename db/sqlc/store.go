@@ -41,6 +41,6 @@ func (store *Store) execTx(ctx context.Context, fn func(*Queries) error) error {
 
 /* // TransferTX performs a money transfer from one account to the other.
 // It creates a transfer record, add account entries, and update accounts' balance within a single database transaction
-func (store *Store) TransferTx(ctx context.Context, arg TransferTxParams) (transferTxResults, err){
-
+func (store *Store) TransferTx(ctx context.Context, arg TransferTxParams) (transferTxResults, err) {
+	return null
 } */

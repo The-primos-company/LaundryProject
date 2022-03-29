@@ -17,11 +17,11 @@ func TestCreateOrder(t *testing.T) {
 		Address: "4567",
 	}
 
-	client, err := testQueries.createClient(context.Background(), argcl)
+	client, err := testQueries.CreateClient(context.Background(), argcl)
 	require.NoError(t, err)
 	require.NotEmpty(t, client)
 
-	argOr := createOrderParams{
+	argOr := CreateOrderParams{
 		ID:           uuid.New(),
 		Identifier:   1,
 		RecievedDate: time.Now(),
@@ -30,7 +30,7 @@ func TestCreateOrder(t *testing.T) {
 		CreatedAt:    time.Now(),
 	}
 
-	order, err := testQueries.createOrder(context.Background(), argOr)
+	order, err := testQueries.CreateOrder(context.Background(), argOr)
 	require.NoError(t, err)
 	require.NotEmpty(t, order)
 	require.Equal(t, argOr.Identifier, order.Identifier)
