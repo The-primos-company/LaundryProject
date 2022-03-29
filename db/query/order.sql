@@ -8,10 +8,13 @@ INSERT INTO
         client_id,
         client_address,
         client_phone,
-        client_email
+        client_email,
+        payment_total_payed,
+        payment_total,
+        payment_total_real
     )
 VALUES
-    ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *;
+    ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *;
 
 
 -- name: UpdateOrder :one
@@ -24,7 +27,9 @@ SET
     client_phone = $5,
     client_email = $6,
     recieved_date = $7,
-    delivery_date = $8
+    delivery_date = $8,
+    payment_total_payed = $9,
+    payment_total = $10
 WHERE
     id = $1
 RETURNING *;

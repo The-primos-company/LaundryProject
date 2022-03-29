@@ -12,18 +12,23 @@ import (
 func TestCreateOrder(t *testing.T) {
 
 	argOr := CreateOrderParams{
-		ID:            uuid.New(),
-		RecievedDate:  time.Now(),
-		DeliveryDate:  time.Now(),
-		ClientName:    "Gokusita",
-		ClientID:      "1234123",
-		ClientAddress: "av siempre viva",
-		ClientPhone:   "124123",
-		ClientEmail:   "gokusita@lamejor.com",
+		ID:                uuid.New(),
+		RecievedDate:      time.Now(),
+		DeliveryDate:      time.Now(),
+		ClientName:        "Gokusita",
+		ClientID:          "1234123",
+		ClientAddress:     "av siempre viva",
+		ClientPhone:       "124123",
+		ClientEmail:       "gokusita@lamejor.com",
+		PaymentTotalPayed: "10000",
+		PaymentTotal:      "20000",
+		PaymentTotalReal:  "10000",
 	}
 
 	order, err := testQueries.CreateOrder(context.Background(), argOr)
 	require.NoError(t, err)
+	require.NotEmpty(t, order)
+	require.NotEmpty(t, order)
 	require.NotEmpty(t, order)
 }
 
