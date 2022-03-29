@@ -4,6 +4,7 @@ import (
 	db "The_primos_company/project_L/db/sqlc"
 	"context"
 	"log"
+	"strconv"
 	"time"
 
 	"github.com/google/uuid"
@@ -38,33 +39,38 @@ func (a *App) shutdown(ctx context.Context) {
 }
 
 type Order struct {
-	ID            uuid.UUID `json:"ID"`
-	RecievedDate  time.Time `json:"recieved_date"`
-	DeliveryDate  time.Time `json:"delivery_date"`
-	ClientName    string    `json:"client_name"`
-	ClientID      string    `json:"client_id"`
-	ClientAddress string    `json:"client_address"`
-	ClientPhone   string    `json:"client_phone"`
-	ClientEmail   string    `json:"client_email"`
-}
-
-type Client struct {
-	Name    string `json:"name"`
-	Address string `json:"address"`
-	Phone   string `json:"phone"`
+	ID                uuid.UUID `json:"ID"`
+	RecievedDate      string    `json:"recieved_date"`
+	DeliveryDate      string    `json:"delivery_date"`
+	ClientName        string    `json:"client_name"`
+	ClientID          string    `json:"client_id"`
+	ClientAddress     string    `json:"client_address"`
+	ClientPhone       string    `json:"client_phone"`
+	ClientEmail       string    `json:"client_email"`
+	PaymentTotalPayed string    `json:"payment_total_payed"`
+	PaymentTotal      string    `json:"payment_total"`
+	PaymentTotalReal  string    `json:"payment_total_real"`
 }
 
 func (a *App) CreateOrder(order Order) Order {
+	paymentTotalPayed, _ := strconv.Atoi(order.PaymentTotalPayed)
+	paymentTotal, _ := strconv.Atoi(order.PaymentTotal)
+	paymentTotalReal := paymentTotal - paymentTotalPayed
+	recievedDate, _ := time.Parse(time.RFC3339, order.RecievedDate)
+	deliveryDate, _ := time.Parse(time.RFC3339, order.DeliveryDate)
 
 	arg := db.CreateOrderParams{
-		ID:            uuid.New(),
-		RecievedDate:  order.RecievedDate,
-		DeliveryDate:  order.DeliveryDate,
-		ClientName:    order.ClientName,
-		ClientID:      order.ClientID,
-		ClientAddress: order.ClientAddress,
-		ClientPhone:   order.ClientPhone,
-		ClientEmail:   order.ClientEmail,
+		ID:                uuid.New(),
+		RecievedDate:      recievedDate,
+		DeliveryDate:      deliveryDate,
+		ClientName:        order.ClientName,
+		ClientID:          order.ClientID,
+		ClientAddress:     order.ClientAddress,
+		ClientPhone:       order.ClientPhone,
+		ClientEmail:       order.ClientEmail,
+		PaymentTotalPayed: order.PaymentTotalPayed,
+		PaymentTotal:      order.PaymentTotal,
+		PaymentTotalReal:  strconv.Itoa(paymentTotalReal),
 	}
 	createdOrder, err := a.store.CreateOrder(context.Background(), arg)
 
@@ -73,14 +79,17 @@ func (a *App) CreateOrder(order Order) Order {
 	}
 
 	return Order{
-		ID:            createdOrder.ID,
-		RecievedDate:  order.RecievedDate,
-		DeliveryDate:  order.DeliveryDate,
-		ClientName:    order.ClientName,
-		ClientID:      order.ClientID,
-		ClientAddress: order.ClientAddress,
-		ClientPhone:   order.ClientPhone,
-		ClientEmail:   order.ClientEmail,
+		ID:                createdOrder.ID,
+		RecievedDate:      createdOrder.RecievedDate.Format(time.RFC3339),
+		DeliveryDate:      createdOrder.DeliveryDate.Format(time.RFC3339),
+		ClientName:        createdOrder.ClientName,
+		ClientID:          createdOrder.ClientID,
+		ClientAddress:     createdOrder.ClientAddress,
+		ClientPhone:       createdOrder.ClientPhone,
+		ClientEmail:       createdOrder.ClientEmail,
+		PaymentTotalPayed: createdOrder.PaymentTotalPayed,
+		PaymentTotal:      createdOrder.PaymentTotal,
+		PaymentTotalReal:  createdOrder.PaymentTotalPayed,
 	}
 }
 
