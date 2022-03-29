@@ -39,11 +39,16 @@ const App = () => {
       client_email: clientEmail,
     });
 
-    console.log(order);
-
     window.go.main.App.CreateOrder(order).then((result) => {
       // Update result with data back from App.Greet()
       console.log(result);
+      setClientName("");
+      setClientId("");
+      setClientAddress("");
+      setClientPhone("");
+      setClientEmail("");
+      setRecievedDate(new Date());
+      setDeliveryDate(new Date());
     });
   }
 
