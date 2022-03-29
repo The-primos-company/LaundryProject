@@ -11,7 +11,7 @@ import logo from "./logo.svg";
 import PrendasComponent from "./components/PrendasComponent";
 import { Box } from "@mui/system";
 import { Order } from "./wailsjs/go/models";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DateTimePicker from "@mui/lab/DateTimePicker";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
@@ -25,6 +25,7 @@ const App = () => {
   const [clientEmail, setClientEmail] = useState("");
   const [recievedDate, setRecievedDate] = useState(new Date());
   const [deliveryDate, setDeliveryDate] = useState(new Date());
+  const [orderNumber, setOrderNumber] = useState(0);
 
   // Funciones a go
   function greet() {
@@ -52,6 +53,12 @@ const App = () => {
     });
   }
 
+  useEffect(() => {
+    window.go.main.App.GetNextOrderIdentifier().then((result) => {
+      console.log(result);
+    });
+  }, []);
+
   return (
     <Container>
       {/* Header */}
@@ -60,7 +67,7 @@ const App = () => {
       </div>
       <div className={styles["order-container"]}>
         <span className={styles["order-title"]}>Orden de servicio:</span>
-        <Input disabled defaultValue="0001" />
+        <Input disabled defaultValue={orderNumber} />
       </div>
       {/* Details */}
       <Box
