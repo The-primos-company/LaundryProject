@@ -23,8 +23,8 @@ const App = () => {
   const [clientAddress, setClientAddress] = useState("");
   const [clientPhone, setClientPhone] = useState("");
   const [clientEmail, setClientEmail] = useState("");
-  const [recievedDate, setRecievedDate] = useState("");
-  const [deliveryDate, setDeliveryDate] = useState("");
+  const [recievedDate, setRecievedDate] = useState(new Date());
+  const [deliveryDate, setDeliveryDate] = useState(new Date());
 
   // Funciones a go
   function greet() {
@@ -39,10 +39,12 @@ const App = () => {
       client_email: clientEmail,
     });
 
-    window.go.main.App.CreateOrder(order).then((result) => {
-      // Update result with data back from App.Greet()
-      console.log(result);
-    });
+    console.log(order);
+
+    // window.go.main.App.CreateOrder(order).then((result) => {
+    //   // Update result with data back from App.Greet()
+    //   console.log(result);
+    // });
   }
 
   return (
@@ -115,8 +117,8 @@ const App = () => {
               )}
               label="Fecha de recibido"
               value={recievedDate}
-              onChange={(newValue) => {
-                setRecievedDate(newValue);
+              onChange={(value) => {
+                setRecievedDate(value.toISOString());
               }}
             />
           </LocalizationProvider>
@@ -125,8 +127,8 @@ const App = () => {
               renderInput={(props) => <TextField {...props} />}
               label="Fecha de entrega"
               value={deliveryDate}
-              onChange={(newValue) => {
-                setDeliveryDate(newValue);
+              onChange={(value) => {
+                setDeliveryDate(value.toISOString());
               }}
             />
           </LocalizationProvider>
