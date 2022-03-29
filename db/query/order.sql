@@ -54,3 +54,14 @@ DELETE
 FROM
     orders
 WHERE id = $1;
+
+
+-- name: GetNextOrderIdentifier :one
+SELECT
+    identifier + 1
+FROM
+    orders
+ORDER BY
+    identifier
+DESC
+LIMIT 1;

@@ -83,3 +83,13 @@ func (a *App) CreateOrder(order Order) Order {
 		ClientEmail:   order.ClientEmail,
 	}
 }
+
+func (a *App) GetNextOrderIdentifier() int32 {
+	nextIdentifier, err := a.store.GetNextOrderIdentifier(context.Background())
+
+	if err != nil {
+		log.Fatal("error getting netxt order identifier", err)
+	}
+
+	return nextIdentifier
+}
