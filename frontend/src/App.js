@@ -12,28 +12,9 @@ import PrendasComponent from "./components/PrendasComponent";
 import { Box } from "@mui/system";
 import { Order } from "./wailsjs/go/models";
 import { useState } from "react";
-
-// Funciones a go
-function greet(clientName) {
-  // Call App.Greet(name)
-  let order = new Order({
-    recieved_date: Date.now().toLocaleString,
-    delivery_date: Date.now().toLocaleString,
-    client_name: clientName,
-    client_id: "123214123",
-    client_address: "avenida siempre viva",
-    client_phone: "41123123",
-    client_email: "gokusita.lamejor@correo.com",
-  });
-  window.go.main.App.CreateOrder(order).then((result) => {
-    // Update result with data back from App.Greet()
-    console.log(result);
-  });
-}
-
-function handleSubmit(clientName) {
-  greet(clientName);
-}
+import DateTimePicker from "@mui/lab/DateTimePicker";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
 
 // End tables
 const App = () => {
@@ -42,8 +23,29 @@ const App = () => {
   const [clientAddress, setClientAddress] = useState("");
   const [clientPhone, setClientPhone] = useState("");
   const [clientEmail, setClientEmail] = useState("");
+  const [recievedDate, setRecievedDate] = useState("");
+  const [deliveryDate, setDeliveryDate] = useState("");
 
-  console.log(clientName);
+  // Funciones a go
+  function greet() {
+    // Call App.Greet(name)
+    var order = new Order({
+      recieved_date: recievedDate,
+      delivery_date: deliveryDate,
+      client_name: clientName,
+      client_id: clientId,
+      client_address: clientAddress,
+      client_phone: clientPhone,
+      client_email: clientEmail,
+    });
+
+    console.log(order);
+    // window.go.main.App.CreateOrder(order).then((result) => {
+    //   // Update result with data back from App.Greet()
+    //   console.log(result);
+    // });
+  }
+
   return (
     <Container>
       {/* Header */}
@@ -71,9 +73,29 @@ const App = () => {
           />
           <TextField
             id="outlined-name"
+            label="Email"
+            className={styles["input"]}
+            sx={{ marginTop: 3 }}
+            onChange={(event) => setClientEmail(event.target.value)}
+            // value={name}
+            // onChange={handleChange}
+          />
+        </Box>
+        <Box className={styles["details-wrap"]}>
+          <TextField
+            id="outlined-name"
+            label="Cédula"
+            className={styles["input"]}
+            onChange={(event) => setClientId(event.target.value)}
+            // value={name}
+            // onChange={handleChange}
+          />
+          <TextField
+            id="outlined-name"
             label="Dirección"
             className={styles["input"]}
             sx={{ marginTop: 3, marginBottom: 3 }}
+            onChange={(event) => setClientAddress(event.target.value)}
             // value={name}
             // onChange={handleChange}
           />
@@ -81,27 +103,35 @@ const App = () => {
             id="outlined-name"
             label="Teléfono"
             className={styles["input"]}
+            onChange={(event) => setClientPhone(event.target.value)}
             // value={name}
             // onChange={handleChange}
           />
         </Box>
-        <div className={styles["details-wrap"]}>
-          <TextField
-            id="outlined-name"
-            label="Fecha de recibido"
-            className={styles["input"]}
-            sx={{ marginBottom: 3 }}
-            // value={name}
-            // onChange={handleChange}
-          />
-          <TextField
-            id="outlined-name"
-            label="Fecha de entrega"
-            className={styles["input"]}
-            // value={name}
-            // onChange={handleChange}
-          />
-        </div>
+        <Box className={styles["details-wrap"]}>
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DateTimePicker
+              renderInput={(props) => (
+                <TextField {...props} sx={{ marginTop: 3, marginBottom: 3 }} />
+              )}
+              label="Fecha de recibido"
+              value={recievedDate}
+              onChange={(newValue) => {
+                setRecievedDate(newValue);
+              }}
+            />
+          </LocalizationProvider>
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DateTimePicker
+              renderInput={(props) => <TextField {...props} />}
+              label="Fecha de entrega"
+              value={deliveryDate}
+              onChange={(newValue) => {
+                setDeliveryDate(newValue);
+              }}
+            />
+          </LocalizationProvider>
+        </Box>
       </Box>
       {/* Prendas */}
       <div style={{ height: 300, width: "100%", marginBottom: 60 }}>
@@ -147,7 +177,7 @@ const App = () => {
       </Box>
       {/* Generar orden */}
       <Box sx={{ display: "flex", justifyContent: "center", marginTop: 5 }}>
-        <Button variant="text" onClick={handleSubmit}>
+        <Button variant="text" onClick={greet}>
           Generar orden
         </Button>
       </Box>
