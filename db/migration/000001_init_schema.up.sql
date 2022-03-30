@@ -3,6 +3,7 @@
   "identifier" SERIAL NOT NULL,
   "recieved_date" timestamptz NOT NULL,
   "delivery_date" timestamptz NOT NULL,
+  "comments" varchar NOT NULL,
   "client_name" varchar NOT NULL,
   "client_id" varchar NOT NULL,
   "client_address" varchar NOT NULL,

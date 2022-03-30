@@ -42,6 +42,7 @@ type Order struct {
 	ID                uuid.UUID `json:"ID"`
 	RecievedDate      string    `json:"recieved_date"`
 	DeliveryDate      string    `json:"delivery_date"`
+	Comments          string    `json:"comments"`
 	ClientName        string    `json:"client_name"`
 	ClientID          string    `json:"client_id"`
 	ClientAddress     string    `json:"client_address"`
@@ -64,6 +65,7 @@ func (a *App) CreateOrder(order Order) Order {
 		ID:                uuid.New(),
 		RecievedDate:      recievedDate,
 		DeliveryDate:      deliveryDate,
+		Comments:          order.Comments,
 		ClientName:        order.ClientName,
 		ClientID:          order.ClientID,
 		ClientAddress:     order.ClientAddress,
@@ -90,6 +92,7 @@ func (a *App) CreateOrder(order Order) Order {
 		ID:                createdOrder.ID,
 		RecievedDate:      createdOrder.RecievedDate.Format(time.RFC3339),
 		DeliveryDate:      createdOrder.DeliveryDate.Format(time.RFC3339),
+		Comments:          createdOrder.Comments,
 		ClientName:        createdOrder.ClientName,
 		ClientID:          createdOrder.ClientID,
 		ClientAddress:     createdOrder.ClientAddress,

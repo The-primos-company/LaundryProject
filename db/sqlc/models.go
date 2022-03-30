@@ -13,6 +13,7 @@ type Order struct {
 	Identifier        int32     `json:"identifier"`
 	RecievedDate      time.Time `json:"recieved_date"`
 	DeliveryDate      time.Time `json:"delivery_date"`
+	Comments          string    `json:"comments"`
 	ClientName        string    `json:"client_name"`
 	ClientID          string    `json:"client_id"`
 	ClientAddress     string    `json:"client_address"`

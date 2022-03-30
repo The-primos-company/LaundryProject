@@ -21,6 +21,7 @@ func TestCreateOrder(t *testing.T) {
 		ClientPhone:       "124123",
 		ClientEmail:       "gokusita@lamejor.com",
 		GarmentTotal:      "123",
+		Comments:          "it is a test",
 		PaymentTotalPayed: "10000",
 		PaymentTotal:      "20000",
 		PaymentTotalReal:  "10000",

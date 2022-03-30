@@ -6,6 +6,7 @@ export class Order {
     ID: number[];
     recieved_date: string;
     delivery_date: string;
+    comments: string;
     client_name: string;
     client_id: string;
     client_address: string;
@@ -25,6 +26,7 @@ export class Order {
         this.ID = source["ID"];
         this.recieved_date = source["recieved_date"];
         this.delivery_date = source["delivery_date"];
+        this.comments = source["comments"];
         this.client_name = source["client_name"];
         this.client_id = source["client_id"];
         this.client_address = source["client_address"];
