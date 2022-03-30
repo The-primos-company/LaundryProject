@@ -47,6 +47,7 @@ type Order struct {
 	ClientAddress     string    `json:"client_address"`
 	ClientPhone       string    `json:"client_phone"`
 	ClientEmail       string    `json:"client_email"`
+	GarmentTotal      int       `json:"garment_total"`
 	PaymentTotalPayed string    `json:"payment_total_payed"`
 	PaymentTotal      string    `json:"payment_total"`
 	PaymentTotalReal  string    `json:"payment_total_real"`
@@ -68,6 +69,7 @@ func (a *App) CreateOrder(order Order) Order {
 		ClientAddress:     order.ClientAddress,
 		ClientPhone:       order.ClientPhone,
 		ClientEmail:       order.ClientEmail,
+		GarmentTotal:      strconv.Itoa(order.GarmentTotal),
 		PaymentTotalPayed: order.PaymentTotalPayed,
 		PaymentTotal:      order.PaymentTotal,
 		PaymentTotalReal:  strconv.Itoa(paymentTotalReal),
@@ -76,6 +78,12 @@ func (a *App) CreateOrder(order Order) Order {
 
 	if err != nil {
 		log.Fatal("error creating order", err)
+	}
+
+	garmetTotal, errGarment := strconv.Atoi(createdOrder.GarmentTotal)
+
+	if errGarment != nil {
+		log.Fatal("error Atoi Garment", err)
 	}
 
 	return Order{
@@ -87,6 +95,7 @@ func (a *App) CreateOrder(order Order) Order {
 		ClientAddress:     createdOrder.ClientAddress,
 		ClientPhone:       createdOrder.ClientPhone,
 		ClientEmail:       createdOrder.ClientEmail,
+		GarmentTotal:      garmetTotal,
 		PaymentTotalPayed: createdOrder.PaymentTotalPayed,
 		PaymentTotal:      createdOrder.PaymentTotal,
 		PaymentTotalReal:  createdOrder.PaymentTotalPayed,
@@ -97,7 +106,7 @@ func (a *App) GetNextOrderIdentifier() int32 {
 	nextIdentifier, err := a.store.GetNextOrderIdentifier(context.Background())
 
 	if err != nil {
-		log.Fatal("error getting netxt order identifier", err)
+		nextIdentifier = 1
 	}
 
 	return nextIdentifier

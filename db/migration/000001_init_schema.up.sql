@@ -8,6 +8,7 @@
   "client_address" varchar NOT NULL,
   "client_phone" varchar NOT NULL,
   "client_email" varchar NOT NULL,
+  "garment_total" numeric NOT NULL,
   "payment_total_payed" MONEY NOT NULL,
   "payment_total" MONEY NOT NULL,
   "payment_total_real" MONEY NOT NULL,

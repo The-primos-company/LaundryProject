@@ -21,12 +21,13 @@ INSERT INTO
         client_address,
         client_phone,
         client_email,
+        garment_total,
         payment_total_payed,
         payment_total,
         payment_total_real
     )
 VALUES
-    ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, payment_total_payed, payment_total, payment_total_real, created_at
+    ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at
 `
 
 type CreateOrderParams struct {
@@ -38,6 +39,7 @@ type CreateOrderParams struct {
 	ClientAddress     string    `json:"client_address"`
 	ClientPhone       string    `json:"client_phone"`
 	ClientEmail       string    `json:"client_email"`
+	GarmentTotal      string    `json:"garment_total"`
 	PaymentTotalPayed string    `json:"payment_total_payed"`
 	PaymentTotal      string    `json:"payment_total"`
 	PaymentTotalReal  string    `json:"payment_total_real"`
@@ -53,6 +55,7 @@ func (q *Queries) CreateOrder(ctx context.Context, arg CreateOrderParams) (Order
 		arg.ClientAddress,
 		arg.ClientPhone,
 		arg.ClientEmail,
+		arg.GarmentTotal,
 		arg.PaymentTotalPayed,
 		arg.PaymentTotal,
 		arg.PaymentTotalReal,
@@ -68,6 +71,7 @@ func (q *Queries) CreateOrder(ctx context.Context, arg CreateOrderParams) (Order
 		&i.ClientAddress,
 		&i.ClientPhone,
 		&i.ClientEmail,
+		&i.GarmentTotal,
 		&i.PaymentTotalPayed,
 		&i.PaymentTotal,
 		&i.PaymentTotalReal,
@@ -108,7 +112,7 @@ func (q *Queries) GetNextOrderIdentifier(ctx context.Context) (int32, error) {
 
 const getOrder = `-- name: GetOrder :one
 SELECT
-    id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, payment_total_payed, payment_total, payment_total_real, created_at
+    id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at
 FROM
     orders
 WHERE
@@ -130,6 +134,7 @@ func (q *Queries) GetOrder(ctx context.Context, id uuid.UUID) (Order, error) {
 		&i.ClientAddress,
 		&i.ClientPhone,
 		&i.ClientEmail,
+		&i.GarmentTotal,
 		&i.PaymentTotalPayed,
 		&i.PaymentTotal,
 		&i.PaymentTotalReal,
@@ -140,7 +145,7 @@ func (q *Queries) GetOrder(ctx context.Context, id uuid.UUID) (Order, error) {
 
 const listOrders = `-- name: ListOrders :many
 SELECT
-    id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, payment_total_payed, payment_total, payment_total_real, created_at
+    id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at
 FROM
     orders
 ORDER BY
@@ -173,6 +178,7 @@ func (q *Queries) ListOrders(ctx context.Context, arg ListOrdersParams) ([]Order
 			&i.ClientAddress,
 			&i.ClientPhone,
 			&i.ClientEmail,
+			&i.GarmentTotal,
 			&i.PaymentTotalPayed,
 			&i.PaymentTotal,
 			&i.PaymentTotalReal,
@@ -202,11 +208,12 @@ SET
     client_email = $6,
     recieved_date = $7,
     delivery_date = $8,
-    payment_total_payed = $9,
-    payment_total = $10
+    garment_total = $9,
+    payment_total_payed = $10,
+    payment_total = $11
 WHERE
     id = $1
-RETURNING id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, payment_total_payed, payment_total, payment_total_real, created_at
+RETURNING id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at
 `
 
 type UpdateOrderParams struct {
@@ -218,6 +225,7 @@ type UpdateOrderParams struct {
 	ClientEmail       string    `json:"client_email"`
 	RecievedDate      time.Time `json:"recieved_date"`
 	DeliveryDate      time.Time `json:"delivery_date"`
+	GarmentTotal      string    `json:"garment_total"`
 	PaymentTotalPayed string    `json:"payment_total_payed"`
 	PaymentTotal      string    `json:"payment_total"`
 }
@@ -232,6 +240,7 @@ func (q *Queries) UpdateOrder(ctx context.Context, arg UpdateOrderParams) (Order
 		arg.ClientEmail,
 		arg.RecievedDate,
 		arg.DeliveryDate,
+		arg.GarmentTotal,
 		arg.PaymentTotalPayed,
 		arg.PaymentTotal,
 	)
@@ -246,6 +255,7 @@ func (q *Queries) UpdateOrder(ctx context.Context, arg UpdateOrderParams) (Order
 		&i.ClientAddress,
 		&i.ClientPhone,
 		&i.ClientEmail,
+		&i.GarmentTotal,
 		&i.PaymentTotalPayed,
 		&i.PaymentTotal,
 		&i.PaymentTotalReal,

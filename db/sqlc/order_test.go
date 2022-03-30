@@ -20,6 +20,7 @@ func TestCreateOrder(t *testing.T) {
 		ClientAddress:     "av siempre viva",
 		ClientPhone:       "124123",
 		ClientEmail:       "gokusita@lamejor.com",
+		GarmentTotal:      "123",
 		PaymentTotalPayed: "10000",
 		PaymentTotal:      "20000",
 		PaymentTotalReal:  "10000",
@@ -27,8 +28,6 @@ func TestCreateOrder(t *testing.T) {
 
 	order, err := testQueries.CreateOrder(context.Background(), argOr)
 	require.NoError(t, err)
-	require.NotEmpty(t, order)
-	require.NotEmpty(t, order)
 	require.NotEmpty(t, order)
 }
 

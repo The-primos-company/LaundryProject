@@ -11,6 +11,7 @@ export class Order {
     client_address: string;
     client_phone: string;
     client_email: string;
+    garment_total: number;
     payment_total_payed: string;
     payment_total: string;
     payment_total_real: string;
@@ -29,6 +30,7 @@ export class Order {
         this.client_address = source["client_address"];
         this.client_phone = source["client_phone"];
         this.client_email = source["client_email"];
+        this.garment_total = source["garment_total"];
         this.payment_total_payed = source["payment_total_payed"];
         this.payment_total = source["payment_total"];
         this.payment_total_real = source["payment_total_real"];

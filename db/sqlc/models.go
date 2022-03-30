@@ -18,6 +18,7 @@ type Order struct {
 	ClientAddress     string    `json:"client_address"`
 	ClientPhone       string    `json:"client_phone"`
 	ClientEmail       string    `json:"client_email"`
+	GarmentTotal      string    `json:"garment_total"`
 	PaymentTotalPayed string    `json:"payment_total_payed"`
 	PaymentTotal      string    `json:"payment_total"`
 	PaymentTotalReal  string    `json:"payment_total_real"`
