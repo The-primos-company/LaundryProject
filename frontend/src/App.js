@@ -55,7 +55,7 @@ const App = () => {
 
   useEffect(() => {
     window.go.main.App.GetNextOrderIdentifier().then((result) => {
-      console.log(result);
+      setOrderNumber(result);
     });
   }, []);
 
