@@ -20,12 +20,16 @@ import AdapterDateFns from "@mui/lab/AdapterDateFns";
 const App = () => {
   const [clientName, setClientName] = useState("");
   const [clientId, setClientId] = useState("");
+  const [paymentTotalPayed, setPaymentTotalPayed] = useState(0);
   const [clientAddress, setClientAddress] = useState("");
   const [clientPhone, setClientPhone] = useState("");
   const [clientEmail, setClientEmail] = useState("");
+  const [comments, setComments] = useState("");
   const [recievedDate, setRecievedDate] = useState(new Date());
   const [deliveryDate, setDeliveryDate] = useState(new Date());
-  const [orderNumber, setOrderNumber] = useState(0);
+  const [orderNumber, setOrderNumber] = useState(null);
+  const [garmentTotal, setGarmentTotal] = useState(0);
+  const [paymentTotal, setPaymentTotal] = useState(0);
 
   // Funciones a go
   function greet() {
@@ -38,11 +42,14 @@ const App = () => {
       client_address: clientAddress,
       client_phone: clientPhone,
       client_email: clientEmail,
+      payment_total_payed: paymentTotalPayed.toString(),
+      garment_total: garmentTotal,
+      payment_total: paymentTotal.toString(),
+      comments,
     });
 
     window.go.main.App.CreateOrder(order).then((result) => {
       // Update result with data back from App.Greet()
-      console.log(result);
       setClientName("");
       setClientId("");
       setClientAddress("");
@@ -54,10 +61,15 @@ const App = () => {
   }
 
   useEffect(() => {
-    window.go.main.App.GetNextOrderIdentifier().then((result) => {
-      setOrderNumber(result);
-    });
-  }, []);
+    const getOrderCount = async () => {
+      const data = await window.go.main.App.GetNextOrderIdentifier();
+      setOrderNumber(data);
+    };
+
+    getOrderCount();
+  }, [orderNumber]);
+
+  console.log(orderNumber);
 
   return (
     <Container>
@@ -67,7 +79,7 @@ const App = () => {
       </div>
       <div className={styles["order-container"]}>
         <span className={styles["order-title"]}>Orden de servicio:</span>
-        <Input disabled defaultValue={orderNumber} />
+        <span>{orderNumber}</span>
       </div>
       {/* Details */}
       <Box
@@ -163,8 +175,8 @@ const App = () => {
           id="outlined-name"
           label="Abono"
           className={styles["input"]}
-          // value={name}
-          // onChange={handleChange}
+          value={paymentTotalPayed}
+          onChange={(event) => setPaymentTotalPayed(event.target.value)}
         />
       </Box>
       {/* Estado de la prenda */}
@@ -184,8 +196,8 @@ const App = () => {
           label="Observaciones"
           multiline
           maxRows={4}
-          // value={value}
-          // onChange={handleChange}
+          value={comments}
+          onChange={(event) => setComments(event.target.value)}
         />
       </Box>
       {/* Generar orden */}
