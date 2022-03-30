@@ -8,12 +8,25 @@ import (
 	"github.com/google/uuid"
 )
 
+type Garment struct {
+	ID        uuid.UUID `json:"id"`
+	OrderID   uuid.UUID `json:"order_id"`
+	Total     string    `json:"total"`
+	Category  string    `json:"category"`
+	Gendre    string    `json:"gendre"`
+	Color     string    `json:"color"`
+	Brand     string    `json:"brand"`
+	Price     string    `json:"price"`
+	Comment   string    `json:"comment"`
+	Defects   string    `json:"defects"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
 type Order struct {
 	ID                uuid.UUID `json:"id"`
 	Identifier        int32     `json:"identifier"`
 	RecievedDate      time.Time `json:"recieved_date"`
 	DeliveryDate      time.Time `json:"delivery_date"`
-	Comments          string    `json:"comments"`
 	ClientName        string    `json:"client_name"`
 	ClientID          string    `json:"client_id"`
 	ClientAddress     string    `json:"client_address"`
