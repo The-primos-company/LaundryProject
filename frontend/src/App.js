@@ -37,7 +37,25 @@ const App = () => {
 
   // Funciones a go
   const greet = async () => {
-    if (error.email !== "") return;
+    // const [clientName, setClientName] = useState("");
+    // const [clientId, setClientId] = useState("");
+    // const [paymentTotalPayed, setPaymentTotalPayed] = useState(0);
+    // const [clientAddress, setClientAddress] = useState("");
+    // const [clientPhone, setClientPhone] = useState("");
+    // const [clientEmail, setClientEmail] = useState("");
+    // const [recievedDate, setRecievedDate] = useState(new Date());
+    // const [deliveryDate, setDeliveryDate] = useState(null);
+    // const [orderNumber, setOrderNumber] = useState(null);
+    // const [garments, setGarments] = useState([]);
+    if (
+      error.email !== "" ||
+      clientName === "" ||
+      clientId === "" ||
+      clientAddress === "" ||
+      clientPhone === "" ||
+      deliveryDate === null
+    )
+      return;
     let tmpGarments = garments.map((item) => {
       delete item.realPrice;
       return {
