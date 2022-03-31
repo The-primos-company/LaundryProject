@@ -28,7 +28,6 @@ const App = () => {
     deliveryDate: "",
   });
   const [order, setOrder] = useState(null);
-  console.log(order);
 
   let totalPrice = garments
     .map((item) => item.realTotal)

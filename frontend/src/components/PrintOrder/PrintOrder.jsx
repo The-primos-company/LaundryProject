@@ -47,27 +47,27 @@ const ComponentToPrint = forwardRef(({ order }, ref) => {
           </tr>
           <tr>
             <td>Cliente</td>
-            <td>Happy</td>
+            <td>{order.client_name}</td>
             <td></td>
           </tr>
           <tr>
             <td>Cedula</td>
-            <td>1234123</td>
+            <td>{order.client_id}</td>
             <td></td>
           </tr>
           <tr>
             <td>Direccion</td>
-            <td>avn siempre viva</td>
+            <td>{order.client_address}</td>
             <td></td>
           </tr>
           <tr>
             <td>Telefono</td>
-            <td>1234123</td>
+            <td>{order.client_phone}</td>
             <td></td>
           </tr>
           <tr>
             <td>Email</td>
-            <td>happy@happy.com</td>
+            <td>{order.client_email}</td>
             <td></td>
           </tr>
           <tr>
@@ -80,21 +80,18 @@ const ComponentToPrint = forwardRef(({ order }, ref) => {
             <td>Descripcion</td>
             <td>Valor</td>
           </tr>
-          <tr>
-            <td>1</td>
-            <td>Camisa masculino roja gucci </td>
-            <td>10000</td>
-          </tr>
-          <tr>
-            <td>1</td>
-            <td>Camisa masculino azul gucci </td>
-            <td>10000</td>
-          </tr>
-          <tr>
-            <td>1</td>
-            <td>Camisa masculino verde gucci </td>
-            <td>10000</td>
-          </tr>
+          {order.garments.map((item) => {
+            return (
+              <tr>
+                <td>{item.cuantity}</td>
+                {/* <td>Camisa masculino roja gucci </td> */}
+                <td>
+                  {item.category} {item.gendre} {item.color} {item.brand}
+                </td>
+                <td>{item.price}</td>
+              </tr>
+            );
+          })}
           <tr>
             <td></td>
             <td></td>
@@ -107,17 +104,19 @@ const ComponentToPrint = forwardRef(({ order }, ref) => {
           </tr>
           <tr>
             <td>Total:</td>
-            <td>30,000</td>
+            <td>{order.payment_total}</td>
             <td></td>
           </tr>
           <tr>
             <td>Abono:</td>
-            <td>20,000</td>
+            <td>{order.payment_total_payed}</td>
             <td></td>
           </tr>
           <tr>
             <td>Saldo:</td>
-            <td>10,000</td>
+            <td>
+              {order.payment_total} - {order.payment_total_payed}
+            </td>
             <td></td>
           </tr>
           <tr>
@@ -127,7 +126,7 @@ const ComponentToPrint = forwardRef(({ order }, ref) => {
           </tr>
           <tr>
             <td>Entrega Aprox</td>
-            <td>2022-03-17 6:30pm</td>
+            <td>{order.delivery_date}</td>
             <td></td>
           </tr>
           <tr>
@@ -137,12 +136,27 @@ const ComponentToPrint = forwardRef(({ order }, ref) => {
           </tr>
           <tr>
             <td>Observaciones:</td>
-            <td></td>
+            {order.garments.map((item) => {
+              return (
+                <td>
+                  {item.category} {item.gendre} {item.color} {item.brand}:{" "}
+                  {item.comment} {item.defects}
+                </td>
+              );
+            })}
+
             <td></td>
           </tr>
           <tr>
-            <td>cubrelechos delicado</td>
-            <td></td>
+            <td>Nota</td>
+            <td>
+              LAVA-ROPAS no se responsabiliza por botones, hebillas, adornos, ni
+              por objetos o dinero dejados en las prendas.
+            </td>
+            <td>
+              LAVA-ROPAS no se responsabiliza por las variaciones que se
+              produzcan en el color
+            </td>
             <td></td>
           </tr>
         </tbody>
