@@ -15,14 +15,14 @@ import { useReactToPrint } from "react-to-print";
 // End tables
 const App = () => {
   // client
-  const [clientName, setClientName] = useState("");
-  const [clientId, setClientId] = useState("");
+  const [clientName, setClientName] = useState("Happy");
+  const [clientId, setClientId] = useState("12312");
   const [paymentTotalPayed, setPaymentTotalPayed] = useState(0);
-  const [clientAddress, setClientAddress] = useState("");
-  const [clientPhone, setClientPhone] = useState("");
-  const [clientEmail, setClientEmail] = useState("");
+  const [clientAddress, setClientAddress] = useState("avenida");
+  const [clientPhone, setClientPhone] = useState("12312");
+  const [clientEmail, setClientEmail] = useState("happy@gmail.com");
   const [recievedDate, setRecievedDate] = useState(new Date());
-  const [deliveryDate, setDeliveryDate] = useState(null);
+  const [deliveryDate, setDeliveryDate] = useState(new Date());
   const [orderNumber, setOrderNumber] = useState(null);
   const [orderNumberTmp, setOrderNumberTmp] = useState(null);
   const [garments, setGarments] = useState([]);
