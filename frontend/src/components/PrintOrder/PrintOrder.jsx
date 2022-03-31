@@ -50,7 +50,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
             <tr>
               <td>Fecha de ingreso</td>
               <td>
-                {moment(order.recieved_date).format("MMMM Do YYYY, h:mm:ss a")}
+                {moment(order.recieved_date).format("MMMM Do YYYY, h:mm a")}
               </td>
               <td></td>
             </tr>
@@ -97,7 +97,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
                   <td>
                     {item.category} {item.gendre} {item.color} {item.brand}
                   </td>
-                  <td>{item.price}</td>
+                  <td>${item.price}</td>
                 </tr>
               );
             })}
@@ -134,7 +134,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
             <tr>
               <td>Entrega Aprox</td>
               <td>
-                {moment(order.delivery_date).format("MMMM Do YYYY, h:mm:ss a")}
+                {moment(order.delivery_date).format("MMMM Do YYYY, h:mm a")}
               </td>
               <td></td>
             </tr>
@@ -188,7 +188,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
           <tbody>
             <tr>
               <td colSpan={2}>Orden de servicio </td>
-              <td>50</td>
+              <td>{orderNumber}</td>
             </tr>
             <tr>
               <td></td>
@@ -199,35 +199,33 @@ const ComponentToPrint = forwardRef((props, ref) => {
               <td>cantidad</td>
               <td colSpan={2}>Descripcion</td>
             </tr>
-            <tr>
-              <td>1</td>
-              <td colSpan={2}>Camisa masculino roja gucci</td>
-            </tr>
-            <tr>
-              <td>1</td>
-              <td colSpan={2}>Camisa masculino azul gucci</td>
-            </tr>
-            <tr>
-              <td>1</td>
-              <td colSpan={2}>Camisa masculino verde gucci</td>
-            </tr>
+            {order.garments.map((item) => {
+              return (
+                <tr>
+                  <td>{item.cuantity}</td>
+                  <td colSpan={2}>
+                    {item.category} {item.gendre} {item.color} {item.brand}
+                  </td>
+                </tr>
+              );
+            })}
             <tr>
               <td colSpan={2}></td>
               <td></td>
             </tr>
             <tr>
               <td>Total:</td>
-              <td>30,000</td>
+              <td>{order.payment_total}</td>
               <td></td>
             </tr>
             <tr>
               <td>Abono:</td>
-              <td>20,000</td>
+              <td>{order.payment_total_payed}</td>
               <td></td>
             </tr>
             <tr>
               <td>Saldo:</td>
-              <td>10,000</td>
+              <td>{order.payment_total_real}</td>
               <td></td>
             </tr>
             <tr>
@@ -237,20 +235,23 @@ const ComponentToPrint = forwardRef((props, ref) => {
             </tr>
             <tr>
               <td>Entrega Aprox</td>
-              <td colSpan={2}>2022-03-17 6:30pm</td>
+              <td colSpan={2}>
+                {moment(order.delivery_date).format("MMMM Do YYYY, h:mm a")}
+              </td>
             </tr>
             <tr>
               <td colSpan={3}>Observaciones:</td>
             </tr>
-            <tr>
-              <td colSpan={3}>Camisa masculino roja gucci - picado-moteado</td>
-            </tr>
-            <tr>
-              <td colSpan={3}>Camisa masculino verde gucci - picado</td>
-            </tr>
-            <tr>
-              <td colSpan={3}>Camisa masculino azul gucci - decolorado</td>
-            </tr>
+            {order.garments.map((item) => {
+              return (
+                <tr>
+                  <td colSpan={3}>
+                    {item.category} {item.gendre} {item.color} {item.brand}:{" "}
+                    {item.comment} {item.defects}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
