@@ -11,19 +11,19 @@
     overflow: initial !important;
     -webkit-print-color-adjust: exact;
   }
-  table {
+  .page-break {
     page-break-after: always;
   }
 }
 
-@media print {
+/* @media print {
   .page-break {
     margin-top: 1rem;
     display: block;
     page-break-before: always;
     page-break-after: always;
   }
-}
+} */
 
 @page {
   size: 7.2cm 100%;
