@@ -1,12 +1,5 @@
 import styles from "./App.module.css";
-import {
-  Button,
-  Checkbox,
-  Container,
-  FormControlLabel,
-  Input,
-  TextField,
-} from "@mui/material";
+import { Button, Container, TextField } from "@mui/material";
 import logo from "./logo.svg";
 import PrendasComponent from "./components/PrendasComponent";
 import { Box } from "@mui/system";
@@ -28,20 +21,7 @@ const App = () => {
   const [recievedDate, setRecievedDate] = useState(new Date());
   const [deliveryDate, setDeliveryDate] = useState(new Date());
   const [orderNumber, setOrderNumber] = useState(null);
-  const [garmentTotal, setGarmentTotal] = useState(0);
-  const [paymentTotal, setPaymentTotal] = useState(0);
   const [garments, setGarments] = useState([]);
-
-  // prendas
-  // order_id: number[];
-  // total: string;
-  // category: string;
-  // gendre: string;
-  // color: string;
-  // brand: string;
-  // price: string;
-  // comment: string;
-  // defects: string;
 
   let totalPrice = garments
     .map((item) => item.realTotal)
@@ -53,8 +33,6 @@ const App = () => {
 
   // Funciones a go
   const greet = async () => {
-    // Call App.Greet(name)
-
     let tmpGarments = garments.map((item) => {
       delete item.realPrice;
       return {

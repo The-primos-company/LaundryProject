@@ -1,9 +1,5 @@
 import * as React from "react";
-import {
-  DataGrid,
-  GridActionsCellItem,
-  GridCellEditStopReasons,
-} from "@mui/x-data-grid";
+import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 import { randomId } from "@mui/x-data-grid-generator";
 import { Button } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
@@ -195,19 +191,6 @@ export default function PrendasComponent({ setGarments, garments }) {
       return { ...item };
     });
     setGarments(row);
-  };
-
-  const handleOnChange = ({ field, id, props }) => {
-    // let oldArr = garments.filter((row) => row.id !== id);
-    // let data = garments.filter((row) => row.id === id);
-    // let row = data[0];
-    // row[field] = props.value;
-    // setGarments(oldArr.concat(row));
-    // let row = garments.map((item) => {
-    //   if (item.id === id) return { ...item, [field]: props.value };
-    //   return { ...item };
-    // });
-    // setGarments(row);
   };
 
   const imperfecciones = [
