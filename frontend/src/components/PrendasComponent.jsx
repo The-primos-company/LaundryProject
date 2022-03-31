@@ -250,12 +250,19 @@ export default function PrendasComponent({ setGarments, garments }) {
       editable: true,
     },
     { field: "category", headerName: "Categoria", editable: true },
-    { field: "gendre", headerName: "Genero", editable: true },
+    {
+      field: "gendre",
+      headerName: "Genero",
+      editable: true,
+      type: "singleSelect",
+      valueOptions: ["Masculino", "Femenino", "Unisex"],
+    },
     { field: "color", headerName: "Color", editable: true },
     { field: "brand", headerName: "Marca", editable: true },
     {
       field: "price",
       headerName: "Precio",
+      type: "number",
       editable: true,
     },
     {

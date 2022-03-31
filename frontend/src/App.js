@@ -19,11 +19,12 @@ const App = () => {
   const [clientPhone, setClientPhone] = useState("");
   const [clientEmail, setClientEmail] = useState("");
   const [recievedDate, setRecievedDate] = useState(new Date());
-  const [deliveryDate, setDeliveryDate] = useState(new Date());
+  const [deliveryDate, setDeliveryDate] = useState(null);
   const [orderNumber, setOrderNumber] = useState(null);
   const [garments, setGarments] = useState([]);
   const [error, setError] = useState({
     email: "",
+    deliveryDate: "",
   });
 
   let totalPrice = garments
@@ -97,6 +98,18 @@ const App = () => {
       });
     setClientEmail(event.target.value);
   };
+
+  const handleDeliveryDate = (date) => {
+    if (recievedDate === deliveryDate)
+      setError({
+        deliveryDate: "La fecha de entrega no puede ser la misma a la recibida",
+      });
+    else
+      setError({
+        deliveryDate: "",
+      });
+    setDeliveryDate(date);
+  };
   // TODO: cambiar si se va a wails
   useEffect(() => {
     const getOrderCount = async () => {
@@ -149,6 +162,10 @@ const App = () => {
           <TextField
             id="outlined-name"
             label="Cédula"
+            type="number"
+            InputLabelProps={{
+              shrink: true,
+            }}
             className={styles["input"]}
             onChange={(event) => setClientId(event.target.value)}
             value={clientId}
@@ -167,6 +184,10 @@ const App = () => {
           <TextField
             id="outlined-name"
             label="Teléfono"
+            type="number"
+            InputLabelProps={{
+              shrink: true,
+            }}
             className={styles["input"]}
             onChange={(event) => setClientPhone(event.target.value)}
             value={clientPhone}
@@ -216,6 +237,7 @@ const App = () => {
         <Box>
           <span>Total</span>
           <strong style={{ marginLeft: 5 }}>
+            $
             {totalPrice
               .toString()
               .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
@@ -227,6 +249,10 @@ const App = () => {
         <TextField
           id="outlined-name"
           label="Abono"
+          type="number"
+          InputLabelProps={{
+            shrink: true,
+          }}
           className={styles["input"]}
           value={paymentTotalPayed}
           onChange={(event) => setPaymentTotalPayed(event.target.value)}
