@@ -28,6 +28,7 @@ const App = () => {
     deliveryDate: "",
   });
   const [order, setOrder] = useState(null);
+  console.log(order);
 
   let totalPrice = garments
     .map((item) => item.realTotal)
@@ -93,8 +94,6 @@ const App = () => {
     setDeliveryDate(new Date());
     setOrderNumber(orderNumber + 1);
     setGarments([]);
-
-    console.log(order);
 
     const data = await window.go.main.App.CreateOrder(order);
     setOrder(data);

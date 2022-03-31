@@ -18,7 +18,6 @@ export const PrintOrder = (order) => {
 };
 
 const ComponentToPrint = forwardRef(({ order }, ref) => {
-  console.log(order);
   return (
     <div className="print-container" style={{ margin: "0", padding: "0" }}>
       <div className="page-break" />
