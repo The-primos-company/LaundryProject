@@ -76,7 +76,8 @@ const App = () => {
 
     console.log(order);
 
-    await window.go.main.App.CreateOrder(order);
+    const data = await window.go.main.App.CreateOrder(order);
+    console.log(data);
   };
 
   function ValidateEmail(mail) {
