@@ -156,10 +156,10 @@ CustomMultiSelect.propTypes = {
   }),
 };
 
-export default function PrendasComponent({ setGarments }) {
-  const [rows, setRows] = React.useState([]);
+export default function PrendasComponent({ setGarments, garments }) {
+  const [changeValue, setChangeValue] = React.useState(false);
+  // const [rows, setRows] = React.useState(garments);
 
-  console.log(rows);
   function handleClick() {
     let newArr = [
       {
@@ -170,55 +170,62 @@ export default function PrendasComponent({ setGarments }) {
         color: "",
         brand: "",
         price: 0,
+        realTotal: 0,
         comment: "",
         defects: [],
       },
     ];
-    setRows(rows.concat(newArr));
+    setGarments(garments.concat(newArr));
   }
 
   const handleDeleteClick = (id) => (event) => {
     event.stopPropagation();
-    let data = rows.filter((row) => row.id !== id);
-    setRows(data);
+    setChangeValue(true);
+
+    let data = garments.filter((row) => row.id !== id);
+    setGarments(data);
   };
 
   const handleDefects = (array, id) => {
-    // let oldArr = rows.filter((row) => row.id !== id);
-    // let data = rows.filter((row) => row.id === id);
+    // let oldArr = garments.filter((row) => row.id !== id);
+    // let data = garments.filter((row) => row.id === id);
     // let row = data[0];
     // row.defects = array;
-    // setRows(oldArr.concat(row));
-    let row = rows.map((item) => {
+    // setGarments(oldArr.concat(row));
+    setChangeValue(true);
+
+    let row = garments.map((item) => {
       if (item.id === id) return { ...item, defects: array };
       return { ...item };
     });
-    setRows(row);
+    setGarments(row);
   };
 
   const handleOnChange = ({ field, id, props }) => {
-    // let oldArr = rows.filter((row) => row.id !== id);
-    // let data = rows.filter((row) => row.id === id);
+    // let oldArr = garments.filter((row) => row.id !== id);
+    // let data = garments.filter((row) => row.id === id);
     // let row = data[0];
     // row[field] = props.value;
-    // setRows(oldArr.concat(row));
+    // setGarments(oldArr.concat(row));
 
-    let row = rows.map((item) => {
+    setChangeValue(true);
+    let row = garments.map((item) => {
       if (item.id === id) return { ...item, [field]: props.value };
       return { ...item };
     });
-    setRows(row);
+    setGarments(row);
   };
 
   React.useEffect(() => {
-    let setTotalForGarments = rows.map((item) => {
+    setChangeValue(false);
+    let setTotalForGarments = garments.map((item) => {
       return {
         ...item,
         realTotal: parseInt(item.cuantity) * parseInt(item.price),
       };
     });
     setGarments(setTotalForGarments);
-  }, [rows, setGarments]);
+  }, [changeValue]);
 
   const imperfecciones = [
     "Roto",
@@ -303,7 +310,7 @@ export default function PrendasComponent({ setGarments }) {
       {" "}
       <Button onClick={() => handleClick()}>Añadir prenda</Button>
       <DataGrid
-        rows={rows}
+        rows={garments}
         columns={columns}
         pageSize={5}
         rowsPerPageOptions={[5]}

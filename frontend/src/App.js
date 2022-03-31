@@ -88,17 +88,18 @@ const App = () => {
     setRecievedDate(new Date());
     setDeliveryDate(new Date());
     setOrderNumber(orderNumber + 1);
+    setGarments([]);
 
     console.log(order);
 
-    await window.go.main.App.CreateOrder(order);
+    // await window.go.main.App.CreateOrder(order);
   };
 
   // TODO: cambiar si se va a wails
   useEffect(() => {
     const getOrderCount = async () => {
       const data = await window.go.main.App.GetNextOrderIdentifier();
-      setOrderNumber(("0000" + data).substr(-4, 4));
+      setOrderNumber(("00000" + data).substr(-4, 4));
     };
 
     getOrderCount();
@@ -194,7 +195,7 @@ const App = () => {
       </Box>
       {/* Prendas */}
       <div style={{ height: 300, width: "100%", marginBottom: 60 }}>
-        <PrendasComponent setGarments={setGarments} />
+        <PrendasComponent setGarments={setGarments} garments={garments} />
       </div>
       <Box
         sx={{
