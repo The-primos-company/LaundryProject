@@ -3,7 +3,7 @@ import { useReactToPrint } from "react-to-print";
 
 import "./PrintOrder.css";
 
-export const PrintOrder = (order) => {
+export const PrintOrder = ({ order }) => {
   console.log("Order =>", order);
   const componentRef = useRef();
   const handlePrint = useReactToPrint({
@@ -20,6 +20,7 @@ export const PrintOrder = (order) => {
 
 const ComponentToPrint = forwardRef((props, ref) => {
   console.log("Print =>", props);
+  const { order } = props;
   return (
     <div className="print-container" style={{ margin: "0", padding: "0" }}>
       <div className="page-break" />
