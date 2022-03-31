@@ -159,6 +159,7 @@ CustomMultiSelect.propTypes = {
 export default function PrendasComponent({ setGarments }) {
   const [rows, setRows] = React.useState([]);
 
+  console.log(rows);
   function handleClick() {
     let newArr = [
       {
@@ -178,25 +179,35 @@ export default function PrendasComponent({ setGarments }) {
 
   const handleDeleteClick = (id) => (event) => {
     event.stopPropagation();
-    let data = rows.filter((row) => row.id != id);
+    let data = rows.filter((row) => row.id !== id);
     setRows(data);
   };
 
   const handleDefects = (array, id) => {
-    let oldArr = rows.filter((row) => row.id !== id);
-    let data = rows.filter((row) => row.id === id);
-    let row = data[0];
-    row.defects = array;
-    setRows(oldArr.concat(row));
+    // let oldArr = rows.filter((row) => row.id !== id);
+    // let data = rows.filter((row) => row.id === id);
+    // let row = data[0];
+    // row.defects = array;
+    // setRows(oldArr.concat(row));
+    let row = rows.map((item) => {
+      if (item.id === id) return { ...item, defects: array };
+      return { ...item };
+    });
+    setRows(row);
   };
 
   const handleOnChange = ({ field, id, props }) => {
-    let oldArr = rows.filter((row) => row.id !== id);
-    let data = rows.filter((row) => row.id === id);
-    let row = data[0];
+    // let oldArr = rows.filter((row) => row.id !== id);
+    // let data = rows.filter((row) => row.id === id);
+    // let row = data[0];
+    // row[field] = props.value;
+    // setRows(oldArr.concat(row));
 
-    row[field] = props.value;
-    setRows(oldArr.concat(row));
+    let row = rows.map((item) => {
+      if (item.id === id) return { ...item, [field]: props.value };
+      return { ...item };
+    });
+    setRows(row);
   };
 
   React.useEffect(() => {

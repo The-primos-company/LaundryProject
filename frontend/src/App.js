@@ -60,7 +60,7 @@ const App = () => {
       return {
         ...item,
         defects: item.defects.join("-"),
-        total: item.total.toString(),
+        total: item.cuantity.toString(),
       };
     });
 
@@ -73,8 +73,8 @@ const App = () => {
       client_phone: clientPhone,
       client_email: clientEmail,
       payment_total_payed: paymentTotalPayed.toString(),
-      garment_total: garmentTotal,
-      payment_total: paymentTotal.toString(),
+      garment_total: totalGarments,
+      payment_total: totalPrice.toString(),
       garments: tmpGarments,
     });
 
