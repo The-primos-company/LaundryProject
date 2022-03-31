@@ -89,7 +89,7 @@ const App = () => {
   useEffect(() => {
     const getOrderCount = async () => {
       const data = await window.go.main.App.GetNextOrderIdentifier();
-      setOrderNumber(data);
+      setOrderNumber(("0000" + data).substr(-4, 4));
     };
 
     getOrderCount();
