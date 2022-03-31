@@ -37,6 +37,7 @@ const App = () => {
 
   // Funciones a go
   const greet = async () => {
+    if (error.email !== "") return;
     let tmpGarments = garments.map((item) => {
       delete item.realPrice;
       return {
