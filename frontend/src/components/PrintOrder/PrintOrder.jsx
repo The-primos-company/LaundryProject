@@ -4,7 +4,7 @@ import { useReactToPrint } from "react-to-print";
 import "./PrintOrder.css";
 
 export const PrintOrder = ({ order, orderNumber }) => {
-  console.log("Order =>", orderNumber);
+  console.log("Order => ", orderNumber);
   const componentRef = useRef();
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
@@ -133,7 +133,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
             </tr>
             <tr>
               <td>Entrega Aprox</td>
-              <td>{order.delivery_date.toDateString()}</td>
+              <td>{order.delivery_date}</td>
               <td></td>
             </tr>
             <tr>
