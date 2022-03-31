@@ -96,7 +96,10 @@ const App = () => {
 
     const data = await window.go.main.App.CreateOrder(order);
     setOrder(data);
+    console.log("setOrder ->", data);
   };
+
+  console.log("Order ->", order);
 
   function ValidateEmail(mail) {
     if (/^\w+([\\.-]?\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
