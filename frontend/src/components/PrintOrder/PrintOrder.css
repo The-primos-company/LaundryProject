@@ -11,6 +11,9 @@
     overflow: initial !important;
     -webkit-print-color-adjust: exact;
   }
+  table {
+    page-break-after: always;
+  }
 }
 
 @media print {
