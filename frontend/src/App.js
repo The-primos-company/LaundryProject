@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import DateTimePicker from "@mui/lab/DateTimePicker";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import { PrintOrder } from "./components/PrintOrder/PrintOrder";
 
 // End tables
 const App = () => {
@@ -26,6 +27,7 @@ const App = () => {
     email: "",
     deliveryDate: "",
   });
+  const [order, setOrder] = useState(null);
 
   let totalPrice = garments
     .map((item) => item.realTotal)
@@ -95,7 +97,7 @@ const App = () => {
     console.log(order);
 
     const data = await window.go.main.App.CreateOrder(order);
-    console.log(data);
+    setOrder(data);
   };
 
   function ValidateEmail(mail) {
@@ -291,6 +293,7 @@ const App = () => {
           Generar orden
         </Button>
       </Box>
+      {order && <PrintOrder />}
     </Container>
   );
 };

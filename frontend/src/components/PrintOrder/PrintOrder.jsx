@@ -3,7 +3,7 @@ import { useReactToPrint } from "react-to-print";
 
 import "./PrintOrder.css";
 
-export const PrintOrder = () => {
+export const PrintOrder = (order) => {
   const componentRef = useRef();
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
@@ -11,159 +11,143 @@ export const PrintOrder = () => {
 
   return (
     <div>
-      <ComponentToPrint ref={componentRef} />
+      <ComponentToPrint ref={componentRef} order={order} />
       <button onClick={handlePrint}>Print this out!</button>
     </div>
   );
 };
 
-const ComponentToPrint = forwardRef((props, ref) => (
-  <div className="print-container" style={{ margin: "0", padding: "0" }}>
-    <div className="page-break" />
-    <table className="tg" ref={ref}>
-      <thead>
-        <tr>
-          <th className="tg-8d8j" colSpan="3">
-            Lava super
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td className="tg-8d8j" colSpan="2">
-            Orden de servicio{" "}
-          </td>
-          <td className="tg-8d8j">50</td>
-        </tr>
-        <tr>
-          <td className="tg-7zrl"></td>
-          <td className="tg-7zrl"></td>
-          <td className="tg-7zrl"></td>
-        </tr>
-        <tr>
-          <td className="tg-8d8j" colSpan="2">
-            Fecha de ingreso
-          </td>
-          <td className="tg-7zrl"></td>
-        </tr>
-        <tr>
-          <td className="tg-nrix">Cliente</td>
-          <td className="tg-cly1" colSpan="2">
-            Happy
-          </td>
-        </tr>
-        <tr>
-          <td className="tg-nrix">Cedula</td>
-          <td className="tg-cly1" colSpan="2">
-            1234123
-          </td>
-        </tr>
-        <tr>
-          <td className="tg-nrix">Direccion</td>
-          <td className="tg-cly1" colSpan="2">
-            avn siempre viva
-          </td>
-        </tr>
-        <tr>
-          <td className="tg-nrix">Telefono</td>
-          <td className="tg-cly1" colSpan="2">
-            1234123
-          </td>
-        </tr>
-        <tr>
-          <td className="tg-nrix">Email</td>
-          <td className="tg-cly1" colSpan="2">
-            happy@happy.com
-          </td>
-        </tr>
-        <tr>
-          <td className="tg-7zrl"></td>
-          <td className="tg-7zrl"></td>
-          <td className="tg-7zrl"></td>
-        </tr>
-        <tr>
-          <td className="tg-8d8j">cantidad</td>
-          <td className="tg-8d8j">Descripcion</td>
-          <td className="tg-8d8j">Valor</td>
-        </tr>
-        <tr>
-          <td className="tg-nrix">1</td>
-          <td className="tg-nrix">Camisa masculino roja gucci </td>
-          <td className="tg-nrix">10000</td>
-        </tr>
-        <tr>
-          <td className="tg-8d8j">1</td>
-          <td className="tg-8d8j">
-            Camisa masculino azul
-            gucci&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          </td>
-          <td className="tg-nrix">10000</td>
-        </tr>
-        <tr>
-          <td className="tg-8d8j">1</td>
-          <td className="tg-8d8j">
-            Camisa masculino verde
-            gucci&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          </td>
-          <td className="tg-nrix">10000</td>
-        </tr>
-        <tr>
-          <td className="tg-7zrl"></td>
-          <td className="tg-7zrl"></td>
-          <td className="tg-7zrl"></td>
-        </tr>
-        <tr>
-          <td className="tg-7zrl"></td>
-          <td className="tg-7zrl"></td>
-          <td className="tg-7zrl"></td>
-        </tr>
-        <tr>
-          <td className="tg-7zrl">Total:</td>
-          <td className="tg-nrix">30,000</td>
-          <td className="tg-7zrl"></td>
-        </tr>
-        <tr>
-          <td className="tg-7zrl">Abono:</td>
-          <td className="tg-nrix">20,000</td>
-          <td className="tg-7zrl"></td>
-        </tr>
-        <tr>
-          <td className="tg-j6zm">
-            <span style={{ fontWeight: "bold" }}>Saldo:</span>
-          </td>
-          <td className="tg-wa1i">
-            <span style={{ fontWeight: "bold" }}>10,000</span>
-          </td>
-          <td className="tg-7zrl"></td>
-        </tr>
-        <tr>
-          <td className="tg-7zrl"></td>
-          <td className="tg-7zrl"></td>
-          <td className="tg-7zrl"></td>
-        </tr>
-        <tr>
-          <td className="tg-8d8j">Entrega Aprox</td>
-          <td className="tg-bobw" colSpan="2">
-            <span style={{ fontWeight: "bold" }}>2022-03-17 6:30pm</span>
-          </td>
-        </tr>
-        <tr>
-          <td className="tg-7zrl"></td>
-          <td className="tg-7zrl"></td>
-          <td className="tg-7zrl"></td>
-        </tr>
-        <tr>
-          <td className="tg-8d8j" colSpan="2">
-            Observaciones:
-          </td>
-          <td className="tg-7zrl"></td>
-        </tr>
-        <tr>
-          <td className="tg-7zrl" colSpan="3">
-            cubrelechos delicado
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-));
+const ComponentToPrint = forwardRef(({ order }, ref) => {
+  console.log(order);
+  return (
+    <div className="print-container" style={{ margin: "0", padding: "0" }}>
+      <div className="page-break" />
+      <table ref={ref}>
+        <thead>
+          <tr>
+            <th>Lava super</th>
+            <th></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Orden de servicio </td>
+            <td></td>
+            <td>50</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Fecha de ingreso</td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Cliente</td>
+            <td>Happy</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Cedula</td>
+            <td>1234123</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Direccion</td>
+            <td>avn siempre viva</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Telefono</td>
+            <td>1234123</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Email</td>
+            <td>happy@happy.com</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>cantidad</td>
+            <td>Descripcion</td>
+            <td>Valor</td>
+          </tr>
+          <tr>
+            <td>1</td>
+            <td>Camisa masculino roja gucci </td>
+            <td>10000</td>
+          </tr>
+          <tr>
+            <td>1</td>
+            <td>Camisa masculino azul gucci </td>
+            <td>10000</td>
+          </tr>
+          <tr>
+            <td>1</td>
+            <td>Camisa masculino verde gucci </td>
+            <td>10000</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Total:</td>
+            <td>30,000</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Abono:</td>
+            <td>20,000</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Saldo:</td>
+            <td>10,000</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Entrega Aprox</td>
+            <td>2022-03-17 6:30pm</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Observaciones:</td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>cubrelechos delicado</td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
+});

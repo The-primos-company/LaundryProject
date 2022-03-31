@@ -3,11 +3,10 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { PrintOrder } from "./components/PrintOrder/PrintOrder";
 
 ReactDOM.render(
   <React.StrictMode>
-    <PrintOrder />
+    <App />
   </React.StrictMode>,
   document.getElementById("root")
 );
