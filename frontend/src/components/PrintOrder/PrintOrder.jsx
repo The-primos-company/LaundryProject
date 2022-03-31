@@ -18,6 +18,7 @@ export const PrintOrder = (order) => {
 };
 
 const ComponentToPrint = forwardRef(({ order }, ref) => {
+  console.log(order);
   return (
     <div className="print-container" style={{ margin: "0", padding: "0" }}>
       <div className="page-break" />
@@ -80,18 +81,7 @@ const ComponentToPrint = forwardRef(({ order }, ref) => {
             <td>Descripcion</td>
             <td>Valor</td>
           </tr>
-          {order.garments.map((item) => {
-            return (
-              <tr>
-                <td>{item.cuantity}</td>
-                {/* <td>Camisa masculino roja gucci </td> */}
-                <td>
-                  {item.category} {item.gendre} {item.color} {item.brand}
-                </td>
-                <td>{item.price}</td>
-              </tr>
-            );
-          })}
+
           <tr>
             <td></td>
             <td></td>
@@ -136,14 +126,6 @@ const ComponentToPrint = forwardRef(({ order }, ref) => {
           </tr>
           <tr>
             <td>Observaciones:</td>
-            {order.garments.map((item) => {
-              return (
-                <td>
-                  {item.category} {item.gendre} {item.color} {item.brand}:{" "}
-                  {item.comment} {item.defects}
-                </td>
-              );
-            })}
 
             <td></td>
           </tr>
