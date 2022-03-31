@@ -52,7 +52,9 @@ const ComponentToPrint = forwardRef((props, ref) => {
             </tr>
             <tr>
               <td>Fecha de ingreso</td>
-              <td></td>
+              <td>
+                {moment(order.recieved_date).format("MMMM Do YYYY, h:mm:ss a")}
+              </td>
               <td></td>
             </tr>
             <tr>
