@@ -159,21 +159,22 @@ const ComponentToPrint = forwardRef((props, ref) => {
               );
             })}
             <tr>
-              <td>Nota</td>
-              <tr>
-                <td>
-                  LAVA-ROPAS no se responsabiliza por botones, hebillas,
-                  adornos, ni por objetos o dinero dejados en las prendas.
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  LAVA-ROPAS no se responsabiliza por las variaciones que se
-                  produzcan en el color
-                </td>
-              </tr>
+              <td>Nota:</td>
               <td></td>
             </tr>
+            <tr>
+              <td>
+                LAVA-SUPER no se responsabiliza por botones, hebillas, adornos,
+                ni por objetos o dinero dejados en las prendas.
+              </td>
+            </tr>
+            <tr>
+              <td>
+                LAVA-SUPER no se responsabiliza por las variaciones que se
+                produzcan en el color
+              </td>
+            </tr>
+            <td></td>
           </tbody>
         </table>
       </div>
