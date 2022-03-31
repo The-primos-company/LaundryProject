@@ -82,7 +82,7 @@ const App = () => {
 
     console.log(order);
 
-    // await window.go.main.App.CreateOrder(order);
+    await window.go.main.App.CreateOrder(order);
   };
 
   // TODO: cambiar si se va a wails
