@@ -39,6 +39,7 @@ const App = () => {
         ...item,
         defects: item.defects.join("-"),
         cuantity: item.cuantity.toString(),
+        price: item.price.toString(),
       };
     });
 
