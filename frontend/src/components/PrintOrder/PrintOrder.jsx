@@ -163,13 +163,13 @@ const ComponentToPrint = forwardRef((props, ref) => {
               <td></td>
             </tr>
             <tr>
-              <td>
+              <td colSpan={3}>
                 LAVA-SUPER no se responsabiliza por botones, hebillas, adornos,
                 ni por objetos o dinero dejados en las prendas.
               </td>
             </tr>
             <tr>
-              <td>
+              <td colSpan={3}>
                 LAVA-SUPER no se responsabiliza por las variaciones que se
                 produzcan en el color
               </td>
