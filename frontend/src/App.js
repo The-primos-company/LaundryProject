@@ -38,7 +38,7 @@ const App = () => {
       return {
         ...item,
         defects: item.defects.join("-"),
-        total: item.cuantity.toString(),
+        cuantity: item.cuantity.toString(),
       };
     });
 
