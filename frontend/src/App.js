@@ -294,7 +294,7 @@ const App = () => {
           Generar orden
         </Button>
       </Box>
-      {order && <PrintOrder />}
+      {order && <PrintOrder order={order} />}
     </Container>
   );
 };
