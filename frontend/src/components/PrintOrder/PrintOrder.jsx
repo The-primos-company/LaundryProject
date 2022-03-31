@@ -3,7 +3,7 @@ import { useReactToPrint } from "react-to-print";
 
 import "./PrintOrder.css";
 
-export const PrintOrder = ({ order }) => {
+export const PrintOrder = ({ order, orderNumber }) => {
   console.log("Order =>", order);
   const componentRef = useRef();
   const handlePrint = useReactToPrint({
@@ -14,10 +14,18 @@ export const PrintOrder = ({ order }) => {
     <div>
       <button onClick={handlePrint}>Print this out!</button>
       <div className="print-container" style={{ margin: "0", padding: "0" }}>
-        <ComponentToPrint ref={componentRef} order={order} />
+        <ComponentToPrint
+          ref={componentRef}
+          order={order}
+          orderNumber={orderNumber}
+        />
       </div>
       <div className="print-container" style={{ margin: "0", padding: "0" }}>
-        <ComponentToPrint ref={componentRef} order={order} />
+        <ComponentToPrint
+          ref={componentRef}
+          order={order}
+          orderNumber={orderNumber}
+        />
       </div>
     </div>
   );
@@ -25,7 +33,7 @@ export const PrintOrder = ({ order }) => {
 
 const ComponentToPrint = forwardRef((props, ref) => {
   console.log("Print =>", props);
-  const { order } = props;
+  const { order, orderNumber } = props;
   return (
     <>
       <div className="page-break" />
@@ -41,7 +49,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
           <tr>
             <td>Orden de servicio </td>
             <td></td>
-            <td>50</td>
+            <td>{orderNumber}</td>
           </tr>
           <tr>
             <td></td>
