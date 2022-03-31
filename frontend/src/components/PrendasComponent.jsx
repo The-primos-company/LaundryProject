@@ -159,7 +159,6 @@ CustomMultiSelect.propTypes = {
 export default function PrendasComponent({ setGarments, garments }) {
   // const [rows, setRows] = React.useState(garments);
 
-  console.log(garments);
   function handleClick() {
     let newArr = [
       {
