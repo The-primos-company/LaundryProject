@@ -47,7 +47,9 @@ const App = () => {
     .map((item) => item.realTotal)
     .reduce((prev, curr) => prev + curr, 0);
 
-  console.log(garments);
+  let totalGarments = garments
+    .map((item) => item.cuantity)
+    .reduce((prev, curr) => prev + curr, 0);
 
   // Funciones a go
   const greet = async () => {
@@ -203,7 +205,7 @@ const App = () => {
       >
         <Box>
           <span>Total prendas</span>
-          <strong style={{ marginLeft: 5 }}>{garments.length}</strong>
+          <strong style={{ marginLeft: 5 }}>{totalGarments}</strong>
         </Box>
         <Box>
           <span>Total</span>

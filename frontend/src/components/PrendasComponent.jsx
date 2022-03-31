@@ -163,7 +163,7 @@ export default function PrendasComponent({ setGarments }) {
     let newArr = [
       {
         id: randomId(),
-        total: 1,
+        cuantity: 1,
         category: "",
         gendre: "",
         color: "",
@@ -203,7 +203,7 @@ export default function PrendasComponent({ setGarments }) {
     let setTotalForGarments = rows.map((item) => {
       return {
         ...item,
-        realTotal: parseInt(item.total) * parseInt(item.price),
+        realTotal: parseInt(item.cuantity) * parseInt(item.price),
       };
     });
     setGarments(setTotalForGarments);
@@ -226,7 +226,7 @@ export default function PrendasComponent({ setGarments }) {
 
   const columns = [
     {
-      field: "total",
+      field: "cuantity",
       headerName: "Cantidad",
       type: "number",
       editable: true,
