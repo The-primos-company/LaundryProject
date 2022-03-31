@@ -1,3 +1,4 @@
+import moment from "moment";
 import { forwardRef, useRef } from "react";
 import { useReactToPrint } from "react-to-print";
 
@@ -133,7 +134,9 @@ const ComponentToPrint = forwardRef((props, ref) => {
             </tr>
             <tr>
               <td>Entrega Aprox</td>
-              <td>{order.delivery_date}</td>
+              <td>
+                {moment(order.delivery_date).format("MMMM Do YYYY, h:mm:ss a")}
+              </td>
               <td></td>
             </tr>
             <tr>
