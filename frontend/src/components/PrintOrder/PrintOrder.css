@@ -23,8 +23,12 @@
 }
 
 @page {
-  size: 80mm 50mm;
-  margin: 20mm;
+  size: 7.2cm 100%;
+  margin: 2mm;
+  margin-left: 0px;
+  margin-right: 0px;
+  margin-top: 0px;
+  margin-bottom: 0px;
 }
 
 .tg {
