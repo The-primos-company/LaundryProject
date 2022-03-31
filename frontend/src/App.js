@@ -18,6 +18,7 @@ import AdapterDateFns from "@mui/lab/AdapterDateFns";
 
 // End tables
 const App = () => {
+  // client
   const [clientName, setClientName] = useState("");
   const [clientId, setClientId] = useState("");
   const [paymentTotalPayed, setPaymentTotalPayed] = useState(0);
@@ -31,9 +32,33 @@ const App = () => {
   const [garmentTotal, setGarmentTotal] = useState(0);
   const [paymentTotal, setPaymentTotal] = useState(0);
 
+  const [garments, setGarments] = useState([]);
+
+  // prendas
+  // order_id: number[];
+  // total: string;
+  // category: string;
+  // gendre: string;
+  // color: string;
+  // brand: string;
+  // price: string;
+  // comment: string;
+  // defects: string;
+
   // Funciones a go
-  function greet() {
+  const calculateTotal = garments.map((item) => console.log(item.realPrice));
+  const greet = async () => {
     // Call App.Greet(name)
+    let tmpGarments = garments.map((item) => {
+      delete item.realPrice;
+      return {
+        ...item,
+        defects: item.defects.join("-"),
+      };
+    });
+
+    console.log(tmpGarments);
+
     var order = new Order({
       recieved_date: recievedDate,
       delivery_date: deliveryDate,
@@ -45,31 +70,35 @@ const App = () => {
       payment_total_payed: paymentTotalPayed.toString(),
       garment_total: garmentTotal,
       payment_total: paymentTotal.toString(),
-      comments,
+      garments: tmpGarments,
     });
 
-    window.go.main.App.CreateOrder(order).then((result) => {
-      // Update result with data back from App.Greet()
-      setClientName("");
-      setClientId("");
-      setClientAddress("");
-      setClientPhone("");
-      setClientEmail("");
-      setRecievedDate(new Date());
-      setDeliveryDate(new Date());
-    });
-  }
+    //Clear
+    setClientName("");
+    setClientId("");
+    setClientAddress("");
+    setClientPhone("");
+    setClientEmail("");
+    setComments("");
+    setPaymentTotalPayed("");
+    setRecievedDate(new Date());
+    setDeliveryDate(new Date());
+    setOrderNumber(orderNumber + 1);
 
-  useEffect(() => {
-    const getOrderCount = async () => {
-      const data = await window.go.main.App.GetNextOrderIdentifier();
-      setOrderNumber(data);
-    };
+    console.log(order);
 
-    getOrderCount();
-  }, [orderNumber]);
+    // await window.go.main.App.CreateOrder(order);
+  };
 
-  console.log(orderNumber);
+  // TODO: cambiar si se va a wails
+  // useEffect(() => {
+  //   const getOrderCount = async () => {
+  //     const data = await window.go.main.App.GetNextOrderIdentifier();
+  //     setOrderNumber(data);
+  //   };
+
+  //   getOrderCount();
+  // }, [orderNumber]);
 
   return (
     <Container>
@@ -102,7 +131,7 @@ const App = () => {
             className={styles["input"]}
             sx={{ marginTop: 3 }}
             onChange={(event) => setClientEmail(event.target.value)}
-            // value={name}
+            value={clientEmail}
             // onChange={handleChange}
           />
         </Box>
@@ -112,12 +141,13 @@ const App = () => {
             label="Cédula"
             className={styles["input"]}
             onChange={(event) => setClientId(event.target.value)}
-            // value={name}
+            value={clientId}
             // onChange={handleChange}
           />
           <TextField
             id="outlined-name"
             label="Dirección"
+            value={clientAddress}
             className={styles["input"]}
             sx={{ marginTop: 3, marginBottom: 3 }}
             onChange={(event) => setClientAddress(event.target.value)}
@@ -129,7 +159,7 @@ const App = () => {
             label="Teléfono"
             className={styles["input"]}
             onChange={(event) => setClientPhone(event.target.value)}
-            // value={name}
+            value={clientPhone}
             // onChange={handleChange}
           />
         </Box>
@@ -160,15 +190,24 @@ const App = () => {
       </Box>
       {/* Prendas */}
       <div style={{ height: 300, width: "100%", marginBottom: 60 }}>
-        <PrendasComponent />
-        {/* <SpanningTable /> */}
-        {/* <DataGrid
-          rows={rows}
-          columns={columns}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-        /> */}
+        <PrendasComponent setGarments={setGarments} />
       </div>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-around",
+        }}
+      >
+        <Box>
+          <span>Total prendas</span>
+          <strong style={{ marginLeft: 5 }}>{garments.length}</strong>
+        </Box>
+        <Box>
+          <span>Total</span>
+          <strong style={{ marginLeft: 5 }}>{calculateTotal}</strong>
+        </Box>
+      </Box>
       {/* Abono */}
       <Box style={{ display: "flex", justifyContent: "center" }}>
         <TextField
@@ -179,27 +218,7 @@ const App = () => {
           onChange={(event) => setPaymentTotalPayed(event.target.value)}
         />
       </Box>
-      {/* Estado de la prenda */}
-      <Box
-        sx={{ display: "flex", justifyContent: "space-around", marginTop: 5 }}
-      >
-        <FormControlLabel control={<Checkbox />} label="Roto" />
-        <FormControlLabel control={<Checkbox />} label="Picado" />
-        <FormControlLabel control={<Checkbox />} label="Manchado" />
-        <FormControlLabel control={<Checkbox />} label="Quemado" />
-      </Box>
 
-      {/* Observaciones */}
-      <Box sx={{ display: "flex", justifyContent: "center", marginTop: 5 }}>
-        <TextField
-          id="outlined-multiline-flexible"
-          label="Observaciones"
-          multiline
-          maxRows={4}
-          value={comments}
-          onChange={(event) => setComments(event.target.value)}
-        />
-      </Box>
       {/* Generar orden */}
       <Box sx={{ display: "flex", justifyContent: "center", marginTop: 5 }}>
         <Button variant="text" onClick={greet}>
