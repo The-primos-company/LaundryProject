@@ -28,7 +28,7 @@ const App = () => {
   const [recievedDate, setRecievedDate] = useState(new Date());
   const [deliveryDate, setDeliveryDate] = useState(new Date());
   const [orderNumber, setOrderNumber] = useState(null);
-  const [garmentTotal, setGarmentTotal] = useState(0);
+  const [garmentTotal, setGarmentTotal] = useState("");
   const [paymentTotal, setPaymentTotal] = useState(0);
   const [garments, setGarments] = useState([]);
 
@@ -44,7 +44,6 @@ const App = () => {
   // defects: string;
 
   // Funciones a go
-  const calculateTotal = garments.map((item) => console.log(item.realPrice));
   const greet = async () => {
     // Call App.Greet(name)
     let tmpGarments = garments.map((item) => {
@@ -200,7 +199,7 @@ const App = () => {
         </Box>
         <Box>
           <span>Total</span>
-          <strong style={{ marginLeft: 5 }}>{calculateTotal}</strong>
+          <strong style={{ marginLeft: 5 }}>0</strong>
         </Box>
       </Box>
       {/* Abono */}
