@@ -176,6 +176,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
             </tr>
             <td></td>
           </tbody>
+          {/* Owner */}
           <thead>
             <tr>
               <th colSpan={3}>Lava super</th>
