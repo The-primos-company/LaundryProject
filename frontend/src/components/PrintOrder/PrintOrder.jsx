@@ -1,6 +1,5 @@
 import moment from "moment";
-import { forwardRef, useRef } from "react";
-import { useReactToPrint } from "react-to-print";
+import { forwardRef } from "react";
 
 import "./PrintOrder.css";
 

@@ -319,14 +319,6 @@ const App = () => {
           handlePrint={handlePrint}
         />
       )}
-      {order && (
-        <PrintOrderOwner
-          order={order}
-          orderNumber={orderNumberTmp}
-          componentRef={printOrderOwner}
-          handlePrint={handlePrintOwner}
-        />
-      )}
     </Container>
   );
 };
