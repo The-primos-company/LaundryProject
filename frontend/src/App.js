@@ -43,9 +43,17 @@ const App = () => {
   // comment: string;
   // defects: string;
 
+  let totalPrice = garments.map((item) => {
+    let tmpTotal = 0;
+    let total = parseInt(item.realTotal);
+
+    return tmpTotal + total;
+  });
+
   // Funciones a go
   const greet = async () => {
     // Call App.Greet(name)
+
     let tmpGarments = garments.map((item) => {
       delete item.realPrice;
       return {
@@ -200,7 +208,7 @@ const App = () => {
         </Box>
         <Box>
           <span>Total</span>
-          <strong style={{ marginLeft: 5 }}>0</strong>
+          <strong style={{ marginLeft: 5 }}>{totalPrice}</strong>
         </Box>
       </Box>
       {/* Abono */}
