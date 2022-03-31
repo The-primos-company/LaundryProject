@@ -25,13 +25,13 @@ const ComponentToPrint = forwardRef((props, ref) => {
   const { order, orderNumber } = props;
 
   return (
-    <>
+    <div ref={ref}>
       <div className="page-break">
         <h1>page 1</h1>
       </div>
       <div className="page-break">
         <h1>page 1</h1>
       </div>
-    </>
+    </div>
   );
 });
