@@ -139,16 +139,17 @@ const ComponentToPrint = forwardRef((props, ref) => {
           </tr>
           <tr>
             <td>Observaciones:</td>
+            <td></td>
+          </tr>
+          <tr>
             {order.garments.map((item) => {
               return (
-                <td>
+                <td colSpan={3}>
                   {item.category} {item.gendre} {item.color} {item.brand}:{" "}
                   {item.comment} {item.defects}
                 </td>
               );
             })}
-
-            <td></td>
           </tr>
           <tr>
             <td>Nota</td>
