@@ -22,6 +22,7 @@ const App = () => {
   const [recievedDate, setRecievedDate] = useState(new Date());
   const [deliveryDate, setDeliveryDate] = useState(null);
   const [orderNumber, setOrderNumber] = useState(null);
+  const [orderNumberTmp, setOrderNumberTmp] = useState(null);
   const [garments, setGarments] = useState([]);
   const [error, setError] = useState({
     email: "",
@@ -91,6 +92,7 @@ const App = () => {
     setPaymentTotalPayed("");
     setRecievedDate(new Date());
     setDeliveryDate(new Date());
+    setOrderNumberTmp(orderNumber);
     setOrderNumber(orderNumber + 1);
     setGarments([]);
 
@@ -294,7 +296,7 @@ const App = () => {
           Generar orden
         </Button>
       </Box>
-      {order && <PrintOrder order={order} />}
+      {order && <PrintOrder order={order} orderNumber={orderNumberTmp} />}
     </Container>
   );
 };
