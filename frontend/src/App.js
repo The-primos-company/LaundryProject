@@ -22,6 +22,9 @@ const App = () => {
   const [deliveryDate, setDeliveryDate] = useState(new Date());
   const [orderNumber, setOrderNumber] = useState(null);
   const [garments, setGarments] = useState([]);
+  const [error, setError] = useState({
+    email: "",
+  });
 
   let totalPrice = garments
     .map((item) => item.realTotal)
@@ -74,6 +77,26 @@ const App = () => {
     await window.go.main.App.CreateOrder(order);
   };
 
+  function ValidateEmail(mail) {
+    if (/^\w+([\\.-]?\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
+      return true;
+    }
+    return false;
+  }
+
+  const handleEmail = (event) => {
+    const emailValid = ValidateEmail(event.target.value);
+    console.log(emailValid);
+    if (!emailValid)
+      setError({
+        email: "Error en el correo",
+      });
+    else
+      setError({
+        email: "",
+      });
+    setClientEmail(event.target.value);
+  };
   // TODO: cambiar si se va a wails
   useEffect(() => {
     const getOrderCount = async () => {
@@ -115,7 +138,9 @@ const App = () => {
             label="Email"
             className={styles["input"]}
             sx={{ marginTop: 3 }}
-            onChange={(event) => setClientEmail(event.target.value)}
+            error={error.email}
+            helperText={error.email}
+            onChange={(event) => handleEmail(event)}
             value={clientEmail}
             // onChange={handleChange}
           />
