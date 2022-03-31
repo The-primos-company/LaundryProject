@@ -92,7 +92,7 @@ const App = () => {
 
     console.log(order);
 
-    // await window.go.main.App.CreateOrder(order);
+    await window.go.main.App.CreateOrder(order);
   };
 
   // TODO: cambiar si se va a wails
@@ -119,8 +119,9 @@ const App = () => {
       <Box
         sx={{ marginTop: 5, marginBottom: 5 }}
         className={styles["details-container"]}
+        autoComplete="off"
       >
-        <Box className={styles["details-wrap"]}>
+        <Box className={styles["details-wrap"]} autoComplete="off">
           <TextField
             id="outlined-name"
             label="Cliente"
@@ -140,7 +141,7 @@ const App = () => {
             // onChange={handleChange}
           />
         </Box>
-        <Box className={styles["details-wrap"]}>
+        <Box className={styles["details-wrap"]} autoComplete="off">
           <TextField
             id="outlined-name"
             label="Cédula"
@@ -168,11 +169,11 @@ const App = () => {
             // onChange={handleChange}
           />
         </Box>
-        <Box className={styles["details-wrap"]}>
+        <Box className={styles["details-wrap"]} autoComplete="off">
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DateTimePicker
               renderInput={(props) => (
-                <TextField {...props} sx={{ marginTop: 3, marginBottom: 3 }} />
+                <TextField {...props} sx={{ marginBottom: 3 }} />
               )}
               label="Fecha de recibido"
               value={recievedDate}
