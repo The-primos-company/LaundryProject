@@ -25,13 +25,11 @@ const App = () => {
   const [clientAddress, setClientAddress] = useState("");
   const [clientPhone, setClientPhone] = useState("");
   const [clientEmail, setClientEmail] = useState("");
-  const [comments, setComments] = useState("");
   const [recievedDate, setRecievedDate] = useState(new Date());
   const [deliveryDate, setDeliveryDate] = useState(new Date());
   const [orderNumber, setOrderNumber] = useState(null);
   const [garmentTotal, setGarmentTotal] = useState(0);
   const [paymentTotal, setPaymentTotal] = useState(0);
-
   const [garments, setGarments] = useState([]);
 
   // prendas
@@ -57,8 +55,6 @@ const App = () => {
       };
     });
 
-    console.log(tmpGarments);
-
     var order = new Order({
       recieved_date: recievedDate,
       delivery_date: deliveryDate,
@@ -79,7 +75,6 @@ const App = () => {
     setClientAddress("");
     setClientPhone("");
     setClientEmail("");
-    setComments("");
     setPaymentTotalPayed("");
     setRecievedDate(new Date());
     setDeliveryDate(new Date());
@@ -91,14 +86,14 @@ const App = () => {
   };
 
   // TODO: cambiar si se va a wails
-  // useEffect(() => {
-  //   const getOrderCount = async () => {
-  //     const data = await window.go.main.App.GetNextOrderIdentifier();
-  //     setOrderNumber(data);
-  //   };
+  useEffect(() => {
+    const getOrderCount = async () => {
+      const data = await window.go.main.App.GetNextOrderIdentifier();
+      setOrderNumber(data);
+    };
 
-  //   getOrderCount();
-  // }, [orderNumber]);
+    getOrderCount();
+  }, [orderNumber]);
 
   return (
     <Container>
