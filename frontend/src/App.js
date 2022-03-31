@@ -28,7 +28,7 @@ const App = () => {
   const [recievedDate, setRecievedDate] = useState(new Date());
   const [deliveryDate, setDeliveryDate] = useState(new Date());
   const [orderNumber, setOrderNumber] = useState(null);
-  const [garmentTotal, setGarmentTotal] = useState("");
+  const [garmentTotal, setGarmentTotal] = useState(0);
   const [paymentTotal, setPaymentTotal] = useState(0);
   const [garments, setGarments] = useState([]);
 
