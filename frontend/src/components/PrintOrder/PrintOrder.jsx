@@ -4,7 +4,6 @@ import { useReactToPrint } from "react-to-print";
 import "./PrintOrder.css";
 
 export const PrintOrder = ({ order, orderNumber }) => {
-  console.log("Order => ", orderNumber);
   const componentRef = useRef();
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
@@ -23,10 +22,10 @@ export const PrintOrder = ({ order, orderNumber }) => {
 };
 
 const ComponentToPrint = forwardRef((props, ref) => {
-  console.log("Print =>", props);
   const { order, orderNumber } = props;
   let total =
-    parseInt(order.payment_total) - parseInt(order.payment_total_payed);
+    parseInt(order.payment_total.replace("$", "")) -
+    parseInt(order.payment_total_payed.replace("$", ""));
   return (
     <>
       <div className="print-container" style={{ margin: "0", padding: "0" }}>
@@ -124,7 +123,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
             </tr>
             <tr>
               <td>Saldo:</td>
-              <td>{total}</td>
+              <td>{order.payment_total_real}</td>
               <td></td>
             </tr>
             <tr>
