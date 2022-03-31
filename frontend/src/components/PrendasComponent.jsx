@@ -1,5 +1,9 @@
 import * as React from "react";
-import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridActionsCellItem,
+  GridCellEditStopReasons,
+} from "@mui/x-data-grid";
 import { randomId } from "@mui/x-data-grid-generator";
 import { Button } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
@@ -157,9 +161,9 @@ CustomMultiSelect.propTypes = {
 };
 
 export default function PrendasComponent({ setGarments, garments }) {
-  const [changeValue, setChangeValue] = React.useState(false);
   // const [rows, setRows] = React.useState(garments);
 
+  console.log(garments);
   function handleClick() {
     let newArr = [
       {
@@ -180,20 +184,12 @@ export default function PrendasComponent({ setGarments, garments }) {
 
   const handleDeleteClick = (id) => (event) => {
     event.stopPropagation();
-    setChangeValue(true);
 
     let data = garments.filter((row) => row.id !== id);
     setGarments(data);
   };
 
   const handleDefects = (array, id) => {
-    // let oldArr = garments.filter((row) => row.id !== id);
-    // let data = garments.filter((row) => row.id === id);
-    // let row = data[0];
-    // row.defects = array;
-    // setGarments(oldArr.concat(row));
-    setChangeValue(true);
-
     let row = garments.map((item) => {
       if (item.id === id) return { ...item, defects: array };
       return { ...item };
@@ -207,25 +203,12 @@ export default function PrendasComponent({ setGarments, garments }) {
     // let row = data[0];
     // row[field] = props.value;
     // setGarments(oldArr.concat(row));
-
-    setChangeValue(true);
-    let row = garments.map((item) => {
-      if (item.id === id) return { ...item, [field]: props.value };
-      return { ...item };
-    });
-    setGarments(row);
+    // let row = garments.map((item) => {
+    //   if (item.id === id) return { ...item, [field]: props.value };
+    //   return { ...item };
+    // });
+    // setGarments(row);
   };
-
-  React.useEffect(() => {
-    setChangeValue(false);
-    let setTotalForGarments = garments.map((item) => {
-      return {
-        ...item,
-        realTotal: parseInt(item.cuantity) * parseInt(item.price),
-      };
-    });
-    setGarments(setTotalForGarments);
-  }, [changeValue]);
 
   const imperfecciones = [
     "Roto",
@@ -248,20 +231,150 @@ export default function PrendasComponent({ setGarments, garments }) {
       headerName: "Cantidad",
       type: "number",
       editable: true,
+
+      valueParser: (value, { row }) => {
+        const { id, price } = row;
+        let tmpValue = 1;
+        let tmpRow = garments.map((item) => {
+          if (value <= 0) {
+            tmpValue = 1;
+          } else {
+            tmpValue = value;
+          }
+          if (item.id === id)
+            return {
+              ...item,
+              realTotal: parseInt(tmpValue) * parseInt(price),
+              cuantity: parseInt(tmpValue),
+            };
+          return {
+            ...item,
+          };
+        });
+
+        setGarments(tmpRow);
+      },
     },
-    { field: "category", headerName: "Categoria", editable: true },
-    { field: "gendre", headerName: "Genero", editable: true },
-    { field: "color", headerName: "Color", editable: true },
-    { field: "brand", headerName: "Marca", editable: true },
+    {
+      field: "category",
+      headerName: "Categoria",
+      editable: true,
+      valueParser: (value, { row }) => {
+        const { id } = row;
+        let tmpRow = garments.map((item) => {
+          if (item.id === id)
+            return {
+              ...item,
+              category: value,
+            };
+          return {
+            ...item,
+          };
+        });
+        setGarments(tmpRow);
+      },
+    },
+    {
+      field: "gendre",
+      headerName: "Genero",
+      editable: true,
+      valueParser: (value, { row }) => {
+        const { id } = row;
+        let tmpRow = garments.map((item) => {
+          if (item.id === id)
+            return {
+              ...item,
+              gendre: value,
+            };
+          return {
+            ...item,
+          };
+        });
+        setGarments(tmpRow);
+      },
+    },
+    {
+      field: "color",
+      headerName: "Color",
+      editable: true,
+      valueParser: (value, { row }) => {
+        const { id } = row;
+        let tmpRow = garments.map((item) => {
+          if (item.id === id)
+            return {
+              ...item,
+              color: value,
+            };
+          return {
+            ...item,
+          };
+        });
+        setGarments(tmpRow);
+      },
+    },
+    {
+      field: "brand",
+      headerName: "Marca",
+      editable: true,
+      valueParser: (value, { row }) => {
+        const { id } = row;
+        let tmpRow = garments.map((item) => {
+          if (item.id === id)
+            return {
+              ...item,
+              brand: value,
+            };
+          return {
+            ...item,
+          };
+        });
+        setGarments(tmpRow);
+      },
+    },
     {
       field: "price",
       headerName: "Precio",
       editable: true,
+      valueParser: (value, { row }) => {
+        const { id, cuantity } = row;
+        let tmpValue = 0;
+        let tmpRow = garments.map((item) => {
+          if (value < 0) {
+            tmpValue = 0;
+          } else {
+            tmpValue = value;
+          }
+          if (item.id === id)
+            return {
+              ...item,
+              price: tmpValue,
+              realTotal: parseInt(cuantity) * parseInt(tmpValue),
+            };
+          return {
+            ...item,
+          };
+        });
+        setGarments(tmpRow);
+      },
     },
     {
       field: "comment",
       headerName: "Observaciones",
       editable: true,
+      valueParser: (value, { row }) => {
+        const { id } = row;
+        let tmpRow = garments.map((item) => {
+          if (item.id === id)
+            return {
+              ...item,
+              comment: value,
+            };
+          return {
+            ...item,
+          };
+        });
+        setGarments(tmpRow);
+      },
     },
     {
       field: "defects",
@@ -269,6 +382,7 @@ export default function PrendasComponent({ setGarments, garments }) {
       headerName: "Defectos",
       width: 300,
       editable: true,
+
       getActions: ({ id }) => {
         return [
           <CustomMultiSelect
@@ -314,7 +428,13 @@ export default function PrendasComponent({ setGarments, garments }) {
         columns={columns}
         pageSize={5}
         rowsPerPageOptions={[5]}
-        onEditCellPropsChange={handleOnChange}
+        // onEditCellPropsChange={handleOnChange}
+        // experimentalFeatures={{ newEditingApi: true }}
+        // onCellEditStop={(params, event) => {
+        //   if (params.reason === GridCellEditStopReasons.cellFocusOut) {
+        //     event.defaultMuiPrevented = true;
+        //   }
+        // }}
       />
     </>
   );

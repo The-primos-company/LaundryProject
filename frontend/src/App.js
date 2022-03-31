@@ -99,7 +99,7 @@ const App = () => {
   useEffect(() => {
     const getOrderCount = async () => {
       const data = await window.go.main.App.GetNextOrderIdentifier();
-      setOrderNumber(("00000" + data).substr(-4, 4));
+      setOrderNumber(("000000" + data).substr(-4, 4));
     };
 
     getOrderCount();
@@ -210,7 +210,11 @@ const App = () => {
         </Box>
         <Box>
           <span>Total</span>
-          <strong style={{ marginLeft: 5 }}>{totalPrice}</strong>
+          <strong style={{ marginLeft: 5 }}>
+            {totalPrice
+              .toString()
+              .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
+          </strong>
         </Box>
       </Box>
       {/* Abono */}
