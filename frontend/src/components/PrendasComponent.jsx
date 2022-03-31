@@ -169,7 +169,6 @@ export default function PrendasComponent({ setGarments }) {
         color: "",
         brand: "",
         price: 0,
-        realPrice: 0,
         comment: "",
         defects: [],
       },
@@ -195,17 +194,19 @@ export default function PrendasComponent({ setGarments }) {
     let oldArr = rows.filter((row) => row.id !== id);
     let data = rows.filter((row) => row.id === id);
     let row = data[0];
-    if (row.total === 1) {
-      row.realPrice = row.price;
-    } else {
-      row.realPrice = row.price * row.total;
-    }
+
     row[field] = props.value;
     setRows(oldArr.concat(row));
   };
 
   React.useEffect(() => {
-    setGarments(rows);
+    let setTotalForGarments = rows.map((item) => {
+      return {
+        ...item,
+        realTotal: parseInt(item.total) * parseInt(item.price),
+      };
+    });
+    setGarments(setTotalForGarments);
   }, [rows, setGarments]);
 
   const imperfecciones = [

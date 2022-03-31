@@ -43,12 +43,11 @@ const App = () => {
   // comment: string;
   // defects: string;
 
-  let totalPrice = garments.map((item) => {
-    let tmpTotal = 0;
-    let total = parseInt(item.realTotal);
+  let totalPrice = garments
+    .map((item) => item.realTotal)
+    .reduce((prev, curr) => prev + curr, 0);
 
-    return tmpTotal + total;
-  });
+  console.log(garments);
 
   // Funciones a go
   const greet = async () => {
