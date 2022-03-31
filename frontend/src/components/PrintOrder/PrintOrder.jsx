@@ -4,12 +4,12 @@ import { useReactToPrint } from "react-to-print";
 
 import "./PrintOrder.css";
 
-export const PrintOrder = ({ order, orderNumber }) => {
-  const componentRef = useRef();
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
-  });
-
+export const PrintOrder = ({
+  order,
+  orderNumber,
+  componentRef,
+  handlePrint,
+}) => {
   return (
     <div>
       <button onClick={handlePrint}>Print this out!</button>

@@ -4,12 +4,12 @@ import { useReactToPrint } from "react-to-print";
 
 import "./PrintOrder.css";
 
-export const PrintOrderOwner = ({ order, orderNumber }) => {
-  const componentRef = useRef();
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
-  });
-
+export const PrintOrderOwner = ({
+  order,
+  orderNumber,
+  componentRef,
+  handlePrint,
+}) => {
   return (
     <div>
       <button onClick={handlePrint}>Print this out!</button>
@@ -29,7 +29,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
     <>
       <div className="print-container" style={{ margin: "0", padding: "0" }}>
         <div className="page-break" />
-        <table>
+        <table ref={ref}>
           <thead>
             <tr>
               <th colSpan={3}>Lava super</th>

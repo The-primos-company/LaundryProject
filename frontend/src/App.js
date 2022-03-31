@@ -4,12 +4,13 @@ import logo from "./logo.svg";
 import PrendasComponent from "./components/PrendasComponent";
 import { Box } from "@mui/system";
 import { Order } from "./wailsjs/go/models";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import DateTimePicker from "@mui/lab/DateTimePicker";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import { PrintOrder } from "./components/PrintOrder/PrintOrder";
 import { PrintOrderOwner } from "./components/PrintOrder/PrintOrderOwner";
+import { useReactToPrint } from "react-to-print";
 
 // End tables
 const App = () => {
@@ -38,6 +39,17 @@ const App = () => {
   let totalGarments = garments
     .map((item) => parseInt(item.cuantity))
     .reduce((prev, curr) => prev + curr, 0);
+
+  // print
+  const printOrder = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => printOrder.current,
+  });
+
+  const printOrderOwner = useRef();
+  const handlePrintOwner = useReactToPrint({
+    content: () => printOrderOwner.current,
+  });
 
   // Funciones a go
   const greet = async () => {
@@ -100,6 +112,8 @@ const App = () => {
     const data = await window.go.main.App.CreateOrder(order);
     setOrder(data);
     console.log("setOrder ->", data);
+    handlePrint();
+    handlePrintOwner();
   };
 
   console.log("Order ->", order);
@@ -297,8 +311,22 @@ const App = () => {
           Generar orden
         </Button>
       </Box>
-      {order && <PrintOrder order={order} orderNumber={orderNumberTmp} />}
-      {order && <PrintOrderOwner order={order} orderNumber={orderNumberTmp} />}
+      {order && (
+        <PrintOrder
+          order={order}
+          orderNumber={orderNumberTmp}
+          componentRef={printOrder}
+          handlePrint={handlePrint}
+        />
+      )}
+      {order && (
+        <PrintOrderOwner
+          order={order}
+          orderNumber={orderNumberTmp}
+          componentRef={printOrderOwner}
+          handlePrint={handlePrintOwner}
+        />
+      )}
     </Container>
   );
 };
