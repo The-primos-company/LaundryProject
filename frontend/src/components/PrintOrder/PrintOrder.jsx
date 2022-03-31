@@ -12,8 +12,13 @@ export const PrintOrder = ({ order }) => {
 
   return (
     <div>
-      <ComponentToPrint ref={componentRef} order={order} />
       <button onClick={handlePrint}>Print this out!</button>
+      <div className="print-container" style={{ margin: "0", padding: "0" }}>
+        <ComponentToPrint ref={componentRef} order={order} />
+      </div>
+      <div className="print-container" style={{ margin: "0", padding: "0" }}>
+        <ComponentToPrint ref={componentRef} order={order} />
+      </div>
     </div>
   );
 };
@@ -22,7 +27,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
   console.log("Print =>", props);
   const { order } = props;
   return (
-    <div className="print-container" style={{ margin: "0", padding: "0" }}>
+    <>
       <div className="page-break" />
       <table ref={ref}>
         <thead>
@@ -141,16 +146,16 @@ const ComponentToPrint = forwardRef((props, ref) => {
             <td>Observaciones:</td>
             <td></td>
           </tr>
-          <tr>
-            {order.garments.map((item) => {
-              return (
+          {order.garments.map((item) => {
+            return (
+              <tr>
                 <td colSpan={3}>
                   {item.category} {item.gendre} {item.color} {item.brand}:{" "}
                   {item.comment} {item.defects}
                 </td>
-              );
-            })}
-          </tr>
+              </tr>
+            );
+          })}
           <tr>
             <td>Nota</td>
             <td>
@@ -165,6 +170,6 @@ const ComponentToPrint = forwardRef((props, ref) => {
           </tr>
         </tbody>
       </table>
-    </div>
+    </>
   );
 });
