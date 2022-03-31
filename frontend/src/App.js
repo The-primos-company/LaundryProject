@@ -48,7 +48,7 @@ const App = () => {
     .reduce((prev, curr) => prev + curr, 0);
 
   let totalGarments = garments
-    .map((item) => item.cuantity)
+    .map((item) => parseInt(item.cuantity))
     .reduce((prev, curr) => prev + curr, 0);
 
   // Funciones a go
