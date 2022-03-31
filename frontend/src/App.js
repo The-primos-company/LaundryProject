@@ -9,6 +9,7 @@ import DateTimePicker from "@mui/lab/DateTimePicker";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import { PrintOrder } from "./components/PrintOrder/PrintOrder";
+import { PrintOrderOwner } from "./components/PrintOrder/PrintOrderOwner";
 
 // End tables
 const App = () => {
@@ -297,6 +298,7 @@ const App = () => {
         </Button>
       </Box>
       {order && <PrintOrder order={order} orderNumber={orderNumberTmp} />}
+      {order && <PrintOrderOwner order={order} orderNumber={orderNumberTmp} />}
     </Container>
   );
 };
