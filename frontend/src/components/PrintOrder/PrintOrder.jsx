@@ -25,7 +25,8 @@ export const PrintOrder = ({ order, orderNumber }) => {
 const ComponentToPrint = forwardRef((props, ref) => {
   console.log("Print =>", props);
   const { order, orderNumber } = props;
-  let total = order.payment_total - order.payment_total_payed;
+  let total =
+    parseInt(order.payment_total) - parseInt(order.payment_total_payed);
   return (
     <>
       <div className="print-container" style={{ margin: "0", padding: "0" }}>
