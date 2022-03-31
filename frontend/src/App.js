@@ -1,6 +1,5 @@
 import styles from "./App.module.css";
-import { Button, Container, TextField
-required } from "@mui/material";
+import { Button, Container, TextField } from "@mui/material";
 import logo from "./logo.svg";
 import PrendasComponent from "./components/PrendasComponent";
 import { Box } from "@mui/system";
@@ -141,7 +140,7 @@ const App = () => {
       >
         <Box className={styles["details-wrap"]} autoComplete="off">
           <TextField
-          required
+            required
             id="outlined-name"
             label="Cliente"
             className={styles["input"]}
@@ -151,7 +150,7 @@ const App = () => {
             // onChange={handleChange}
           />
           <TextField
-          required
+            required
             id="outlined-name"
             label="Email"
             className={styles["input"]}
@@ -165,7 +164,7 @@ const App = () => {
         </Box>
         <Box className={styles["details-wrap"]} autoComplete="off">
           <TextField
-          required
+            required
             id="outlined-name"
             label="Cédula"
             type="number"
@@ -178,7 +177,7 @@ const App = () => {
             // onChange={handleChange}
           />
           <TextField
-          required
+            required
             id="outlined-name"
             label="Dirección"
             value={clientAddress}
@@ -189,7 +188,7 @@ const App = () => {
             // onChange={handleChange}
           />
           <TextField
-          required
+            required
             id="outlined-name"
             label="Teléfono"
             type="number"
@@ -206,8 +205,7 @@ const App = () => {
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DateTimePicker
               renderInput={(props) => (
-                <TextField
-                required {...props} sx={{ marginBottom: 3 }} />
+                <TextField required {...props} sx={{ marginBottom: 3 }} />
               )}
               label="Fecha de recibido"
               value={recievedDate}
@@ -218,8 +216,7 @@ const App = () => {
           </LocalizationProvider>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DateTimePicker
-              renderInput={(props) => <TextField
-                required {...props} />}
+              renderInput={(props) => <TextField required {...props} />}
               label="Fecha de entrega"
               value={deliveryDate}
               onChange={(value) => {
@@ -257,7 +254,7 @@ const App = () => {
       {/* Abono */}
       <Box style={{ display: "flex", justifyContent: "center" }}>
         <TextField
-        required
+          required
           id="outlined-name"
           label="Abono"
           type="number"
