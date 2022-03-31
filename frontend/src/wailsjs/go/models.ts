@@ -5,7 +5,7 @@ export {};
 export class Garment {
     id: number[];
     order_id: number[];
-    total: string;
+    cuantity: string;
     category: string;
     gendre: string;
     color: string;
@@ -22,7 +22,7 @@ export class Garment {
         if ('string' === typeof source) source = JSON.parse(source);
         this.id = source["id"];
         this.order_id = source["order_id"];
-        this.total = source["total"];
+        this.cuantity = source["cuantity"];
         this.category = source["category"];
         this.gendre = source["gendre"];
         this.color = source["color"];

@@ -5,6 +5,7 @@ package db
 
 import (
 	"context"
+
 	"github.com/google/uuid"
 )
 
@@ -13,7 +14,7 @@ INSERT INTO
     garments (
         id,
         order_id,
-        total,
+        cuantity,
         category,
         gendre,
         color,
@@ -23,13 +24,13 @@ INSERT INTO
         defects
     )
 VALUES
-    ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id, order_id, total, category, gendre, color, brand, price, comment, defects, created_at
+    ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id, order_id, cuantity, category, gendre, color, brand, price, comment, defects, created_at
 `
 
 type CreateGarmentParams struct {
 	ID       uuid.UUID `json:"id"`
 	OrderID  uuid.UUID `json:"order_id"`
-	Total    string    `json:"total"`
+	Cuantity string    `json:"cuantity"`
 	Category string    `json:"category"`
 	Gendre   string    `json:"gendre"`
 	Color    string    `json:"color"`
@@ -43,7 +44,7 @@ func (q *Queries) CreateGarment(ctx context.Context, arg CreateGarmentParams) (G
 	row := q.db.QueryRowContext(ctx, createGarment,
 		arg.ID,
 		arg.OrderID,
-		arg.Total,
+		arg.Cuantity,
 		arg.Category,
 		arg.Gendre,
 		arg.Color,
@@ -56,7 +57,7 @@ func (q *Queries) CreateGarment(ctx context.Context, arg CreateGarmentParams) (G
 	err := row.Scan(
 		&i.ID,
 		&i.OrderID,
-		&i.Total,
+		&i.Cuantity,
 		&i.Category,
 		&i.Gendre,
 		&i.Color,
@@ -83,7 +84,7 @@ func (q *Queries) DeleteGarment(ctx context.Context, id uuid.UUID) error {
 
 const getGarment = `-- name: GetGarment :one
 SELECT
-    id, order_id, total, category, gendre, color, brand, price, comment, defects, created_at
+    id, order_id, cuantity, category, gendre, color, brand, price, comment, defects, created_at
 FROM
     garments
 WHERE
@@ -98,7 +99,7 @@ func (q *Queries) GetGarment(ctx context.Context, id uuid.UUID) (Garment, error)
 	err := row.Scan(
 		&i.ID,
 		&i.OrderID,
-		&i.Total,
+		&i.Cuantity,
 		&i.Category,
 		&i.Gendre,
 		&i.Color,
@@ -113,7 +114,7 @@ func (q *Queries) GetGarment(ctx context.Context, id uuid.UUID) (Garment, error)
 
 const listGarmentsByOrder = `-- name: ListGarmentsByOrder :many
 SELECT
-    id, order_id, total, category, gendre, color, brand, price, comment, defects, created_at
+    id, order_id, cuantity, category, gendre, color, brand, price, comment, defects, created_at
 FROM
     garments
 WHERE 
@@ -142,7 +143,7 @@ func (q *Queries) ListGarmentsByOrder(ctx context.Context, arg ListGarmentsByOrd
 		if err := rows.Scan(
 			&i.ID,
 			&i.OrderID,
-			&i.Total,
+			&i.Cuantity,
 			&i.Category,
 			&i.Gendre,
 			&i.Color,
@@ -169,7 +170,7 @@ const updateGarment = `-- name: UpdateGarment :one
 UPDATE
     garments
 SET
-    total = $2,
+    cuantity = $2,
     category = $3,
     gendre = $4,
     color = $5,
@@ -179,12 +180,12 @@ SET
     defects = $9
 WHERE
     id = $1
-RETURNING id, order_id, total, category, gendre, color, brand, price, comment, defects, created_at
+RETURNING id, order_id, cuantity, category, gendre, color, brand, price, comment, defects, created_at
 `
 
 type UpdateGarmentParams struct {
 	ID       uuid.UUID `json:"id"`
-	Total    string    `json:"total"`
+	Cuantity string    `json:"cuantity"`
 	Category string    `json:"category"`
 	Gendre   string    `json:"gendre"`
 	Color    string    `json:"color"`
@@ -197,7 +198,7 @@ type UpdateGarmentParams struct {
 func (q *Queries) UpdateGarment(ctx context.Context, arg UpdateGarmentParams) (Garment, error) {
 	row := q.db.QueryRowContext(ctx, updateGarment,
 		arg.ID,
-		arg.Total,
+		arg.Cuantity,
 		arg.Category,
 		arg.Gendre,
 		arg.Color,
@@ -210,7 +211,7 @@ func (q *Queries) UpdateGarment(ctx context.Context, arg UpdateGarmentParams) (G
 	err := row.Scan(
 		&i.ID,
 		&i.OrderID,
-		&i.Total,
+		&i.Cuantity,
 		&i.Category,
 		&i.Gendre,
 		&i.Color,

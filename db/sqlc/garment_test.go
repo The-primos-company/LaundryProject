@@ -34,7 +34,7 @@ func TestCreateGarment(t *testing.T) {
 	argGar := CreateGarmentParams{
 		ID:       uuid.New(),
 		OrderID:  order.ID,
-		Total:    "10230",
+		Cuantity: "10230",
 		Category: "jacket",
 		Gendre:   "male",
 		Color:    "red",
@@ -75,7 +75,7 @@ func TestGetGarmentByOrderId(t *testing.T) {
 		argGar := CreateGarmentParams{
 			ID:       uuid.New(),
 			OrderID:  order.ID,
-			Total:    "10230",
+			Cuantity: "10230",
 			Category: fmt.Sprintf("jacket %d", i),
 			Gendre:   "male",
 			Color:    "red",
@@ -98,7 +98,7 @@ func TestGetGarmentByOrderId(t *testing.T) {
 	garments, errList := testQueries.ListGarmentsByOrder(context.Background(), listArgs)
 	require.NoError(t, errList)
 	require.NotEmpty(t, garments)
-	
+
 	for i := 0; i < len(garments); i++ {
 		fmt.Println(garments[i].Category)
 	}

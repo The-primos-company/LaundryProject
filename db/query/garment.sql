@@ -3,7 +3,7 @@ INSERT INTO
     garments (
         id,
         order_id,
-        total,
+        cuantity,
         category,
         gendre,
         color,
@@ -20,7 +20,7 @@ VALUES
 UPDATE
     garments
 SET
-    total = $2,
+    cuantity = $2,
     category = $3,
     gendre = $4,
     color = $5,

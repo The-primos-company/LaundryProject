@@ -42,7 +42,7 @@ func (a *App) shutdown(ctx context.Context) {
 type Garment struct {
 	ID       uuid.UUID `json:"id"`
 	OrderID  uuid.UUID `json:"order_id"`
-	Total    string    `json:"total"`
+	Cuantity string    `json:"cuantity"`
 	Category string    `json:"category"`
 	Gendre   string    `json:"gendre"`
 	Color    string    `json:"color"`
@@ -108,7 +108,7 @@ func (a *App) CreateOrder(order Order) Order {
 		argGarment := db.CreateGarmentParams{
 			ID:       uuid.New(),
 			OrderID:  createdOrder.ID,
-			Total:    garment.Total,
+			Cuantity: garment.Cuantity,
 			Category: garment.Category,
 			Gendre:   garment.Gendre,
 			Color:    garment.Color,
@@ -125,7 +125,7 @@ func (a *App) CreateOrder(order Order) Order {
 
 		garment.ID = createdGarment.ID
 		garment.OrderID = createdGarment.OrderID
-		garment.Total = createdGarment.Total
+		garment.Cuantity = createdGarment.Cuantity
 		garment.Category = createdGarment.Category
 		garment.Gendre = createdGarment.Gendre
 		garment.Color = createdGarment.Color

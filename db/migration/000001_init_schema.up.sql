@@ -18,7 +18,7 @@ CREATE TABLE "orders" (
 CREATE TABLE "garments" (
   "id" uuid UNIQUE PRIMARY KEY NOT NULL,
   "order_id" uuid NOT NULL,
-  "total" MONEY NOT NULL,
+  "cuantity" NUMERIC NOT NULL,
   "category" varchar NOT NULL,
   "gendre" varchar NOT NULL,
   "color" varchar NOT NULL,

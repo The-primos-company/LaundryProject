@@ -11,7 +11,7 @@ import (
 type Garment struct {
 	ID        uuid.UUID `json:"id"`
 	OrderID   uuid.UUID `json:"order_id"`
-	Total     string    `json:"total"`
+	Cuantity  string    `json:"cuantity"`
 	Category  string    `json:"category"`
 	Gendre    string    `json:"gendre"`
 	Color     string    `json:"color"`
