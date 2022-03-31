@@ -2,6 +2,7 @@ import moment from "moment";
 import { forwardRef } from "react";
 
 import "./PrintOrder.css";
+moment.locale("es");
 
 export const PrintOrder = ({
   order,
