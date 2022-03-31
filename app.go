@@ -149,7 +149,7 @@ func (a *App) CreateOrder(order Order) Order {
 		GarmentTotal:      garmetTotal,
 		PaymentTotalPayed: createdOrder.PaymentTotalPayed,
 		PaymentTotal:      createdOrder.PaymentTotal,
-		PaymentTotalReal:  createdOrder.PaymentTotalPayed,
+		PaymentTotalReal:  createdOrder.PaymentTotalReal,
 		Garments:          garments,
 	}
 }
