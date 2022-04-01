@@ -26,13 +26,13 @@ const ComponentToPrint = forwardRef((props, ref) => {
   const { order, orderNumber } = props;
 
   return (
-    <div ref={ref}>
+    <div ref={ref} style={{ display: "none" }}>
       <div className="page-break">
         {/* Compra */}
         <table>
           <thead>
             <tr>
-              <th>Lava super</th>
+              <th>Lava Sur</th>
               <th></th>
               <th></th>
             </tr>
@@ -183,7 +183,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
         <table>
           <thead>
             <tr>
-              <th colSpan={3}>Lava super</th>
+              <th colSpan={3}>Lava Sur</th>
             </tr>
           </thead>
           <tbody>
@@ -212,21 +212,6 @@ const ComponentToPrint = forwardRef((props, ref) => {
             })}
             <tr>
               <td colSpan={2}></td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>Total:</td>
-              <td>{order.payment_total}</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>Abono:</td>
-              <td>{order.payment_total_payed}</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>Saldo:</td>
-              <td>{order.payment_total_real}</td>
               <td></td>
             </tr>
             <tr>
