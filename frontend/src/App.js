@@ -296,7 +296,7 @@ const App = () => {
           required
           id="outlined-name"
           label="Abono"
-          type="number"
+          type="string"
           InputLabelProps={{
             shrink: true,
           }}

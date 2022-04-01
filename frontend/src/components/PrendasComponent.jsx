@@ -267,7 +267,7 @@ export default function PrendasComponent({
     {
       field: "cuantity",
       headerName: "Cantidad",
-      type: "number",
+      type: "string",
       editable: true,
     },
     { field: "category", headerName: "Categoria", editable: true },
@@ -283,7 +283,7 @@ export default function PrendasComponent({
     {
       field: "price",
       headerName: "Precio",
-      type: "number",
+      type: "string",
       editable: true,
     },
     {
