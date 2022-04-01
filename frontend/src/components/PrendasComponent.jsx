@@ -195,7 +195,12 @@ export default function PrendasComponent({ setGarments, garments }) {
     setChangeValue(true);
 
     let row = garments.map((item) => {
-      if (item.id === id) return { ...item, defects: array };
+      if (item.id === id)
+        return {
+          ...item,
+          defects: array,
+          realTotal: parseInt(item.cuantity) * parseInt(item.price),
+        };
       return { ...item };
     });
     setGarments(row);
@@ -210,7 +215,12 @@ export default function PrendasComponent({ setGarments, garments }) {
 
     setChangeValue(true);
     let row = garments.map((item) => {
-      if (item.id === id) return { ...item, [field]: props.value };
+      if (item.id === id)
+        return {
+          ...item,
+          [field]: props.value,
+          realTotal: parseInt(item.cuantity) * parseInt(item.price),
+        };
       return { ...item };
     });
     setGarments(row);
