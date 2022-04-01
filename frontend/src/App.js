@@ -9,7 +9,6 @@ import DateTimePicker from "@mui/lab/DateTimePicker";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import { PrintOrder } from "./components/PrintOrder/PrintOrder";
-import { PrintOrderOwner } from "./components/PrintOrder/PrintOrderOwner";
 import { useReactToPrint } from "react-to-print";
 
 // End tables
@@ -44,11 +43,6 @@ const App = () => {
   const printOrder = useRef();
   const handlePrint = useReactToPrint({
     content: () => printOrder.current,
-  });
-
-  const printOrderOwner = useRef();
-  const handlePrintOwner = useReactToPrint({
-    content: () => printOrderOwner.current,
   });
 
   // Funciones a go
@@ -113,7 +107,6 @@ const App = () => {
     setOrder(data);
     console.log("setOrder ->", data);
     handlePrint();
-    handlePrintOwner();
   };
 
   console.log("Order ->", order);
