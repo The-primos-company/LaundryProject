@@ -1,5 +1,9 @@
 import * as React from "react";
-import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridActionsCellItem,
+  GridCellEditStopReasons,
+} from "@mui/x-data-grid";
 import { randomId } from "@mui/x-data-grid-generator";
 import { Button } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
@@ -316,6 +320,12 @@ export default function PrendasComponent({ setGarments, garments }) {
             onClick={handleDeleteClick(id)}
             label="Delete"
             color="inherit"
+            experimentalFeatures={{ newEditingApi: true }}
+            onCellEditStop={(params, event) => {
+              if (params.reason === GridCellEditStopReasons.cellFocusOut) {
+                event.defaultMuiPrevented = true;
+              }
+            }}
           />,
         ];
       },
