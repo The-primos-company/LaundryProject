@@ -182,6 +182,16 @@ export default function PrendasComponent({ setGarments, garments }) {
     setGarments(garments.concat(newArr));
   }
 
+  function handleTotal() {
+    let row = garments.map((item) => {
+      return {
+        ...item,
+        realTotal: parseInt(item.cuantity) * parseInt(item.price),
+      };
+    });
+    setGarments(row);
+  }
+
   const handleDeleteClick = (id) => (event) => {
     event.stopPropagation();
     setChangeValue(true);
@@ -205,7 +215,10 @@ export default function PrendasComponent({ setGarments, garments }) {
           defects: array,
           realTotal: parseInt(item.cuantity) * parseInt(item.price),
         };
-      return { ...item };
+      return {
+        ...item,
+        realTotal: parseInt(item.cuantity) * parseInt(item.price),
+      };
     });
     setGarments(row);
   };
@@ -225,7 +238,10 @@ export default function PrendasComponent({ setGarments, garments }) {
           [field]: props.value,
           realTotal: parseInt(item.cuantity) * parseInt(item.price),
         };
-      return { ...item };
+      return {
+        ...item,
+        realTotal: parseInt(item.cuantity) * parseInt(item.price),
+      };
     });
     setGarments(row);
   };
@@ -336,6 +352,7 @@ export default function PrendasComponent({ setGarments, garments }) {
     <>
       {" "}
       <Button onClick={() => handleClick()}>Añadir prenda</Button>
+      <Button onClick={() => handleTotal()}>Calcular Total</Button>
       <DataGrid
         rows={garments}
         columns={columns}
