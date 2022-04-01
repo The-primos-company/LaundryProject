@@ -316,6 +316,12 @@ export default function PrendasComponent({ setGarments, garments }) {
             onClick={handleDeleteClick(id)}
             label="Delete"
             color="inherit"
+            experimentalFeatures={{ newEditingApi: true }}
+            onCellEditStop={(params, event) => {
+              if (params.reason === GridCellEditStopReasons.cellFocusOut) {
+                event.defaultMuiPrevented = true;
+              }
+            }}
           />,
         ];
       },
