@@ -169,7 +169,7 @@ export default function PrendasComponent({
   const [changeValue, setChangeValue] = React.useState(false);
   // const [rows, setRows] = React.useState(garments);
 
-  useEffect(() => {
+  React.useEffect(() => {
     setUpdateTotal(false);
     handleTotal();
   }, [updateTotal]);
