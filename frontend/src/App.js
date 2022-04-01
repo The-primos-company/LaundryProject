@@ -1,6 +1,7 @@
 import styles from "./App.module.css";
 import { Button, Container, TextField } from "@mui/material";
-import logo from "./logo.svg";
+// import logo from "./logo.svg";
+import logo from "./assets/images/logo.jpeg";
 import PrendasComponent from "./components/PrendasComponent";
 import { Box } from "@mui/system";
 import { Order } from "./wailsjs/go/models";
@@ -30,6 +31,7 @@ const App = () => {
     deliveryDate: "",
   });
   const [order, setOrder] = useState(null);
+  const [updateTotal, setUpdateTotal] = useState(false);
 
   let totalPrice = garments
     .map((item) => item.realTotal)
@@ -66,6 +68,7 @@ const App = () => {
       deliveryDate === null
     )
       return;
+    setUpdateTotal(true);
     let tmpGarments = garments.map((item) => {
       delete item.realPrice;
       return {
@@ -259,7 +262,12 @@ const App = () => {
       </Box>
       {/* Prendas */}
       <div style={{ height: 300, width: "100%", marginBottom: 60 }}>
-        <PrendasComponent setGarments={setGarments} garments={garments} />
+        <PrendasComponent
+          setGarments={setGarments}
+          garments={garments}
+          updateTotal={updateTotal}
+          setUpdateTotal={setUpdateTotal}
+        />
       </div>
       <Box
         sx={{
