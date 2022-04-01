@@ -160,9 +160,19 @@ CustomMultiSelect.propTypes = {
   }),
 };
 
-export default function PrendasComponent({ setGarments, garments }) {
+export default function PrendasComponent({
+  setGarments,
+  garments,
+  updateTotal,
+  setUpdateTotal,
+}) {
   const [changeValue, setChangeValue] = React.useState(false);
   // const [rows, setRows] = React.useState(garments);
+
+  useEffect(() => {
+    setUpdateTotal(false);
+    handleTotal();
+  }, [updateTotal]);
 
   function handleClick() {
     let newArr = [
@@ -194,7 +204,6 @@ export default function PrendasComponent({ setGarments, garments }) {
 
   const handleDeleteClick = (id) => (event) => {
     event.stopPropagation();
-    setChangeValue(true);
 
     let data = garments.filter((row) => row.id !== id);
     setGarments(data);
@@ -206,18 +215,15 @@ export default function PrendasComponent({ setGarments, garments }) {
     // let row = data[0];
     // row.defects = array;
     // setGarments(oldArr.concat(row));
-    setChangeValue(true);
 
     let row = garments.map((item) => {
       if (item.id === id)
         return {
           ...item,
           defects: array,
-          realTotal: parseInt(item.cuantity) * parseInt(item.price),
         };
       return {
         ...item,
-        realTotal: parseInt(item.cuantity) * parseInt(item.price),
       };
     });
     setGarments(row);
@@ -230,32 +236,18 @@ export default function PrendasComponent({ setGarments, garments }) {
     // row[field] = props.value;
     // setGarments(oldArr.concat(row));
 
-    setChangeValue(true);
     let row = garments.map((item) => {
       if (item.id === id)
         return {
           ...item,
           [field]: props.value,
-          realTotal: parseInt(item.cuantity) * parseInt(item.price),
         };
       return {
         ...item,
-        realTotal: parseInt(item.cuantity) * parseInt(item.price),
       };
     });
     setGarments(row);
   };
-
-  React.useEffect(() => {
-    setChangeValue(false);
-    let setTotalForGarments = garments.map((item) => {
-      return {
-        ...item,
-        realTotal: parseInt(item.cuantity) * parseInt(item.price),
-      };
-    });
-    setGarments(setTotalForGarments);
-  }, [changeValue]);
 
   const imperfecciones = [
     "Roto",
