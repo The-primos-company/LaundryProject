@@ -11,14 +11,17 @@ export const PrintOrder = ({
   handlePrint,
 }) => {
   return (
-    <div>
+    <>
+      {" "}
       <button onClick={handlePrint}>Print this out!</button>
-      <ComponentToPrint
-        ref={componentRef}
-        order={order}
-        orderNumber={orderNumber}
-      />
-    </div>
+      <div style={{ display: "none" }}>
+        <ComponentToPrint
+          ref={componentRef}
+          order={order}
+          orderNumber={orderNumber}
+        />
+      </div>
+    </>
   );
 };
 
@@ -26,7 +29,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
   const { order, orderNumber } = props;
 
   return (
-    <div ref={ref} style={{ display: "none" }}>
+    <div ref={ref}>
       <div className="page-break">
         {/* Compra */}
         <table>
