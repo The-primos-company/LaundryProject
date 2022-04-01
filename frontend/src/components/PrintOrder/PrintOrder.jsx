@@ -1,5 +1,6 @@
 import moment from "moment";
 import { forwardRef } from "react";
+import logo from "../../assets/images/logo.jpeg";
 
 import "./PrintOrder.css";
 moment.locale("es");
@@ -32,6 +33,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
     <div ref={ref}>
       <div className="page-break">
         {/* Compra */}
+        <img src="logo" alt="" />
         <table>
           <thead>
             <tr>
@@ -183,6 +185,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
       </div>
       <div className="page-break">
         {/* Owner */}
+        <img src="logo" alt="" />
         <table>
           <thead>
             <tr>
