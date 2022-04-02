@@ -33,7 +33,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
   const { order, orderNumber } = props;
 
   return (
-    <Container>
+    <Container ref={ref}>
       <div className="page-break">
         {/* Compra */}
         <Stack direction={"row"} justifyContent="center">
