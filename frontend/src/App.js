@@ -80,7 +80,7 @@ const App = () => {
     });
 
     if (totalPrice === 0) {
-      totalPrice = garments.map(item => parseInt(item.price)).reduce((a, b) => {
+      totalPrice = garments.map(item => parseInt(item.price) * parseInt(item.cuantity)).reduce((a, b) => {
         console.log(a, b)
         return a + b
       }, 0)
