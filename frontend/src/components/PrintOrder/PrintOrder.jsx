@@ -34,7 +34,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
 
   return (
     <Container ref={ref}>
-      <div className="page-break">
+      <div style={{ display: "table" }}>
         {/* Compra */}
         <Stack direction={"row"} justifyContent="center" sx={{ marginTop: 2 }}>
           <img src={logo} alt="" />
@@ -150,7 +150,8 @@ const ComponentToPrint = forwardRef((props, ref) => {
           </span>
         </Stack>
       </div>
-      <div className="page-break">
+      <div className="page-break"></div>
+      <div style={{ display: "table" }}>
         {/* Owner */}
         <Stack direction={"row"} justifyContent="center" sx={{ marginTop: 2 }}>
           <img src={logo} alt="" />
@@ -171,32 +172,30 @@ const ComponentToPrint = forwardRef((props, ref) => {
           <strong>{orderNumber}</strong>
         </Stack>
         <Stack>
-          <div style={{ display: "table" }}>
-            <table>
-              <tbody>
-                <tr>
-                  <td className="border">
-                    <strong>Cantidad</strong>
-                  </td>
-                  <td className="border">
-                    <strong>Descripcion</strong>
-                  </td>
-                </tr>
-                {order.garments.map((item) => {
-                  return (
-                    <tr>
-                      <td className="border" style={{ textAlign: "center" }}>
-                        {item.cuantity}
-                      </td>
-                      <td className="border">
-                        {item.category} {item.gendre} {item.color} {item.brand}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+          <table>
+            <tbody>
+              <tr>
+                <td className="border">
+                  <strong>Cantidad</strong>
+                </td>
+                <td className="border">
+                  <strong>Descripcion</strong>
+                </td>
+              </tr>
+              {order.garments.map((item) => {
+                return (
+                  <tr>
+                    <td className="border" style={{ textAlign: "center" }}>
+                      {item.cuantity}
+                    </td>
+                    <td className="border">
+                      {item.category} {item.gendre} {item.color} {item.brand}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </Stack>
         <Stack direction={"column"} sx={{ marginTop: 2, marginBottom: 1 }}>
           <span>
