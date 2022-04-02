@@ -44,7 +44,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
           </thead>
           <tbody>
             <tr>
-              <td>Orden de servicio </td>
+              <td colSpan={2}>Orden de servicio </td>
               <td>{orderNumber}</td>
               <td></td>
             </tr>
