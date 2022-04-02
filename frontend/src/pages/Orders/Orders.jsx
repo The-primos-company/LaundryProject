@@ -1584,17 +1584,20 @@ const orders = [
 export const Orders = ({ createOrder, setCreateOrder }) => {
   const [order, setOrder] = useState(null);
   const [orders, setOrders] = useState(null);
+  const [loading, setLoading] = useState(false);
   const printOrder = useRef();
   const handlePrint = useReactToPrint({
     content: () => printOrder.current,
   });
 
   const handleOrder = (id) => {
+    setLoading(true);
     let order = orders.filter((item) => item.ID === id);
     setOrder(order[0]);
     setTimeout(() => {
       handlePrint();
-    }, 5000);
+      setLoading(false);
+    }, 3000);
   };
 
   useEffect(() => {
@@ -1612,6 +1615,7 @@ export const Orders = ({ createOrder, setCreateOrder }) => {
         <Box sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
           {orders &&
             orders.map((item) => {
+              if (loading) return null;
               let orderText = `Orden de servicio: ${item.identifier}`;
               return (
                 <nav
