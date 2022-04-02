@@ -3,7 +3,7 @@ import React from "react";
 
 export const Orders = ({ createOrder, setCreateOrder }) => {
   const getOrder = async () => {
-    const orderList = await window.go.main.App.GetOrdersList();
+    const orderList = await window.go.main.App.GetOrdersList(10, 0);
     console.log(orderList);
   };
   getOrder();
