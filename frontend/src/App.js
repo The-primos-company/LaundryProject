@@ -79,6 +79,13 @@ const App = () => {
       };
     });
 
+    if (totalPrice === 0) {
+      totalPrice = garments.map(item => parseInt(item.price)).reduce((a, b) => {
+        console.log(a, b)
+        return a + b
+      })
+    }
+
     var order = new Order({
       recieved_date: recievedDate,
       delivery_date: deliveryDate,
@@ -92,7 +99,7 @@ const App = () => {
       payment_total: totalPrice.toString(),
       garments: tmpGarments,
     });
-
+    console.log("todo bien hasta aca");
     //Clear
     setClientName("");
     setClientId("");
@@ -106,7 +113,7 @@ const App = () => {
     setOrderNumber(orderNumber + 1);
     setGarments([]);
 
-    const data = await window.go.main.App.CreateOrder(order);
+    const data = await window.go.main.App.CreateOrder(order); 
     setOrder(data);
     console.log("setOrder ->", data);
     handlePrint();
