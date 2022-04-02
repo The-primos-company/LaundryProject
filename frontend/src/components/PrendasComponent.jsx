@@ -276,7 +276,7 @@ export default function PrendasComponent({
       headerName: "Genero",
       editable: true,
       type: "singleSelect",
-      valueOptions: ["Masculino", "Femenino", "Unisex"],
+      valueOptions: ["Caballero", "Dama", "Unisex"],
     },
     { field: "color", headerName: "Color", editable: true },
     { field: "brand", headerName: "Marca", editable: true },
