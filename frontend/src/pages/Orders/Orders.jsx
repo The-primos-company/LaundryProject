@@ -1607,27 +1607,28 @@ export const Orders = ({ createOrder, setCreateOrder }) => {
       <Button onClick={() => setCreateOrder(!createOrder)}>Ver ordenes</Button>
       <Stack>
         <Box sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
-          {orders.map((item) => {
-            let orderText = `Orden de servicio: ${item.identifier}`;
-            return (
-              <nav
-                aria-label="main mailbox folders"
-                // key={item.ID}
-                onClick={() => handleOrder(item.ID)}
-              >
-                <List>
-                  <ListItem disablePadding>
-                    <ListItemButton>
-                      <ListItemIcon>
-                        <InboxIcon />
-                      </ListItemIcon>
-                      <ListItemText primary={orderText} />
-                    </ListItemButton>
-                  </ListItem>
-                </List>
-              </nav>
-            );
-          })}
+          {orders &&
+            orders.map((item) => {
+              let orderText = `Orden de servicio: ${item.identifier}`;
+              return (
+                <nav
+                  aria-label="main mailbox folders"
+                  // key={item.ID}
+                  onClick={() => handleOrder(item.ID)}
+                >
+                  <List>
+                    <ListItem disablePadding>
+                      <ListItemButton>
+                        <ListItemIcon>
+                          <InboxIcon />
+                        </ListItemIcon>
+                        <ListItemText primary={orderText} />
+                      </ListItemButton>
+                    </ListItem>
+                  </List>
+                </nav>
+              );
+            })}
         </Box>
       </Stack>
       {order && (
