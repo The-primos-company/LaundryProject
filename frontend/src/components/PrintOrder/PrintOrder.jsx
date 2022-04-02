@@ -36,7 +36,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
     <Container ref={ref}>
       <div className="page-break">
         {/* Compra */}
-        <Stack direction={"row"} justifyContent="center">
+        <Stack direction={"row"} justifyContent="center" sx={{ marginTop: 2 }}>
           <img src={logo} alt="" />
         </Stack>
         <Stack>
@@ -148,7 +148,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
       </div>
       <div className="page-break">
         {/* Owner */}
-        <Stack direction={"row"} justifyContent="center">
+        <Stack direction={"row"} justifyContent="center" sx={{ marginTop: 2 }}>
           <img src={logo} alt="" />
         </Stack>
         <Stack>
