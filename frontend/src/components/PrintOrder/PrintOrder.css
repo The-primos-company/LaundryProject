@@ -20,8 +20,8 @@
 } */
 
 @page {
-  /* size: 7.2cm 100%; */
-  size: landscape;
+  size: 7.2cm;
+  /* size: landscape; */
   margin-left: 0px;
   margin-right: 0px;
   margin-top: 0px;
