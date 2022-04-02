@@ -10,7 +10,7 @@ import { Order } from "../../wailsjs/go/models";
 import styles from "./CreateOrder.module.css";
 import logo from "../../assets/images/logo.jpeg";
 
-export const CreateOrder = () => {
+export const CreateOrder = ({ createOrder, setCreateOrder }) => {
   // client
   const [clientName, setClientName] = useState("");
   const [clientId, setClientId] = useState("");
@@ -151,8 +151,10 @@ export const CreateOrder = () => {
     getOrderCount();
   }, [orderNumber]);
 
+  console.log(createOrder);
   return (
     <Container>
+      <Button onClick={() => setCreateOrder(!createOrder)}>Ver ordenes</Button>
       {/* Header */}
       <div className={styles["logo-container"]}>
         <img src={logo} alt="logo" className={styles["logo"]} />
