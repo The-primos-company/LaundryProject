@@ -118,21 +118,13 @@ SELECT
 FROM
     garments
 WHERE 
-    order_id = $3
+    order_id = $1
 ORDER BY
     created_at
-LIMIT
-    $1 OFFSET $2
 `
 
-type ListGarmentsByOrderParams struct {
-	Limit   int32     `json:"limit"`
-	Offset  int32     `json:"offset"`
-	OrderID uuid.UUID `json:"order_id"`
-}
-
-func (q *Queries) ListGarmentsByOrder(ctx context.Context, arg ListGarmentsByOrderParams) ([]Garment, error) {
-	rows, err := q.db.QueryContext(ctx, listGarmentsByOrder, arg.Limit, arg.Offset, arg.OrderID)
+func (q *Queries) ListGarmentsByOrder(ctx context.Context, orderID uuid.UUID) ([]Garment, error) {
+	rows, err := q.db.QueryContext(ctx, listGarmentsByOrder, orderID)
 	if err != nil {
 		return nil, err
 	}

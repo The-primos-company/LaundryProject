@@ -48,11 +48,9 @@ SELECT
 FROM
     garments
 WHERE 
-    order_id = $3
+    order_id = $1
 ORDER BY
-    created_at
-LIMIT
-    $1 OFFSET $2;
+    created_at;
 
 -- name: DeleteGarment :exec
 DELETE

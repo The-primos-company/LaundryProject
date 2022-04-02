@@ -149,7 +149,8 @@ SELECT
 FROM
     orders
 ORDER BY
-    name
+    identifier
+DESC
 LIMIT
     $1 OFFSET $2
 `
