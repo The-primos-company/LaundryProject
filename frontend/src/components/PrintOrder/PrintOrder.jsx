@@ -76,35 +76,37 @@ const ComponentToPrint = forwardRef((props, ref) => {
           </span>
         </Stack>
 
-        <table style={{ marginBottom: 10 }}>
-          <tbody>
-            <tr>
-              <td className="border">
-                <strong>Cantidad</strong>
-              </td>
-              <td className="border">
-                <strong>Descripcion</strong>
-              </td>
-              <td className="border">
-                <strong>Valor</strong>
-              </td>
-            </tr>
-            {order.garments.map((item) => {
-              return (
-                <tr>
-                  <td className="border">{item.cuantity}</td>
-                  {/* <td>Camisa masculino roja gucci </td> */}
-                  <td className="border">
-                    {item.category} {item.gendre} {item.color} {item.brand}
-                  </td>
-                  <td className="border">
-                    ${parseInt(item.cuantity) * parseInt(item.price)}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        <div style={{ display: "table" }}>
+          <table style={{ marginBottom: 10 }}>
+            <tbody>
+              <tr>
+                <td className="border">
+                  <strong>Cantidad</strong>
+                </td>
+                <td className="border">
+                  <strong>Descripcion</strong>
+                </td>
+                <td className="border">
+                  <strong>Valor</strong>
+                </td>
+              </tr>
+              {order.garments.map((item) => {
+                return (
+                  <tr>
+                    <td className="border">{item.cuantity}</td>
+                    {/* <td>Camisa masculino roja gucci </td> */}
+                    <td className="border">
+                      {item.category} {item.gendre} {item.color} {item.brand}
+                    </td>
+                    <td className="border">
+                      ${parseInt(item.cuantity) * parseInt(item.price)}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
         <Stack
           direction={"column"}
           justifyContent="space-between"
@@ -169,30 +171,32 @@ const ComponentToPrint = forwardRef((props, ref) => {
           <strong>{orderNumber}</strong>
         </Stack>
         <Stack>
-          <table>
-            <tbody>
-              <tr>
-                <td className="border">
-                  <strong>Cantidad</strong>
-                </td>
-                <td className="border">
-                  <strong>Descripcion</strong>
-                </td>
-              </tr>
-              {order.garments.map((item) => {
-                return (
-                  <tr>
-                    <td className="border" style={{ textAlign: "center" }}>
-                      {item.cuantity}
-                    </td>
-                    <td className="border">
-                      {item.category} {item.gendre} {item.color} {item.brand}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          <div style={{ display: "table" }}>
+            <table>
+              <tbody>
+                <tr>
+                  <td className="border">
+                    <strong>Cantidad</strong>
+                  </td>
+                  <td className="border">
+                    <strong>Descripcion</strong>
+                  </td>
+                </tr>
+                {order.garments.map((item) => {
+                  return (
+                    <tr>
+                      <td className="border" style={{ textAlign: "center" }}>
+                        {item.cuantity}
+                      </td>
+                      <td className="border">
+                        {item.category} {item.gendre} {item.color} {item.brand}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </Stack>
         <Stack direction={"column"} sx={{ marginTop: 2, marginBottom: 1 }}>
           <span>
