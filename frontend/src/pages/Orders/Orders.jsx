@@ -1583,7 +1583,7 @@ const orders = [
 
 export const Orders = ({ createOrder, setCreateOrder }) => {
   const [order, setOrder] = useState(null);
-  const [orders, setOrders] = useState([]);
+  const [orders, setOrders] = useState(null);
   const printOrder = useRef();
   const handlePrint = useReactToPrint({
     content: () => printOrder.current,
@@ -1630,12 +1630,14 @@ export const Orders = ({ createOrder, setCreateOrder }) => {
           })}
         </Box>
       </Stack>
-      <PrintOrder
-        order={order}
-        orderNumber={order.identifier}
-        componentRef={printOrder}
-        handlePrint={handlePrint}
-      />
+      {order && (
+        <PrintOrder
+          order={order}
+          orderNumber={order.identifier}
+          componentRef={printOrder}
+          handlePrint={handlePrint}
+        />
+      )}
     </Container>
   );
 };
