@@ -33,7 +33,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
     <div ref={ref}>
       <div className="page-break">
         {/* Compra */}
-        <img src="logo" alt="" />
+        <img src={logo} alt="" />
         <table>
           <thead>
             <tr>
@@ -154,8 +154,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
               <td></td>
             </tr>
             {order.garments.map((item) => {
-              if (item.comment == "" && item.defects == "")
-              return (<tr></tr>);
+              if (item.comment == "" && item.defects == "") return <tr></tr>;
               return (
                 <tr>
                   <td colSpan={3}>
@@ -171,8 +170,8 @@ const ComponentToPrint = forwardRef((props, ref) => {
             </tr>
             <tr>
               <td colSpan={3}>
-                LAVA-SUR no se responsabiliza por botones, hebillas, adornos,
-                ni por objetos o dinero dejados en las prendas.
+                LAVA-SUR no se responsabiliza por botones, hebillas, adornos, ni
+                por objetos o dinero dejados en las prendas.
               </td>
             </tr>
             <tr>
@@ -187,7 +186,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
       </div>
       <div className="page-break">
         {/* Owner */}
-        <img src="logo" alt="" />
+        <img src={logo} alt="" />
         <table>
           <thead>
             <tr>
@@ -237,8 +236,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
               <td colSpan={3}>Observaciones:</td>
             </tr>
             {order.garments.map((item) => {
-              if (item.comment == "" && item.defects == "")
-                return (<tr></tr>);
+              if (item.comment == "" && item.defects == "") return <tr></tr>;
               return (
                 <tr>
                   <td colSpan={3}>

@@ -27,59 +27,8 @@
   margin-bottom: 0px;
 }
 
-.tg {
+.border {
+  border: 1px solid;
   border-collapse: collapse;
-  border-spacing: 0;
-}
-.tg td {
-  border-color: black;
-  border-style: solid;
-  border-width: 1px;
-  font-family: Arial, sans-serif;
-  font-size: 14px;
-  overflow: hidden;
-  padding: 10px 5px;
-  word-break: normal;
-}
-.tg th {
-  border-color: black;
-  border-style: solid;
-  border-width: 1px;
-  font-family: Arial, sans-serif;
-  font-size: 14px;
-  font-weight: normal;
-  overflow: hidden;
-  padding: 10px 5px;
-  word-break: normal;
-}
-.tg .tg-cly1 {
-  text-align: left;
-  vertical-align: middle;
-}
-.tg .tg-bobw {
-  font-weight: bold;
-  text-align: center;
-  vertical-align: bottom;
-}
-.tg .tg-wa1i {
-  font-weight: bold;
-  text-align: center;
-  vertical-align: middle;
-}
-.tg .tg-8d8j {
-  text-align: center;
-  vertical-align: bottom;
-}
-.tg .tg-7zrl {
-  text-align: left;
-  vertical-align: bottom;
-}
-.tg .tg-nrix {
-  text-align: center;
-  vertical-align: middle;
-}
-.tg .tg-j6zm {
-  font-weight: bold;
-  text-align: left;
-  vertical-align: bottom;
+  border-style: dotted;
 }
