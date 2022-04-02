@@ -3,6 +3,8 @@ import { forwardRef } from "react";
 import logo from "../../assets/images/logo.jpeg";
 
 import "./PrintOrder.css";
+import "moment/locale/es";
+import { Container, Stack } from "@mui/material";
 moment.locale("es");
 
 export const PrintOrder = ({
@@ -34,13 +36,9 @@ const ComponentToPrint = forwardRef((props, ref) => {
       <div className="page-break">
         {/* Compra */}
         <table>
-          <thead className="img-container">
-            <tr>
-              <img src={logo} alt="" />
-              <th></th>
-              <th></th>
-            </tr>
-          </thead>
+          <div className="">
+            <img src={logo} alt="" />
+          </div>
           <tbody>
             <tr>
               <td colSpan={2}>Orden de servicio </td>
@@ -102,7 +100,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
                   <td>
                     {item.category} {item.gendre} {item.color} {item.brand}
                   </td>
-                  <td>${item.price}</td>
+                  <td>${parseInt(item.cuantity) * parseInt(item.price)}</td>
                 </tr>
               );
             })}
@@ -185,67 +183,71 @@ const ComponentToPrint = forwardRef((props, ref) => {
       </div>
       <div className="page-break">
         {/* Owner */}
-        <table>
-          <thead className="img-container">
+        <Container>
+          <Stack direction={"row"} justifyContent="center">
             <img src={logo} alt="" />
-            <th></th>
-            <th></th>
-          </thead>
-          <tbody>
-            <tr>
-              <td colSpan={2}>Orden de servicio </td>
-              <td>{orderNumber}</td>
-            </tr>
-            <tr>
-              <td></td>
-              <td></td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>cantidad</td>
-              <td colSpan={2}>Descripcion</td>
-            </tr>
-            {order.garments.map((item) => {
-              return (
+          </Stack>
+          <Stack>
+            <strong>Cra 122 # 122 - 16A - 18 Alto Pance</strong>
+            <strong>Teléfono fijo: 3715499</strong>
+            <strong>Celular: 315 2479406</strong>
+          </Stack>
+          <Stack
+            sx={{ marginTop: 5, marginBottom: 2 }}
+            direction={"row"}
+            justifyContent="space-between"
+          >
+            <span>Orden de servicio</span>
+            <strong>{orderNumber}</strong>
+          </Stack>
+          <Stack>
+            <table>
+              <tbody>
                 <tr>
-                  <td>{item.cuantity}</td>
-                  <td colSpan={2}>
-                    {item.category} {item.gendre} {item.color} {item.brand}
+                  <td>
+                    <strong>Cantidad</strong>
+                  </td>
+                  <td>
+                    <strong>Descripcion</strong>
                   </td>
                 </tr>
-              );
-            })}
-            <tr>
-              <td colSpan={2}></td>
-              <td></td>
-            </tr>
-            <tr>
-              <td></td>
-              <td></td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>Entrega Aprox</td>
-              <td colSpan={2}>
-                {moment(order.delivery_date).format("MMMM Do YYYY, h:mm a")}
-              </td>
-            </tr>
-            <tr>
-              <td colSpan={3}>Observaciones:</td>
-            </tr>
+                {order.garments.map((item) => {
+                  return (
+                    <tr>
+                      <td style={{ textAlign: "center" }}>{item.cuantity}</td>
+                      <td>
+                        {item.category} {item.gendre} {item.color} {item.brand}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </Stack>
+          <Stack
+            direction={"row"}
+            justifyContent="space-between"
+            sx={{ marginTop: 2, marginBottom: 1 }}
+          >
+            <strong>Entrega Aprox</strong>
+            <span>
+              {moment(order.delivery_date).format("MMMM d YYYY, h:mm a")}
+            </span>
+          </Stack>
+          <Stack direction={"column"} justifyContent="space-between">
+            {" "}
+            <strong>Observaciones:</strong>
             {order.garments.map((item) => {
-              if (item.comment == "" && item.defects == "") return <tr></tr>;
+              if (item.comment === "" && item.defects === "") return <></>;
               return (
-                <tr>
-                  <td colSpan={3}>
-                    {item.category} {item.gendre} {item.color} {item.brand}:{" "}
-                    {item.comment} {item.defects}
-                  </td>
-                </tr>
+                <span style={{ marginBottom: 5 }}>
+                  {item.category} {item.gendre} {item.color} {item.brand}:{" "}
+                  {item.comment} {item.defects}
+                </span>
               );
             })}
-          </tbody>
-        </table>
+          </Stack>
+        </Container>
       </div>
     </div>
   );
