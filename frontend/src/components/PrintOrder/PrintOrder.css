@@ -32,3 +32,8 @@
   border-collapse: collapse;
   border-style: dotted;
 }
+
+img {
+  width: 100%;
+  height: auto;
+}
