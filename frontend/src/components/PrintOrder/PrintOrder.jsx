@@ -1,9 +1,9 @@
 import moment from "moment";
 import { forwardRef } from "react";
 import logo from "../../assets/images/logo.jpeg";
+import 'moment/locale/es';
 
 import "./PrintOrder.css";
-moment.locale("es");
 
 export const PrintOrder = ({
   order,
@@ -117,6 +117,11 @@ const ComponentToPrint = forwardRef((props, ref) => {
               <td></td>
             </tr>
             <tr>
+              <td>Total Prendas:</td>
+              <td>{order.garment_total}</td>
+              <td></td>
+            </tr>
+            <tr>
               <td>Total:</td>
               <td>{order.payment_total}</td>
               <td></td>
@@ -222,6 +227,11 @@ const ComponentToPrint = forwardRef((props, ref) => {
             <tr>
               <td></td>
               <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Total Prendas:</td>
+              <td>{order.garment_total}</td>
               <td></td>
             </tr>
             <tr>
