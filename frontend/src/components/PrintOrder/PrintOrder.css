@@ -8,6 +8,9 @@
   .page-break {
     break-after: page;
   }
+  table {
+    display: table;
+  }
 }
 
 /* @media print {
@@ -20,7 +23,7 @@
 } */
 
 @page {
-  size: 7.2cm;
+  size: 7.2cm 100%;
   /* size: landscape; */
   margin-left: 0px;
   margin-right: 0px;
