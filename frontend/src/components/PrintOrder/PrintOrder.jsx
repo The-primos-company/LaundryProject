@@ -40,7 +40,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
           <img src={logo} alt="" />
         </Stack>
         <Stack>
-          <strong style={{ fontSize: 15 }}>
+          <strong style={{ fontSize: 14 }}>
             Cra 122 # 122 - 16A - 18 Alto Pance
           </strong>
           <strong>Teléfono fijo: 3715499</strong>
@@ -152,7 +152,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
           <img src={logo} alt="" />
         </Stack>
         <Stack>
-          <strong style={{ fontSize: 15 }}>
+          <strong style={{ fontSize: 14 }}>
             Cra 122 # 122 - 16A - 18 Alto Pance
           </strong>
           <strong>Teléfono fijo: 3715499</strong>
