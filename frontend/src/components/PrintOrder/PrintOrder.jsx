@@ -17,7 +17,7 @@ export const PrintOrder = ({
   return (
     <>
       {" "}
-      <button onClick={handlePrint}>Print this out!</button>
+      {/* <button onClick={handlePrint}>Print this out!</button> */}
       <div style={{ display: "none" }}>
         <ComponentToPrint
           ref={componentRef}
