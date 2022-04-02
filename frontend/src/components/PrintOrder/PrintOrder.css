@@ -11,6 +11,9 @@
   table {
     display: table;
   }
+  .no-skip {
+    break-inside: avoid;
+  }
 }
 
 /* @media print {

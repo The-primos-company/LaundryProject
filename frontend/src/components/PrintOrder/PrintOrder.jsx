@@ -34,8 +34,8 @@ const ComponentToPrint = forwardRef((props, ref) => {
 
   return (
     <Container ref={ref}>
-      <div style={{ display: "table" }}>
-        {/* Compra */}
+      {/* Compra */}
+      <div style={{ display: "table" }} className="no-skip">
         <Stack direction={"row"} justifyContent="center" sx={{ marginTop: 2 }}>
           <img src={logo} alt="" />
         </Stack>
@@ -75,38 +75,35 @@ const ComponentToPrint = forwardRef((props, ref) => {
             Email: <span>{order.client_email}</span>
           </span>
         </Stack>
-
-        <div style={{ display: "table" }}>
-          <table style={{ marginBottom: 10 }}>
-            <tbody>
-              <tr>
-                <td className="border">
-                  <strong>Cantidad</strong>
-                </td>
-                <td className="border">
-                  <strong>Descripcion</strong>
-                </td>
-                <td className="border">
-                  <strong>Valor</strong>
-                </td>
-              </tr>
-              {order.garments.map((item) => {
-                return (
-                  <tr>
-                    <td className="border">{item.cuantity}</td>
-                    {/* <td>Camisa masculino roja gucci </td> */}
-                    <td className="border">
-                      {item.category} {item.gendre} {item.color} {item.brand}
-                    </td>
-                    <td className="border">
-                      ${parseInt(item.cuantity) * parseInt(item.price)}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+        <table style={{ marginBottom: 10 }}>
+          <tbody>
+            <tr>
+              <td className="border">
+                <strong>Cantidad</strong>
+              </td>
+              <td className="border">
+                <strong>Descripcion</strong>
+              </td>
+              <td className="border">
+                <strong>Valor</strong>
+              </td>
+            </tr>
+            {order.garments.map((item) => {
+              return (
+                <tr>
+                  <td className="border">{item.cuantity}</td>
+                  {/* <td>Camisa masculino roja gucci </td> */}
+                  <td className="border">
+                    {item.category} {item.gendre} {item.color} {item.brand}
+                  </td>
+                  <td className="border">
+                    ${parseInt(item.cuantity) * parseInt(item.price)}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
         <Stack
           direction={"column"}
           justifyContent="space-between"
@@ -151,8 +148,8 @@ const ComponentToPrint = forwardRef((props, ref) => {
         </Stack>
       </div>
       <div className="page-break"></div>
-      <div style={{ display: "table" }}>
-        {/* Owner */}
+      {/* Owner */}
+      <div style={{ display: "table" }} className="no-skip">
         <Stack direction={"row"} justifyContent="center" sx={{ marginTop: 2 }}>
           <img src={logo} alt="" />
         </Stack>
