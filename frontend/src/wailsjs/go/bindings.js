@@ -19,6 +19,15 @@ const go = {
       "GetNextOrderIdentifier": () => {
         return window.go.main.App.GetNextOrderIdentifier();
       },
+      /**
+       * GetOrdersList
+       * @param {number} arg1 - Go Type: int32
+       * @param {number} arg2 - Go Type: int32
+       * @returns {Promise<Array<Order>>}  - Go Type: []main.Order
+       */
+      "GetOrdersList": (arg1, arg2) => {
+        return window.go.main.App.GetOrdersList(arg1, arg2);
+      },
     },
   },
 

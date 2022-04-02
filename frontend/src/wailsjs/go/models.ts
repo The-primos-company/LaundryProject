@@ -34,6 +34,7 @@ export class Garment {
 }
 export class Order {
     ID: number[];
+    identifier: string;
     recieved_date: string;
     delivery_date: string;
     client_name: string;
@@ -54,6 +55,7 @@ export class Order {
     constructor(source: any = {}) {
         if ('string' === typeof source) source = JSON.parse(source);
         this.ID = source["ID"];
+        this.identifier = source["identifier"];
         this.recieved_date = source["recieved_date"];
         this.delivery_date = source["delivery_date"];
         this.client_name = source["client_name"];
@@ -86,3 +88,4 @@ export class Order {
 	    return a;
 	}
 }
+
