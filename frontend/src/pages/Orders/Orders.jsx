@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import {
   Button,
@@ -1598,7 +1598,10 @@ export const Orders = ({ createOrder, setCreateOrder }) => {
     setOrder(order[0]);
   };
 
-  getOrder();
+  useEffect(() => {
+    getOrder();
+  }, []);
+
   return (
     <Container>
       <Button onClick={() => setCreateOrder(!createOrder)}>Ver ordenes</Button>
