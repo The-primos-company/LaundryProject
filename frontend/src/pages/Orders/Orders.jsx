@@ -1583,15 +1583,11 @@ const orders = [
 
 export const Orders = ({ createOrder, setCreateOrder }) => {
   const [order, setOrder] = useState(null);
-  const [orders, setOrders] = useState(null);
+  const [orders, setOrders] = useState([]);
   const printOrder = useRef();
   const handlePrint = useReactToPrint({
     content: () => printOrder.current,
   });
-  const getOrder = async () => {
-    const orderList = await window.go.main.App.GetOrdersList(10, 0);
-    setOrders(orderList);
-  };
 
   const handleOrder = (id) => {
     let order = orders.filter((item) => item.ID === id);
@@ -1599,6 +1595,10 @@ export const Orders = ({ createOrder, setCreateOrder }) => {
   };
 
   useEffect(() => {
+    const getOrder = async () => {
+      const orderList = await window.go.main.App.GetOrdersList(10, 0);
+      setOrders(orderList);
+    };
     getOrder();
   }, []);
 
