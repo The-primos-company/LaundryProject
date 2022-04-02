@@ -56,7 +56,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
         </Stack>
 
         <Stack direction={"column"} sx={{ marginBottom: 2 }}>
-          <span>Fecha de ingreso</span>
+          <span>Fecha de ingreso </span>
           <strong style={{ marginBottom: 2 }}>
             {moment(order.recieved_date).format("MMMM d YYYY, h:mm a")}
           </strong>
@@ -66,12 +66,14 @@ const ComponentToPrint = forwardRef((props, ref) => {
           <span>
             Cedula: <strong>{order.client_id}</strong>
           </span>
-          <span>Direccion:</span>
-          <span>{order.client_address}</span>
-          <span>Telefono:</span>
-          <span>{order.client_phone}</span>
-          <span>Email:</span>
-          <span>{order.client_email}</span>
+          <span>
+            Direccion: <span>{order.client_address}</span>
+          </span>
+
+          <span>Telefono: {order.client_phone}</span>
+          <span>
+            Email: <span>{order.client_email}</span>
+          </span>
         </Stack>
 
         <table style={{ marginBottom: 10 }}>
@@ -193,6 +195,10 @@ const ComponentToPrint = forwardRef((props, ref) => {
           </table>
         </Stack>
         <Stack direction={"column"} sx={{ marginTop: 2, marginBottom: 1 }}>
+          <span>
+            Cliente: <strong>{order.client_name}</strong>
+          </span>
+          <span>Total Prendas: {order.garment_total}</span>
           <span>Entrega Aprox</span>
           <strong>
             {moment(order.delivery_date).format("MMMM d YYYY, h:mm a")}
