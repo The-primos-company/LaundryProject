@@ -347,8 +347,6 @@ export default function PrendasComponent({
       <DataGrid
         rows={garments}
         columns={columns}
-        pageSize={5}
-        rowsPerPageOptions={[5]}
         onEditCellPropsChange={handleOnChange}
       />
     </>

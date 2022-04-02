@@ -33,14 +33,21 @@ const ComponentToPrint = forwardRef((props, ref) => {
   const { order, orderNumber } = props;
 
   return (
-    <Container ref={ref}>
+    <Container>
       <div className="page-break">
         {/* Compra */}
         <Stack direction={"row"} justifyContent="center">
           <img src={logo} alt="" />
         </Stack>
+        <Stack>
+          <strong style={{ fontSize: 15 }}>
+            Cra 122 # 122 - 16A - 18 Alto Pance
+          </strong>
+          <strong>Teléfono fijo: 3715499</strong>
+          <strong>Celular: 315 2479406</strong>
+        </Stack>
         <Stack
-          sx={{ marginTop: 5, marginBottom: 2 }}
+          sx={{ marginTop: 3 }}
           direction={"row"}
           justifyContent="space-between"
         >
@@ -49,13 +56,10 @@ const ComponentToPrint = forwardRef((props, ref) => {
         </Stack>
 
         <Stack direction={"column"} sx={{ marginBottom: 2 }}>
-          <span>
-            Fecha de ingreso{" "}
-            <strong>
-              {moment(order.recieved_date).format("MMMM d YYYY, h:mm a")}
-            </strong>
-          </span>
-
+          <span>Fecha de ingreso</span>
+          <strong style={{ marginBottom: 2 }}>
+            {moment(order.recieved_date).format("MMMM d YYYY, h:mm a")}
+          </strong>
           <span>
             Cliente: <strong>{order.client_name}</strong>
           </span>
@@ -110,13 +114,10 @@ const ComponentToPrint = forwardRef((props, ref) => {
           <span>
             Saldo: <strong>{order.payment_total_real}</strong>
           </span>
-          <span>
-            Entrega Aprox:
-            <strong>
-              {" "}
-              {moment(order.delivery_date).format("MMMM d YYYY, h:mm a")}
-            </strong>
-          </span>
+          <span>Entrega Aprox:</span>
+          <strong>
+            {moment(order.delivery_date).format("MMMM d YYYY, h:mm a")}
+          </strong>
         </Stack>
         <Stack direction={"column"} justifyContent="space-between">
           {" "}
@@ -151,7 +152,9 @@ const ComponentToPrint = forwardRef((props, ref) => {
           <img src={logo} alt="" />
         </Stack>
         <Stack>
-          <strong>Cra 122 # 122 - 16A - 18 Alto Pance</strong>
+          <strong style={{ fontSize: 15 }}>
+            Cra 122 # 122 - 16A - 18 Alto Pance
+          </strong>
           <strong>Teléfono fijo: 3715499</strong>
           <strong>Celular: 315 2479406</strong>
         </Stack>
@@ -189,15 +192,11 @@ const ComponentToPrint = forwardRef((props, ref) => {
             </tbody>
           </table>
         </Stack>
-        <Stack
-          direction={"row"}
-          justifyContent="space-between"
-          sx={{ marginTop: 2, marginBottom: 1 }}
-        >
-          <strong>Entrega Aprox</strong>
-          <span>
+        <Stack direction={"column"} sx={{ marginTop: 2, marginBottom: 1 }}>
+          <span>Entrega Aprox</span>
+          <strong>
             {moment(order.delivery_date).format("MMMM d YYYY, h:mm a")}
-          </span>
+          </strong>
         </Stack>
         <Stack direction={"column"} justifyContent="space-between">
           {" "}
