@@ -154,6 +154,8 @@ const ComponentToPrint = forwardRef((props, ref) => {
               <td></td>
             </tr>
             {order.garments.map((item) => {
+              if (item.comment == "" && item.defects == "")
+              return (<tr></tr>);
               return (
                 <tr>
                   <td colSpan={3}>
@@ -235,6 +237,8 @@ const ComponentToPrint = forwardRef((props, ref) => {
               <td colSpan={3}>Observaciones:</td>
             </tr>
             {order.garments.map((item) => {
+              if (item.comment == "" && item.defects == "")
+                return (<tr></tr>);
               return (
                 <tr>
                   <td colSpan={3}>

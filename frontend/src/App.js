@@ -60,11 +60,11 @@ const App = () => {
     // const [orderNumber, setOrderNumber] = useState(null);
     // const [garments, setGarments] = useState([]);
     if (
-      error.email !== "" ||
+      //error.email !== "" ||
       clientName === "" ||
-      clientId === "" ||
-      clientAddress === "" ||
-      clientPhone === "" ||
+      //clientId === "" ||
+      //clientAddress === "" ||
+      //clientPhone === "" ||
       deliveryDate === null
     )
       return;
@@ -118,7 +118,7 @@ const App = () => {
     if (/^\w+([\\.-]?\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
       return true;
     }
-    return false;
+    return true;
   }
 
   const handleEmail = (event) => {
