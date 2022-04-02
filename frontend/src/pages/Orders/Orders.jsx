@@ -1592,7 +1592,9 @@ export const Orders = ({ createOrder, setCreateOrder }) => {
   const handleOrder = (id) => {
     let order = orders.filter((item) => item.ID === id);
     setOrder(order[0]);
-    handlePrint();
+    setTimeout(() => {
+      handlePrint();
+    }, 5000);
   };
 
   useEffect(() => {
