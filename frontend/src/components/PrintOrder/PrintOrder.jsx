@@ -33,7 +33,12 @@ const ComponentToPrint = forwardRef((props, ref) => {
     <div ref={ref}>
       <div className="page-break">
         {/* Compra */}
-        <img src={logo} alt="" />
+        <img
+          src={
+            "https://miuc.org/wp-content/uploads/2017/01/Study-Computer-Science-1280x720.jpg"
+          }
+          alt=""
+        />
         <table>
           <thead>
             <tr>
