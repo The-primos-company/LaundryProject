@@ -1,10 +1,11 @@
 import moment from "moment";
 import { forwardRef } from "react";
 import logo from "../../assets/images/logo.jpeg";
+import "moment/locale/es";
 
 import "./PrintOrder.css";
-import "moment/locale/es";
 import { Container, Stack } from "@mui/material";
+import "moment/locale/es";
 moment.locale("es");
 
 export const PrintOrder = ({
@@ -112,6 +113,11 @@ const ComponentToPrint = forwardRef((props, ref) => {
             <tr>
               <td></td>
               <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Total Prendas:</td>
+              <td>{order.garment_total}</td>
               <td></td>
             </tr>
             <tr>

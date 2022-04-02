@@ -83,7 +83,7 @@ const App = () => {
       totalPrice = garments.map(item => parseInt(item.price)).reduce((a, b) => {
         console.log(a, b)
         return a + b
-      })
+      }, 0)
     }
 
     var order = new Order({
