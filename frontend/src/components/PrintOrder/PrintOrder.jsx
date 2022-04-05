@@ -40,11 +40,11 @@ const ComponentToPrint = forwardRef((props, ref) => {
           <img src={logo} alt="" />
         </Stack>
         <Stack>
-          <strong style={{ fontSize: 14 }}>
+          <strong style={{ fontSize: 10 }}>
             Cra 122 # 122 - 16A - 18 Alto Pance
           </strong>
-          <strong>Teléfono fijo: 3715499</strong>
-          <strong>Celular: 315 2479406</strong>
+          <strong style={{ fontSize: 10, alignContent: "center" }}>Teléfono fijo: 3715499</strong>
+          <strong style={{ fontSize: 10 }}>Celular: 315 2479406</strong>
         </Stack>
         <Stack
           sx={{ marginTop: 3 }}
@@ -79,7 +79,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
           <tbody>
             <tr>
               <td className="border">
-                <strong>Cantidad</strong>
+                <strong>Cant</strong>
               </td>
               <td className="border">
                 <strong>Descripcion</strong>
@@ -91,12 +91,12 @@ const ComponentToPrint = forwardRef((props, ref) => {
             {order.garments.map((item) => {
               return (
                 <tr>
-                  <td className="border">{item.cuantity}</td>
+                  <td className="border" style={{ alignContent: "center" }}>{item.cuantity}</td>
                   {/* <td>Camisa masculino roja gucci </td> */}
-                  <td className="border">
+                  <td className="border" style={{ fontSize: 10 }}>
                     {item.category} {item.gendre} {item.color} {item.brand}
                   </td>
-                  <td className="border">
+                  <td className="border" style={{ fontSize: 13 }}>
                     ${parseInt(item.cuantity) * parseInt(item.price)}
                   </td>
                 </tr>
@@ -122,12 +122,12 @@ const ComponentToPrint = forwardRef((props, ref) => {
         </Stack>
         <Stack direction={"column"} justifyContent="space-between">
           {" "}
-          <strong>Observaciones:</strong>
+          {order.garments.length > 0 && <strong>Observaciones:</strong>}
           {order.garments.map((item) => {
             if (item.comment === "" && item.defects === "") return <></>;
             return (
               <>
-                <span style={{ marginBottom: 5 }}>
+                <span style={{ marginBottom: 5, fontSize: 10 }} > 
                   {item.category} {item.gendre} {item.color} {item.brand}:{" "}
                   {item.comment} {item.defects}
                 </span>
@@ -137,11 +137,11 @@ const ComponentToPrint = forwardRef((props, ref) => {
         </Stack>
         <Stack>
           <strong>Nota:</strong>
-          <span>
+          <span style={{ fontSize: 10 }}>
             LAVA-SUR no se responsabiliza por botones, hebillas, adornos, ni por
             objetos o dinero dejados en las prendas.
           </span>
-          <span>
+          <span style={{ fontSize: 10 }}>
             LAVA-SUR no se responsabiliza por las variaciones que se produzcan
             en el color
           </span>
@@ -154,11 +154,11 @@ const ComponentToPrint = forwardRef((props, ref) => {
           <img src={logo} alt="" />
         </Stack>
         <Stack>
-          <strong style={{ fontSize: 14 }}>
+          <strong style={{ fontSize: 10 }}>
             Cra 122 # 122 - 16A - 18 Alto Pance
           </strong>
-          <strong>Teléfono fijo: 3715499</strong>
-          <strong>Celular: 315 2479406</strong>
+          <strong style={{ fontSize: 10 }}>Teléfono fijo: 3715499</strong>
+          <strong style={{ fontSize: 10 }}>Celular: 315 2479406</strong>
         </Stack>
         <Stack
           sx={{ marginTop: 5, marginBottom: 2 }}
@@ -173,7 +173,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
             <tbody>
               <tr>
                 <td className="border">
-                  <strong>Cantidad</strong>
+                  <strong>Cant</strong>
                 </td>
                 <td className="border">
                   <strong>Descripcion</strong>
@@ -185,7 +185,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
                     <td className="border" style={{ textAlign: "center" }}>
                       {item.cuantity}
                     </td>
-                    <td className="border">
+                    <td className="border" style={{ fontSize: 15 }}>
                       {item.category} {item.gendre} {item.color} {item.brand}
                     </td>
                   </tr>
@@ -195,9 +195,6 @@ const ComponentToPrint = forwardRef((props, ref) => {
           </table>
         </Stack>
         <Stack direction={"column"} sx={{ marginTop: 2, marginBottom: 1 }}>
-          <span>
-            Cliente: <strong>{order.client_name}</strong>
-          </span>
           <span>Total Prendas: {order.garment_total}</span>
           <span>Entrega Aprox</span>
           <strong>
@@ -206,11 +203,11 @@ const ComponentToPrint = forwardRef((props, ref) => {
         </Stack>
         <Stack direction={"column"} justifyContent="space-between">
           {" "}
-          <strong>Observaciones:</strong>
+          {order.garments.length > 0 && <strong>Observaciones:</strong>}
           {order.garments.map((item) => {
             if (item.comment === "" && item.defects === "") return <></>;
             return (
-              <span style={{ marginBottom: 5 }}>
+              <span style={{ marginBottom: 5, fontSize: 10 }}>
                 {item.category} {item.gendre} {item.color} {item.brand}:{" "}
                 {item.comment} {item.defects}
               </span>

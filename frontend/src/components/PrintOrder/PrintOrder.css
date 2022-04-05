@@ -1,6 +1,7 @@
 @media print {
   .page-break {
     break-before: always;
+    page-break-before: always;
   }
   table {
     display: table;

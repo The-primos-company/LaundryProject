@@ -1602,7 +1602,7 @@ export const Orders = ({ createOrder, setCreateOrder }) => {
 
   useEffect(() => {
     const getOrder = async () => {
-      const orderList = await window.go.main.App.GetOrdersList(10, 0);
+      const orderList = await window.go.main.App.GetOrdersList(100, 0);
       setOrders(orderList);
     };
     getOrder();

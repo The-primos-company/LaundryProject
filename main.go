@@ -41,7 +41,7 @@ func main() {
 	err = wails.Run(&options.App{
 		Title:  "LaundryProject",
 		Width:  1024,
-		Height: 768,
+		Height: 700,
 		// MinWidth:          720,
 		// MinHeight:         570,
 		// MaxWidth:          1280,
