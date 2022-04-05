@@ -41,7 +41,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
         </Stack>
         <Stack>
           <strong style={{ fontSize: 10 }}>
-            Cra 122 # 122 - 16A - 18 Alto Pance
+            Cra 122 # 16A - 18 Alto Pance
           </strong>
           <strong style={{ fontSize: 10, alignContent: "center" }}>Teléfono fijo: 3715499</strong>
           <strong style={{ fontSize: 10 }}>Celular: 315 2479406</strong>
@@ -58,7 +58,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
         <Stack direction={"column"} sx={{ marginBottom: 2 }}>
           <span>Fecha de ingreso </span>
           <strong style={{ marginBottom: 2 }}>
-            {moment(order.recieved_date).format("MMMM d YYYY, h:mm a")}
+            {moment(order.recieved_date).format("MMMM D YYYY, h:mm a")}
           </strong>
           <span>
             Cliente: <strong>{order.client_name}</strong>
@@ -117,7 +117,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
           </span>
           <span>Entrega Aprox:</span>
           <strong>
-            {moment(order.delivery_date).format("MMMM d YYYY, h:mm a")}
+            {moment(order.delivery_date).format("MMMM D YYYY, h:mm a")}
           </strong>
         </Stack>
         <Stack direction={"column"} justifyContent="space-between">
@@ -155,7 +155,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
         </Stack>
         <Stack>
           <strong style={{ fontSize: 10 }}>
-            Cra 122 # 122 - 16A - 18 Alto Pance
+            Cra 122 # 16A - 18 Alto Pance
           </strong>
           <strong style={{ fontSize: 10 }}>Teléfono fijo: 3715499</strong>
           <strong style={{ fontSize: 10 }}>Celular: 315 2479406</strong>
@@ -198,7 +198,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
           <span>Total Prendas: {order.garment_total}</span>
           <span>Entrega Aprox</span>
           <strong>
-            {moment(order.delivery_date).format("MMMM d YYYY, h:mm a")}
+            {moment(order.delivery_date).format("MMMM D YYYY, h:mm a")}
           </strong>
         </Stack>
         <Stack direction={"column"} justifyContent="space-between">
