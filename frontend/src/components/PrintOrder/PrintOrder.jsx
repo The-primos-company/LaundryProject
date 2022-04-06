@@ -32,6 +32,46 @@ export const PrintOrder = ({
 const ComponentToPrint = forwardRef((props, ref) => {
   const { order, orderNumber } = props;
 
+  const Garments = ({ order }) => {
+    if (order.garments.length === 1) {
+      return (
+        <>
+          {order.garments.map((item) => {
+            return (
+              <>
+                <tr>
+                  <td className="border" style={{ textAlign: "center" }}>
+                    {item.cuantity}
+                  </td>
+                  <td className="border" style={{ fontSize: 15 }}>
+                    {item.category} {item.gendre} {item.color} {item.brand}
+                  </td>
+                </tr>
+                <div style={{ backgroundColor: "red", width: 20 }}></div>
+              </>
+            );
+          })}
+        </>
+      );
+    } else
+      return (
+        <>
+          {order.garments.map((item) => {
+            return (
+              <tr>
+                <td className="border" style={{ textAlign: "center" }}>
+                  {item.cuantity}
+                </td>
+                <td className="border" style={{ fontSize: 15 }}>
+                  {item.category} {item.gendre} {item.color} {item.brand}
+                </td>
+              </tr>
+            );
+          })}
+        </>
+      );
+  };
+
   return (
     <Container ref={ref}>
       {/* Compra */}
@@ -43,7 +83,9 @@ const ComponentToPrint = forwardRef((props, ref) => {
           <strong style={{ fontSize: 10 }}>
             Cra 122 # 16A - 18 Alto Pance
           </strong>
-          <strong style={{ fontSize: 10, alignContent: "center" }}>Teléfono fijo: 3715499</strong>
+          <strong style={{ fontSize: 10, alignContent: "center" }}>
+            Teléfono fijo: 3715499
+          </strong>
           <strong style={{ fontSize: 10 }}>Celular: 315 2479406</strong>
         </Stack>
         <Stack
@@ -91,7 +133,9 @@ const ComponentToPrint = forwardRef((props, ref) => {
             {order.garments.map((item) => {
               return (
                 <tr>
-                  <td className="border" style={{ alignContent: "center" }}>{item.cuantity}</td>
+                  <td className="border" style={{ alignContent: "center" }}>
+                    {item.cuantity}
+                  </td>
                   {/* <td>Camisa masculino roja gucci </td> */}
                   <td className="border" style={{ fontSize: 10 }}>
                     {item.category} {item.gendre} {item.color} {item.brand}
@@ -127,7 +171,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
             if (item.comment === "" && item.defects === "") return <></>;
             return (
               <>
-                <span style={{ marginBottom: 5, fontSize: 10 }} > 
+                <span style={{ marginBottom: 5, fontSize: 10 }}>
                   {item.category} {item.gendre} {item.color} {item.brand}:{" "}
                   {item.comment} {item.defects}
                 </span>
@@ -179,18 +223,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
                   <strong>Descripcion</strong>
                 </td>
               </tr>
-              {order.garments.map((item) => {
-                return (
-                  <tr>
-                    <td className="border" style={{ textAlign: "center" }}>
-                      {item.cuantity}
-                    </td>
-                    <td className="border" style={{ fontSize: 15 }}>
-                      {item.category} {item.gendre} {item.color} {item.brand}
-                    </td>
-                  </tr>
-                );
-              })}
+              <Garments order={order} />
             </tbody>
           </table>
         </Stack>
