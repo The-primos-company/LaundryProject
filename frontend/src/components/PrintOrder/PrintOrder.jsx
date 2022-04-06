@@ -33,7 +33,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
   const { order, orderNumber } = props;
 
   const Garments = ({ order }) => {
-    if (order.garments.length === 1) {
+    if (order.garments.length < 3) {
       return (
         <>
           {order.garments.map((item) => {
