@@ -1,3 +1,4 @@
+import  {Navbar} from '../../components/Navbar'
 import { DateTimePicker, LocalizationProvider } from "@mui/lab";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import { Box, Button, Container, TextField } from "@mui/material";
@@ -10,7 +11,7 @@ import { Order } from "../../wailsjs/go/models";
 import styles from "./CreateOrder.module.css";
 import logo from "../../assets/images/logo.jpeg";
 
-export const CreateOrder = ({ createOrder, setCreateOrder }) => {
+export const CreateOrder = () => {
   // client
   const [clientName, setClientName] = useState("");
   const [clientId, setClientId] = useState("");
@@ -114,11 +115,9 @@ export const CreateOrder = ({ createOrder, setCreateOrder }) => {
 
     const data = await window.go.main.App.CreateOrder(order);
     setOrder(data);
-    console.log("setOrder ->", data);
     handlePrint();
   };
 
-  console.log("Order ->", order);
 
   function ValidateEmail(mail) {
     if (/^\w+([\\.-]?\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
@@ -151,10 +150,9 @@ export const CreateOrder = ({ createOrder, setCreateOrder }) => {
     getOrderCount();
   }, [orderNumber]);
 
-  console.log(createOrder);
   return (
     <Container>
-      <Button onClick={() => setCreateOrder(!createOrder)}>Ver ordenes</Button>
+      <Navbar/>
       {/* Header */}
       <div className={styles["logo-container"]}>
         <img src={logo} alt="logo" className={styles["logo"]} />

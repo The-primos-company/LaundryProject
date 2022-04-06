@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
+import {Navbar} from '../../components/Navbar'
 import {
   Button,
   Container,
@@ -1581,7 +1582,7 @@ const orders = [
   },
 ];
 
-export const Orders = ({ createOrder, setCreateOrder }) => {
+export const Orders = ({ setRoute }) => {
   const [order, setOrder] = useState(null);
   const [orders, setOrders] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -1610,7 +1611,7 @@ export const Orders = ({ createOrder, setCreateOrder }) => {
 
   return (
     <Container>
-      <Button onClick={() => setCreateOrder(!createOrder)}>Ver ordenes</Button>
+      <Navbar/>
       <Stack>
         <Box sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
           {orders &&

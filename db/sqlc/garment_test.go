@@ -90,12 +90,7 @@ func TestGetGarmentByOrderId(t *testing.T) {
 		require.NotEmpty(t, garment)
 		require.Equal(t, order.ID, garment.OrderID)
 	}
-	listArgs := ListGarmentsByOrderParams{
-		Limit:   10,
-		Offset:  0,
-		OrderID: order.ID,
-	}
-	garments, errList := testQueries.ListGarmentsByOrder(context.Background(), listArgs)
+	garments, errList := testQueries.ListGarmentsByOrder(context.Background(), order.ID)
 	require.NoError(t, errList)
 	require.NotEmpty(t, garments)
 

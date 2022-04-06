@@ -27,6 +27,7 @@
   },
   "debounceMS": 100,
   "devserverurl": "http://localhost:34115",
+  "reloaddirs": "./frontend/src/",
   "appargs": "",
   "nsisType": ""
 }
