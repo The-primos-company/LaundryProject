@@ -48,7 +48,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
                   </td>
                 </tr>
                 <div
-                  style={{ backgroundColor: "red", width: 20, height: 20 }}
+                  style={{ backgroundColor: "red", width: 300, height: 300 }}
                 ></div>
               </>
             );
