@@ -1,3 +1,4 @@
+import { Garments } from './Garments'
 import moment from "moment";
 import { forwardRef } from "react";
 import logo from "../../assets/images/logo.jpeg";
@@ -7,6 +8,7 @@ import "./PrintOrder.css";
 import { Container, Stack } from "@mui/material";
 import "moment/locale/es";
 moment.locale("es");
+
 
 export const PrintOrder = ({
   order,
@@ -32,46 +34,16 @@ export const PrintOrder = ({
 const ComponentToPrint = forwardRef((props, ref) => {
   const { order, orderNumber } = props;
 
-  const Garments = ({ order }) => {
-    if (order.garments.length < 3) {
-      return (
-        <>
-          {order.garments.map((item) => {
-            return (
-              <>
-                <tr>
-                  <td className="border" style={{ textAlign: "center" }}>
-                    {item.cuantity}
-                  </td>
-                  <td className="border" style={{ fontSize: 15 }}>
-                    {item.category} {item.gendre} {item.color} {item.brand}
-                  </td>
-                </tr>
-                <div
-                  style={{ backgroundColor: "red", width: 10, height: 300 }}
-                ></div>
-              </>
-            );
-          })}
-        </>
-      );
-    } else
-      return (
-        <>
-          {order.garments.map((item) => {
-            return (
-              <tr>
-                <td className="border" style={{ textAlign: "center" }}>
-                  {item.cuantity}
-                </td>
-                <td className="border" style={{ fontSize: 15 }}>
-                  {item.category} {item.gendre} {item.color} {item.brand}
-                </td>
-              </tr>
-            );
-          })}
-        </>
-      );
+  const GarmentsLogic = ({ order = [] }) => {
+
+    if (order.garments.length === 1)
+      return <Garments order={order} height={120} />
+    else if (order.garments.length === 2)
+      return <Garments order={order} height={100} />
+    else if (order.garments.length === 3)
+      return <Garments order={order} height={70} />
+    else
+      return <Garments order={order} enable={false} />
   };
 
   return (
@@ -225,7 +197,9 @@ const ComponentToPrint = forwardRef((props, ref) => {
                   <strong>Descripcion</strong>
                 </td>
               </tr>
-              <Garments order={order} />
+              {/* Ordenes con desc y cantidad */}
+              <GarmentsLogic order={order} />
+
             </tbody>
           </table>
         </Stack>
