@@ -205,6 +205,10 @@ const ComponentToPrint = forwardRef((props, ref) => {
         </Stack>
         <Stack direction={"column"} sx={{ marginTop: 2, marginBottom: 1 }}>
           <span>Total Prendas: {order.garment_total}</span>
+          <span>Fecha de ingreso </span>
+          <strong style={{ marginBottom: 2 }}>
+            {moment(order.recieved_date).format("MMMM D YYYY, h:mm a")}
+          </strong>
           <span>Entrega Aprox</span>
           <strong>
             {moment(order.delivery_date).format("MMMM D YYYY, h:mm a")}

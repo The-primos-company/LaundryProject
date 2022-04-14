@@ -46,13 +46,27 @@ WHERE
 LIMIT
     1;
 
--- name: GetOrdersByName :many
+-- name: GetOrdersByClientName :many
 SELECT 
     *
 FROM 
     orders
 WHERE 
     client_name ~* $1
+ORDER BY
+    identifier
+    DESC
+LIMIT
+    $2 
+OFFSET $3;
+
+-- name: GetOrdersByIdentifier :many
+SELECT 
+    *
+FROM 
+    orders
+WHERE 
+    identifier = $1
 ORDER BY
     identifier
     DESC

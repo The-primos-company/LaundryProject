@@ -19,6 +19,6 @@ export const HomePage = () => {
     case "search-order":
       return <SearchOrder />
     default:
-      return <SearchOrder />
+      return <CreateOrder />
   }
 }

@@ -20,14 +20,24 @@ const go = {
         return window.go.main.App.GetNextOrderIdentifier();
       },
       /**
-       * GetOrderByName
+       * GetOrderByClientName
        * @param {string} arg1 - Go Type: string
        * @param {number} arg2 - Go Type: int32
        * @param {number} arg3 - Go Type: int32
        * @returns {Promise<Array<Order>>}  - Go Type: []main.Order
        */
-      "GetOrderByName": (arg1, arg2, arg3) => {
-        return window.go.main.App.GetOrderByName(arg1, arg2, arg3);
+      "GetOrderByClientName": (arg1, arg2, arg3) => {
+        return window.go.main.App.GetOrderByClientName(arg1, arg2, arg3);
+      },
+      /**
+       * GetOrderByIdentifier
+       * @param {string} arg1 - Go Type: string
+       * @param {number} arg2 - Go Type: int32
+       * @param {number} arg3 - Go Type: int32
+       * @returns {Promise<Array<Order>>}  - Go Type: []main.Order
+       */
+      "GetOrderByIdentifier": (arg1, arg2, arg3) => {
+        return window.go.main.App.GetOrderByIdentifier(arg1, arg2, arg3);
       },
       /**
        * GetOrdersList

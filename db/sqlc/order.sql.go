@@ -145,7 +145,7 @@ func (q *Queries) GetOrder(ctx context.Context, id uuid.UUID) (Order, error) {
 	return i, err
 }
 
-const getOrdersByName = `-- name: GetOrdersByName :many
+const getOrdersByClientName = `-- name: GetOrdersByClientName :many
 SELECT 
     id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at
 FROM 
@@ -160,14 +160,73 @@ LIMIT
 OFFSET $3
 `
 
-type GetOrdersByNameParams struct {
+type GetOrdersByClientNameParams struct {
 	ClientName string `json:"client_name"`
 	Limit      int32  `json:"limit"`
 	Offset     int32  `json:"offset"`
 }
 
-func (q *Queries) GetOrdersByName(ctx context.Context, arg GetOrdersByNameParams) ([]Order, error) {
-	rows, err := q.db.QueryContext(ctx, getOrdersByName, arg.ClientName, arg.Limit, arg.Offset)
+func (q *Queries) GetOrdersByClientName(ctx context.Context, arg GetOrdersByClientNameParams) ([]Order, error) {
+	rows, err := q.db.QueryContext(ctx, getOrdersByClientName, arg.ClientName, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Order
+	for rows.Next() {
+		var i Order
+		if err := rows.Scan(
+			&i.ID,
+			&i.Identifier,
+			&i.RecievedDate,
+			&i.DeliveryDate,
+			&i.ClientName,
+			&i.ClientID,
+			&i.ClientAddress,
+			&i.ClientPhone,
+			&i.ClientEmail,
+			&i.GarmentTotal,
+			&i.PaymentTotalPayed,
+			&i.PaymentTotal,
+			&i.PaymentTotalReal,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getOrdersByIdentifier = `-- name: GetOrdersByIdentifier :many
+SELECT 
+    id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at
+FROM 
+    orders
+WHERE 
+    identifier = $1
+ORDER BY
+    identifier
+    DESC
+LIMIT
+    $2 
+OFFSET $3
+`
+
+type GetOrdersByIdentifierParams struct {
+	Identifier int32 `json:"identifier"`
+	Limit      int32 `json:"limit"`
+	Offset     int32 `json:"offset"`
+}
+
+func (q *Queries) GetOrdersByIdentifier(ctx context.Context, arg GetOrdersByIdentifierParams) ([]Order, error) {
+	rows, err := q.db.QueryContext(ctx, getOrdersByIdentifier, arg.Identifier, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

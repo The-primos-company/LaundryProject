@@ -71,12 +71,12 @@ func TestGetOrderByClientName(t *testing.T) {
 	require.NoError(t, err)
 	require.NotEmpty(t, order1)
 
-	searchArg := GetOrdersByNameParams{
+	searchArg := GetOrdersByClientNameParams{
 		ClientName: "gokusita",
 		Limit:      10,
 	}
 
-	orders, err := testQueries.GetOrdersByName(context.Background(), searchArg)
+	orders, err := testQueries.GetOrdersByClientName(context.Background(), searchArg)
 	require.NoError(t, err)
 	require.NotEmpty(t, orders)
 }

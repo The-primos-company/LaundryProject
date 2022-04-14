@@ -165,16 +165,78 @@ func (a *App) GetNextOrderIdentifier() int32 {
 	return nextIdentifier
 }
 
-func (a *App) GetOrderByName(clientName string, limit int32, offset int32) []Order {
-	filterParams := db.GetOrdersByNameParams{
+func (a *App) GetOrderByClientName(clientName string, limit int32, offset int32) []Order {
+	filterParams := db.GetOrdersByClientNameParams{
 		ClientName: clientName,
 		Limit:      limit,
 		Offset:     offset,
 	}
 
-	orders, err := a.store.GetOrdersByName(context.Background(), filterParams)
+	orders, err := a.store.GetOrdersByClientName(context.Background(), filterParams)
 	if err != nil {
 		log.Fatal("error getting order by name", err)
+	}
+
+	ordersDb := make([]Order, len(orders))
+
+	for i := 0; i < len(orders); i++ {
+		order := orders[i]
+
+		garmentsDb, _ := a.store.ListGarmentsByOrder(context.Background(), order.ID)
+		garments := make([]Garment, len(garmentsDb))
+		for j := 0; j < len(garmentsDb); j++ {
+			garmentDb := garmentsDb[j]
+			garments[j] = Garment{
+				ID:       garmentDb.ID,
+				OrderID:  garmentDb.OrderID,
+				Cuantity: garmentDb.Cuantity,
+				Category: garmentDb.Category,
+				Gendre:   garmentDb.Gendre,
+				Color:    garmentDb.Color,
+				Brand:    garmentDb.Brand,
+				Price:    garmentDb.Price,
+				Comment:  garmentDb.Comment,
+				Defects:  garmentDb.Defects,
+			}
+		}
+
+		garmentTotal, _ := strconv.Atoi(order.GarmentTotal)
+
+		ordersDb[i] = Order{
+			ID:                order.ID,
+			Identifier:        strconv.Itoa(int(order.Identifier)),
+			RecievedDate:      order.RecievedDate.Format(time.RFC3339),
+			DeliveryDate:      order.DeliveryDate.Format(time.RFC3339),
+			ClientName:        order.ClientName,
+			ClientID:          order.ClientID,
+			ClientAddress:     order.ClientAddress,
+			ClientPhone:       order.ClientPhone,
+			ClientEmail:       order.ClientEmail,
+			GarmentTotal:      garmentTotal,
+			PaymentTotalPayed: order.PaymentTotalPayed,
+			PaymentTotal:      order.PaymentTotal,
+			PaymentTotalReal:  order.PaymentTotalReal,
+			Garments:          garments,
+		}
+	}
+	return ordersDb
+}
+
+func (a *App) GetOrderByIdentifier(identifier string, limit int32, offset int32) []Order {
+	identifierStr, err := strconv.Atoi(identifier)
+
+	if err != nil {
+		return []Order{}
+	}
+	filterParams := db.GetOrdersByIdentifierParams{
+		Identifier: int32(identifierStr),
+		Limit:      limit,
+		Offset:     offset,
+	}
+
+	orders, err := a.store.GetOrdersByIdentifier(context.Background(), filterParams)
+	if err != nil {
+		log.Fatal("error getting order by identifier ", err)
 	}
 
 	ordersDb := make([]Order, len(orders))
