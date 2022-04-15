@@ -1,0 +1,33 @@
+{
+  "name": "LaundryProject",
+  "assetdir": "frontend/build",
+  "frontend:build": "npm run build",
+  "frontend:install": "npm install",
+  "frontend:dev": "",
+  "frontend:dev:watcher": "",
+  "wailsjsdir": "./frontend/src",
+  "version": "2",
+  "Path": "",
+  "BuildDir": "",
+  "outputfilename": "LaundryProject.exe",
+  "OutputType": "",
+  "Platform": "",
+  "runNonNativeBuildHooks": false,
+  "postBuildHooks": null,
+  "Author": {
+    "name": "tanuki",
+    "email": "danfeedev@gmail.com"
+  },
+  "Info": {
+    "companyName": "LaundryProject",
+    "productName": "LaundryProject",
+    "productVersion": "1.0.0",
+    "copyright": "Copyright.........",
+    "comments": "Built using Wails (https://wails.app)"
+  },
+  "debounceMS": 100,
+  "devserverurl": "http://localhost:34115",
+  "reloaddirs": "./frontend/src/",
+  "appargs": "",
+  "nsisType": ""
+}

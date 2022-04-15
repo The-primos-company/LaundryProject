@@ -1,0 +1,1 @@
+docker exec -it postgres14 createdb --username=root --owner=root project-l

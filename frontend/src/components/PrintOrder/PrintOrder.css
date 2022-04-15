@@ -1,0 +1,49 @@
+@media print {
+  .page-break {
+    break-before: always;
+    page-break-before: always;
+  }
+  table {
+    display: table;
+  }
+  .no-skip {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
+
+/* @media print {
+  .page-break {
+    margin-top: 1rem;
+    display: block;
+    page-break-before: always;
+    page-break-after: always;
+  }
+} */
+
+@page {
+  size: 7.2cm 100%;
+  /* size: landscape; */
+  margin-left: 0px;
+  margin-right: 0px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.border {
+  border: 1px solid;
+  border-collapse: collapse;
+  border-style: dotted;
+}
+
+.img-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+img {
+  width: 70%;
+  height: auto;
+  margin-bottom: 30px;
+}

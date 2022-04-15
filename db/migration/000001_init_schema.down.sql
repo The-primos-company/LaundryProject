@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS garments;
+DROP TABLE IF EXISTS orders;
