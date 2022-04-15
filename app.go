@@ -3,7 +3,6 @@ package main
 import (
 	db "The_primos_company/project_L/db/sqlc"
 	"context"
-	"fmt"
 	"log"
 	"strconv"
 	"time"
@@ -69,89 +68,89 @@ type Order struct {
 	Garments          []Garment `json:"garments"`
 }
 
-func (a *App) CreateOrder(order Order) Order {
-	paymentTotalPayed, _ := strconv.Atoi(order.PaymentTotalPayed)
-	paymentTotal, _ := strconv.Atoi(order.PaymentTotal)
-	paymentTotalReal := paymentTotal - paymentTotalPayed
-	recievedDate, _ := time.Parse(time.RFC3339, order.RecievedDate)
-	deliveryDate, _ := time.Parse(time.RFC3339, order.DeliveryDate)
+func (a *App) CreateOrder(arg Order) Order {
+	deliveryDate, err := time.Parse(time.RFC3339, arg.DeliveryDate)
 
-	arg := db.CreateOrderParams{
-		ID:                uuid.New(),
-		RecievedDate:      recievedDate,
+	if err != nil {
+		log.Panic("error parsing date", err)
+	}
+	paymentTotal, errPt := strconv.Atoi(arg.PaymentTotal)
+	paymentTotalPayed, errPtp := strconv.Atoi(arg.PaymentTotalPayed)
+
+	if errPt != nil || errPtp != nil {
+		log.Panic("error parsing totals to int")
+	}
+	paymentTotalReal := paymentTotal - paymentTotalPayed
+
+	garments := make([]db.CreateGarmentTxParams, len(arg.Garments))
+	for i := 0; i < len(arg.Garments); i++ {
+		argG := arg.Garments[i]
+		garments[i] = db.CreateGarmentTxParams{
+			Cuantity: argG.Cuantity,
+			Category: argG.Category,
+			Gendre:   argG.Gendre,
+			Color:    argG.Color,
+			Brand:    argG.Brand,
+			Price:    argG.Price,
+			Comment:  argG.Comment,
+			Defects:  argG.Defects,
+		}
+	}
+
+	order, err := a.store.CreateOrderTx(context.Background(), db.CreateOrderTxParams{
 		DeliveryDate:      deliveryDate,
+		ClientName:        arg.ClientName,
+		ClientID:          arg.ClientID,
+		ClientAddress:     arg.ClientAddress,
+		ClientPhone:       arg.ClientPhone,
+		ClientEmail:       arg.ClientEmail,
+		GarmentTotal:      strconv.Itoa(arg.GarmentTotal),
+		PaymentTotalPayed: arg.PaymentTotalPayed,
+		PaymentTotal:      arg.PaymentTotal,
+		PaymentTotalReal:  strconv.Itoa(paymentTotalReal),
+		Garments:          garments,
+	})
+
+	if err != nil {
+		log.Panic("error creating order", err)
+	}
+
+	garmentTotal, err := strconv.Atoi(order.GarmentTotal)
+
+	if err != nil {
+		log.Panic("error converting garment total to integer", err)
+	}
+
+	garmentsR := make([]Garment, len(order.Garments))
+	for i := 0; i < len(order.Garments); i++ {
+		argG := order.Garments[i]
+		garmentsR[i] = Garment{
+			OrderID:  argG.OrderID,
+			Cuantity: argG.Cuantity,
+			Category: argG.Category,
+			Gendre:   argG.Gendre,
+			Color:    argG.Color,
+			Brand:    argG.Brand,
+			Price:    argG.Price,
+			Comment:  argG.Comment,
+			Defects:  argG.Defects,
+		}
+	}
+
+	return Order{
+		ID:                order.ID,
+		RecievedDate:      order.RecievedDate.Format(time.RFC3339),
+		DeliveryDate:      order.DeliveryDate.Format(time.RFC3339),
 		ClientName:        order.ClientName,
 		ClientID:          order.ClientID,
 		ClientAddress:     order.ClientAddress,
 		ClientPhone:       order.ClientPhone,
 		ClientEmail:       order.ClientEmail,
-		GarmentTotal:      strconv.Itoa(order.GarmentTotal),
+		GarmentTotal:      garmentTotal,
 		PaymentTotalPayed: order.PaymentTotalPayed,
 		PaymentTotal:      order.PaymentTotal,
-		PaymentTotalReal:  strconv.Itoa(paymentTotalReal),
-	}
-	createdOrder, err := a.store.CreateOrder(context.Background(), arg)
-
-	if err != nil {
-		log.Fatal("error creating order", err)
-	}
-
-	garmetTotal, errGarment := strconv.Atoi(createdOrder.GarmentTotal)
-
-	if errGarment != nil {
-		log.Fatal("error Atoi Garment", err)
-	}
-
-	garments := make([]Garment, len(order.Garments))
-
-	for i := 0; i < len(order.Garments); i++ {
-		garment := order.Garments[i]
-		argGarment := db.CreateGarmentParams{
-			ID:       uuid.New(),
-			OrderID:  createdOrder.ID,
-			Cuantity: garment.Cuantity,
-			Category: garment.Category,
-			Gendre:   garment.Gendre,
-			Color:    garment.Color,
-			Brand:    garment.Brand,
-			Price:    garment.Price,
-			Comment:  garment.Comment,
-			Defects:  garment.Defects,
-		}
-		fmt.Println(argGarment.OrderID)
-		createdGarment, err := a.store.CreateGarment(context.Background(), argGarment)
-		if err != nil {
-			log.Fatal("error creating garment", err)
-		}
-
-		garment.ID = createdGarment.ID
-		garment.OrderID = createdGarment.OrderID
-		garment.Cuantity = createdGarment.Cuantity
-		garment.Category = createdGarment.Category
-		garment.Gendre = createdGarment.Gendre
-		garment.Color = createdGarment.Color
-		garment.Brand = createdGarment.Brand
-		garment.Price = createdGarment.Price
-		garment.Comment = createdGarment.Comment
-		garment.Defects = createdGarment.Defects
-
-		garments[i] = garment
-	}
-
-	return Order{
-		ID:                createdOrder.ID,
-		RecievedDate:      createdOrder.RecievedDate.Format(time.RFC3339),
-		DeliveryDate:      createdOrder.DeliveryDate.Format(time.RFC3339),
-		ClientName:        createdOrder.ClientName,
-		ClientID:          createdOrder.ClientID,
-		ClientAddress:     createdOrder.ClientAddress,
-		ClientPhone:       createdOrder.ClientPhone,
-		ClientEmail:       createdOrder.ClientEmail,
-		GarmentTotal:      garmetTotal,
-		PaymentTotalPayed: createdOrder.PaymentTotalPayed,
-		PaymentTotal:      createdOrder.PaymentTotal,
-		PaymentTotalReal:  createdOrder.PaymentTotalReal,
-		Garments:          garments,
+		PaymentTotalReal:  order.PaymentTotalReal,
+		Garments:          garmentsR,
 	}
 }
 
