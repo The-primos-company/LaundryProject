@@ -11,6 +11,7 @@ export const Navbar = () => {
       <Button onClick={() => setRoute("create-order")} >Crear orden</Button>
       <Button onClick={() => setRoute("orders")}>Ver ordenes</Button>
       <Button onClick={() => setRoute("search-order")}>Buscar orden</Button>
+      <Button onClick={() => setRoute("garments-prices")}>Prendas y precios</Button>
     </>
   )
 }

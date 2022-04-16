@@ -46,7 +46,7 @@ export const SearchOrder = ({ setRoute }) => {
   const onClickByName = async () => {
     if (searchValue === "") return
     // setOrders([])
-    const data = await window.go.main.App.GetOrderByClientName(searchValue, 10, 0);
+    const data = await window.go.service.OrderService.GetOrderByClientName(searchValue, 10, 0);
     setOrders(data)
     setSearchValue("")
 
@@ -54,7 +54,7 @@ export const SearchOrder = ({ setRoute }) => {
   const onClickId = async () => {
     if (searchValue === "") return
     // setOrders([])
-    const data = await window.go.main.App.GetOrderByIdentifier(searchValue, 10, 0);
+    const data = await window.go.service.OrderService.GetOrderByIdentifier(searchValue, 10, 0);
     setOrders(data)
     setSearchValue("")
 

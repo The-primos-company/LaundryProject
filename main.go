@@ -1,7 +1,6 @@
 package main
 
 import (
-	db "The_primos_company/project_L/db/sqlc"
 	"database/sql"
 	"embed"
 	"log"
@@ -29,16 +28,10 @@ const (
 )
 
 func main() {
-	// Create an instance of the app structure
-	dataBase, err := sql.Open(dbDriver, dbSource)
-	if err != nil {
-		log.Fatal("cannot connect to db:", err)
-	}
-	store := db.NewStore(dataBase)
-	app := NewApp(store)
+	app := NewApp()
 
 	// Create application with options
-	err = wails.Run(&options.App{
+	err := wails.Run(&options.App{
 		Title:  "LaundryProject",
 		Width:  1024,
 		Height: 700,
@@ -57,9 +50,7 @@ func main() {
 		OnStartup:         app.startup,
 		OnDomReady:        app.domReady,
 		OnShutdown:        app.shutdown,
-		Bind: []interface{}{
-			app,
-		},
+		Bind:              append(app.services, app),
 		// Windows platform specific options
 		Windows: &windows.Options{
 			WebviewIsTransparent: false,

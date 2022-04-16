@@ -15,7 +15,7 @@ const CardComponent = (
 
   const onClickId = async (id) => {
     // setOrders([])
-    const data = await window.go.main.App.GetOrderByIdentifier(id, 10, 0);
+    const data = await window.go.service.OrderService.GetOrderByIdentifier(id, 10, 0);
     setOrder(data[0])
     setOrderNumberTmp(id)
     handlePrint()

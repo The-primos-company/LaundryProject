@@ -176,3 +176,78 @@ func (store *Store) CreateOrderTx(ctx context.Context, arg CreateOrderTxParams) 
 
 	return result, err
 }
+
+type CreatePriceTxParams struct {
+	Category     string `json:"category"`
+	PriceWashing string `json:"price_washing"`
+	PriceIroning string `json:"price_ironing"`
+}
+
+type CreatePriceTxResults struct {
+	ID           uuid.UUID `json:"ID"`
+	Category     string    `json:"category"`
+	PriceWashing string    `json:"price_washing"`
+	PriceIroning string    `json:"price_ironing"`
+	CreatedAt    time.Time `json:"created_at"`
+}
+
+//This transaction creates a price, in fail it rollback the change in database
+//If everything is okay it commits to database.
+func (store *Store) CreatePriceTx(ctx context.Context, arg CreatePriceTxParams) (CreatePriceTxResults, error) {
+	var result CreatePriceTxResults
+
+	err := store.execTx(ctx, func(q *Queries) error {
+		price, err := q.CreatePrice(ctx, CreatePriceParams{
+			ID:           uuid.New(),
+			Category:     arg.Category,
+			PriceWashing: arg.PriceWashing,
+			PriceIroning: arg.PriceIroning,
+		})
+
+		if err != nil {
+			return err
+		}
+
+		result = CreatePriceTxResults(price)
+		return nil
+	})
+	return result, err
+}
+
+type UpdatePriceTxParams struct {
+	ID           uuid.UUID `json:"ID"`
+	Category     string    `json:"category"`
+	PriceWashing string    `json:"price_washing"`
+	PriceIroning string    `json:"price_ironing"`
+}
+
+type UpdatePriceTxResults struct {
+	ID           uuid.UUID `json:"ID"`
+	Category     string    `json:"category"`
+	PriceWashing string    `json:"price_washing"`
+	PriceIroning string    `json:"price_ironing"`
+	CreatedAt    time.Time `json:"created_at"`
+}
+
+//This transaction updates a price, in fail it rollback the change in database
+//If everything is okay it commits to database.
+func (store *Store) UpdatePriceTx(ctx context.Context, arg UpdatePriceTxParams) (UpdatePriceTxResults, error) {
+	var result UpdatePriceTxResults
+
+	err := store.execTx(ctx, func(q *Queries) error {
+		price, err := q.UpdatePrice(ctx, UpdatePriceParams{
+			ID:           arg.ID,
+			Category:     arg.Category,
+			PriceWashing: arg.PriceWashing,
+			PriceIroning: arg.PriceIroning,
+		})
+
+		if err != nil {
+			return err
+		}
+
+		result = UpdatePriceTxResults(price)
+		return nil
+	})
+	return result, err
+}

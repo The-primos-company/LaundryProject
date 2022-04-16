@@ -112,7 +112,7 @@ export const CreateOrder = () => {
     setOrderNumber(orderNumber + 1);
     setGarments([]);
 
-    const data = await window.go.main.App.CreateOrder(order);
+    const data = await window.go.service.OrderService.CreateOrder(order);
     setOrder(data);
     handlePrint();
   };
@@ -142,7 +142,7 @@ export const CreateOrder = () => {
   // TODO: cambiar si se va a wails
   useEffect(() => {
     const getOrderCount = async () => {
-      const data = await window.go.main.App.GetNextOrderIdentifier();
+      const data = await window.go.service.OrderService.GetNextOrderIdentifier();
       setOrderNumber(("000000" + data).substr(-4, 4));
     };
 

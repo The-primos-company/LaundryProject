@@ -40,3 +40,11 @@ type Order struct {
 	PaymentTotalReal  string    `json:"payment_total_real"`
 	CreatedAt         time.Time `json:"created_at"`
 }
+
+type Price struct {
+	ID           uuid.UUID `json:"id"`
+	Category     string    `json:"category"`
+	PriceWashing string    `json:"price_washing"`
+	PriceIroning string    `json:"price_ironing"`
+	CreatedAt    time.Time `json:"created_at"`
+}
