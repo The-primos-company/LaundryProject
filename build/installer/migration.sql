@@ -35,3 +35,23 @@ ALTER TABLE "garments" ADD FOREIGN KEY ("order_id") REFERENCES "orders" ("id");
 CREATE INDEX ON "orders" ("identifier");
 
 CREATE INDEX ON "garments" ("order_id");
+
+CREATE TABLE IF NOT EXISTS "prices" (
+  "id" uuid UNIQUE PRIMARY KEY NOT NULL,
+  "category" varchar NOT NULL,
+  "price_washing" varchar NOT NULL,
+  "price_ironing" varchar NOT NULL,
+  "created_at" timestamptz NOT NULL DEFAULT (now())
+);
+
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS service_type varchar NOT NULL DEFAULT 'Lavado';
+
+CREATE TABLE IF NOT EXISTS "clients" (
+  "id" uuid UNIQUE PRIMARY KEY NOT NULL,
+  "name" varchar NOT NULL,
+  "identification" varchar NOT NULL,
+  "address" varchar NOT NULL,
+  "phone" varchar NOT NULL,
+  "email" varchar NOT NULL,
+  "created_at" timestamptz NOT NULL DEFAULT (now())
+);

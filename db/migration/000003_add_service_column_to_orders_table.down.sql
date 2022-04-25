@@ -1,0 +1,2 @@
+ALTER TABLE orders
+DROP COLUMN IF EXISTS service_type;

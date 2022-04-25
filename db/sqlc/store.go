@@ -23,7 +23,7 @@ func NewStore(db *sql.DB) *Store {
 }
 
 //execTx executes a function within a database transaction
-func (store *Store) execTx(ctx context.Context, fn func(*Queries) error) error {
+func (store *Store) execTx(ctx context.Context, mock bool, rollbackAux func(*Queries) error, fn func(*Queries) error) error {
 	tx, err := store.db.BeginTx(ctx, nil)
 	if err != nil {
 		return err
@@ -36,8 +36,13 @@ func (store *Store) execTx(ctx context.Context, fn func(*Queries) error) error {
 		}
 		return err
 	}
-
-	return tx.Commit()
+	if !mock {
+		return tx.Commit()
+	}
+	if rollbackAux != nil {
+		rollbackAux(q)
+	}
+	return tx.Rollback()
 }
 
 type CreateGarmentTxParams struct {
@@ -62,6 +67,7 @@ type CreateOrderTxParams struct {
 	PaymentTotalPayed string                  `json:"payment_total_payed"`
 	PaymentTotal      string                  `json:"payment_total"`
 	PaymentTotalReal  string                  `json:"payment_total_real"`
+	ServiceType       string                  `json:"service_type"`
 	Garments          []CreateGarmentTxParams `json:"garments"`
 }
 
@@ -92,15 +98,27 @@ type CreateOrderTxResults struct {
 	PaymentTotalPayed string                   `json:"payment_total_payed"`
 	PaymentTotal      string                   `json:"payment_total"`
 	PaymentTotalReal  string                   `json:"payment_total_real"`
+	ServiceType       string                   `json:"service_type"`
 	Garments          []CreateGarmentTxResults `json:"garments"`
 }
 
 //This transaction creates an order and then all the corresponding garments related, in fail it rollback the change in database
 //If everything is okay it commits to database.
-func (store *Store) CreateOrderTx(ctx context.Context, arg CreateOrderTxParams) (CreateOrderTxResults, error) {
+func (store *Store) CreateOrderTx(ctx context.Context, mock bool, arg CreateOrderTxParams) (CreateOrderTxResults, error) {
 	var result CreateOrderTxResults
+	var rollbackAux func(*Queries) error
 
-	err := store.execTx(ctx, func(q *Queries) error {
+	if mock {
+		rollbackAux = func(q *Queries) error {
+			indentifier, err := q.GetCurrentOrderIdentifierSequence(ctx)
+			if err != nil {
+				return err
+			}
+			return q.SetSequence(ctx, int64(indentifier))
+		}
+	}
+
+	err := store.execTx(ctx, mock, rollbackAux, func(q *Queries) error {
 		//create the order
 		order, err := q.CreateOrder(ctx, CreateOrderParams{
 			ID:                uuid.New(),
@@ -196,7 +214,7 @@ type CreatePriceTxResults struct {
 func (store *Store) CreatePriceTx(ctx context.Context, arg CreatePriceTxParams) (CreatePriceTxResults, error) {
 	var result CreatePriceTxResults
 
-	err := store.execTx(ctx, func(q *Queries) error {
+	err := store.execTx(ctx, false, nil, func(q *Queries) error {
 		price, err := q.CreatePrice(ctx, CreatePriceParams{
 			ID:           uuid.New(),
 			Category:     arg.Category,
@@ -234,7 +252,7 @@ type UpdatePriceTxResults struct {
 func (store *Store) UpdatePriceTx(ctx context.Context, arg UpdatePriceTxParams) (UpdatePriceTxResults, error) {
 	var result UpdatePriceTxResults
 
-	err := store.execTx(ctx, func(q *Queries) error {
+	err := store.execTx(ctx, false, nil, func(q *Queries) error {
 		price, err := q.UpdatePrice(ctx, UpdatePriceParams{
 			ID:           arg.ID,
 			Category:     arg.Category,

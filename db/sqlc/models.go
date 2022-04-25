@@ -10,6 +10,16 @@ import (
 	"github.com/google/uuid"
 )
 
+type Client struct {
+	ID             uuid.UUID `json:"id"`
+	Name           string    `json:"name"`
+	Identification string    `json:"identification"`
+	Address        string    `json:"address"`
+	Phone          string    `json:"phone"`
+	Email          string    `json:"email"`
+	CreatedAt      time.Time `json:"created_at"`
+}
+
 type Garment struct {
 	ID        uuid.UUID `json:"id"`
 	OrderID   uuid.UUID `json:"order_id"`
@@ -39,6 +49,7 @@ type Order struct {
 	PaymentTotal      string    `json:"payment_total"`
 	PaymentTotalReal  string    `json:"payment_total_real"`
 	CreatedAt         time.Time `json:"created_at"`
+	ServiceType       string    `json:"service_type"`
 }
 
 type Price struct {

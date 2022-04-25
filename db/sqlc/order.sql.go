@@ -26,10 +26,11 @@ INSERT INTO
         garment_total,
         payment_total_payed,
         payment_total,
-        payment_total_real
+        payment_total_real,
+        service_type
     )
 VALUES
-    ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at
+    ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at, service_type
 `
 
 type CreateOrderParams struct {
@@ -45,6 +46,7 @@ type CreateOrderParams struct {
 	PaymentTotalPayed string    `json:"payment_total_payed"`
 	PaymentTotal      string    `json:"payment_total"`
 	PaymentTotalReal  string    `json:"payment_total_real"`
+	ServiceType       string    `json:"service_type"`
 }
 
 func (q *Queries) CreateOrder(ctx context.Context, arg CreateOrderParams) (Order, error) {
@@ -61,6 +63,7 @@ func (q *Queries) CreateOrder(ctx context.Context, arg CreateOrderParams) (Order
 		arg.PaymentTotalPayed,
 		arg.PaymentTotal,
 		arg.PaymentTotalReal,
+		arg.ServiceType,
 	)
 	var i Order
 	err := row.Scan(
@@ -78,6 +81,7 @@ func (q *Queries) CreateOrder(ctx context.Context, arg CreateOrderParams) (Order
 		&i.PaymentTotal,
 		&i.PaymentTotalReal,
 		&i.CreatedAt,
+		&i.ServiceType,
 	)
 	return i, err
 }
@@ -92,6 +96,17 @@ WHERE id = $1
 func (q *Queries) DeleteOrder(ctx context.Context, id uuid.UUID) error {
 	_, err := q.db.ExecContext(ctx, deleteOrder, id)
 	return err
+}
+
+const getCurrentOrderIdentifierSequence = `-- name: GetCurrentOrderIdentifierSequence :one
+SELECT currval('orders_identifier_seq')
+`
+
+func (q *Queries) GetCurrentOrderIdentifierSequence(ctx context.Context) (int64, error) {
+	row := q.db.QueryRowContext(ctx, getCurrentOrderIdentifierSequence)
+	var currval int64
+	err := row.Scan(&currval)
+	return currval, err
 }
 
 const getNextOrderIdentifier = `-- name: GetNextOrderIdentifier :one
@@ -114,7 +129,7 @@ func (q *Queries) GetNextOrderIdentifier(ctx context.Context) (int32, error) {
 
 const getOrder = `-- name: GetOrder :one
 SELECT
-    id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at
+    id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at, service_type
 FROM
     orders
 WHERE
@@ -141,13 +156,14 @@ func (q *Queries) GetOrder(ctx context.Context, id uuid.UUID) (Order, error) {
 		&i.PaymentTotal,
 		&i.PaymentTotalReal,
 		&i.CreatedAt,
+		&i.ServiceType,
 	)
 	return i, err
 }
 
 const getOrdersByClientName = `-- name: GetOrdersByClientName :many
 SELECT 
-    id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at
+    id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at, service_type
 FROM 
     orders
 WHERE 
@@ -190,6 +206,7 @@ func (q *Queries) GetOrdersByClientName(ctx context.Context, arg GetOrdersByClie
 			&i.PaymentTotal,
 			&i.PaymentTotalReal,
 			&i.CreatedAt,
+			&i.ServiceType,
 		); err != nil {
 			return nil, err
 		}
@@ -206,7 +223,7 @@ func (q *Queries) GetOrdersByClientName(ctx context.Context, arg GetOrdersByClie
 
 const getOrdersByIdentifier = `-- name: GetOrdersByIdentifier :many
 SELECT 
-    id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at
+    id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at, service_type
 FROM 
     orders
 WHERE 
@@ -249,6 +266,7 @@ func (q *Queries) GetOrdersByIdentifier(ctx context.Context, arg GetOrdersByIden
 			&i.PaymentTotal,
 			&i.PaymentTotalReal,
 			&i.CreatedAt,
+			&i.ServiceType,
 		); err != nil {
 			return nil, err
 		}
@@ -265,7 +283,7 @@ func (q *Queries) GetOrdersByIdentifier(ctx context.Context, arg GetOrdersByIden
 
 const listOrders = `-- name: ListOrders :many
 SELECT
-    id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at
+    id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at, service_type
 FROM
     orders
 ORDER BY
@@ -304,6 +322,7 @@ func (q *Queries) ListOrders(ctx context.Context, arg ListOrdersParams) ([]Order
 			&i.PaymentTotal,
 			&i.PaymentTotalReal,
 			&i.CreatedAt,
+			&i.ServiceType,
 		); err != nil {
 			return nil, err
 		}
@@ -316,6 +335,15 @@ func (q *Queries) ListOrders(ctx context.Context, arg ListOrdersParams) ([]Order
 		return nil, err
 	}
 	return items, nil
+}
+
+const setSequence = `-- name: SetSequence :exec
+SELECT setval('orders_identifier_seq', $1, false)
+`
+
+func (q *Queries) SetSequence(ctx context.Context, setval int64) error {
+	_, err := q.db.ExecContext(ctx, setSequence, setval)
+	return err
 }
 
 const updateOrder = `-- name: UpdateOrder :one
@@ -331,10 +359,11 @@ SET
     delivery_date = $8,
     garment_total = $9,
     payment_total_payed = $10,
-    payment_total = $11
+    payment_total = $11,
+    service_type = $12
 WHERE
     id = $1
-RETURNING id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at
+RETURNING id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at, service_type
 `
 
 type UpdateOrderParams struct {
@@ -349,6 +378,7 @@ type UpdateOrderParams struct {
 	GarmentTotal      string    `json:"garment_total"`
 	PaymentTotalPayed string    `json:"payment_total_payed"`
 	PaymentTotal      string    `json:"payment_total"`
+	ServiceType       string    `json:"service_type"`
 }
 
 func (q *Queries) UpdateOrder(ctx context.Context, arg UpdateOrderParams) (Order, error) {
@@ -364,6 +394,7 @@ func (q *Queries) UpdateOrder(ctx context.Context, arg UpdateOrderParams) (Order
 		arg.GarmentTotal,
 		arg.PaymentTotalPayed,
 		arg.PaymentTotal,
+		arg.ServiceType,
 	)
 	var i Order
 	err := row.Scan(
@@ -381,6 +412,7 @@ func (q *Queries) UpdateOrder(ctx context.Context, arg UpdateOrderParams) (Order
 		&i.PaymentTotal,
 		&i.PaymentTotalReal,
 		&i.CreatedAt,
+		&i.ServiceType,
 	)
 	return i, err
 }

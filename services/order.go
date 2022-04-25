@@ -35,10 +35,11 @@ type Order struct {
 	PaymentTotalPayed string    `json:"payment_total_payed"`
 	PaymentTotal      string    `json:"payment_total"`
 	PaymentTotalReal  string    `json:"payment_total_real"`
+	ServiceType       string    `json:"service_type"`
 	Garments          []Garment `json:"garments"`
 }
 
-func (s *OrderService) CreateOrder(arg Order) Order {
+func (s *OrderService) CreateOrder(arg Order, mock bool) Order {
 	deliveryDate, err := time.Parse(time.RFC3339, arg.DeliveryDate)
 
 	if err != nil {
@@ -67,7 +68,7 @@ func (s *OrderService) CreateOrder(arg Order) Order {
 		}
 	}
 
-	order, err := s.store.CreateOrderTx(context.Background(), db.CreateOrderTxParams{
+	order, err := s.store.CreateOrderTx(context.Background(), mock, db.CreateOrderTxParams{
 		DeliveryDate:      deliveryDate,
 		ClientName:        arg.ClientName,
 		ClientID:          arg.ClientID,
@@ -78,6 +79,7 @@ func (s *OrderService) CreateOrder(arg Order) Order {
 		PaymentTotalPayed: arg.PaymentTotalPayed,
 		PaymentTotal:      arg.PaymentTotal,
 		PaymentTotalReal:  strconv.Itoa(paymentTotalReal),
+		ServiceType:       arg.ServiceType,
 		Garments:          garments,
 	})
 
@@ -120,6 +122,7 @@ func (s *OrderService) CreateOrder(arg Order) Order {
 		PaymentTotalPayed: order.PaymentTotalPayed,
 		PaymentTotal:      order.PaymentTotal,
 		PaymentTotalReal:  order.PaymentTotalReal,
+		ServiceType:       order.ServiceType,
 		Garments:          garmentsR,
 	}
 }
@@ -185,6 +188,7 @@ func (s *OrderService) GetOrderByClientName(clientName string, limit int32, offs
 			PaymentTotalPayed: order.PaymentTotalPayed,
 			PaymentTotal:      order.PaymentTotal,
 			PaymentTotalReal:  order.PaymentTotalReal,
+			ServiceType:       order.ServiceType,
 			Garments:          garments,
 		}
 	}
@@ -247,6 +251,7 @@ func (s *OrderService) GetOrderByIdentifier(identifier string, limit int32, offs
 			PaymentTotalPayed: order.PaymentTotalPayed,
 			PaymentTotal:      order.PaymentTotal,
 			PaymentTotalReal:  order.PaymentTotalReal,
+			ServiceType:       order.ServiceType,
 			Garments:          garments,
 		}
 	}
@@ -302,6 +307,7 @@ func (s *OrderService) GetOrdersList(limit int32, offset int32) []Order {
 			PaymentTotalPayed: order.PaymentTotalPayed,
 			PaymentTotal:      order.PaymentTotal,
 			PaymentTotalReal:  order.PaymentTotalReal,
+			ServiceType:       order.ServiceType,
 			Garments:          garments,
 		}
 	}

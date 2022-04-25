@@ -17,9 +17,11 @@ func routing(store db.Store) []interface{} {
 	orderService := newOrderService(&store)
 	garmentService := newGarmentService(&store)
 	priceService := newPriceService(&store)
+	clientService := newClientService(&store)
 	return []interface{}{
 		&orderService,
 		&garmentService,
 		&priceService,
+		&clientService,
 	}
 }

@@ -12,10 +12,11 @@ INSERT INTO
         garment_total,
         payment_total_payed,
         payment_total,
-        payment_total_real
+        payment_total_real,
+        service_type
     )
 VALUES
-    ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *;
+    ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *;
 
 
 -- name: UpdateOrder :one
@@ -31,7 +32,8 @@ SET
     delivery_date = $8,
     garment_total = $9,
     payment_total_payed = $10,
-    payment_total = $11
+    payment_total = $11,
+    service_type = $12
 WHERE
     id = $1
 RETURNING *;
@@ -101,3 +103,9 @@ ORDER BY
     identifier
 DESC
 LIMIT 1;
+
+-- name: GetCurrentOrderIdentifierSequence :one
+SELECT currval('orders_identifier_seq');
+
+-- name: SetSequence :exec
+SELECT setval('orders_identifier_seq', $1, false);
