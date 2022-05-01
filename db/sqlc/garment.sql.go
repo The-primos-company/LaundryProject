@@ -23,23 +23,25 @@ INSERT INTO
         brand,
         price,
         comment,
-        defects
+        defects,
+        service_type
     )
 VALUES
-    ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id, order_id, cuantity, category, gendre, color, brand, price, comment, defects, created_at
+    ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING id, order_id, cuantity, category, gendre, color, brand, price, comment, defects, created_at, service_type
 `
 
 type CreateGarmentParams struct {
-	ID       uuid.UUID `json:"id"`
-	OrderID  uuid.UUID `json:"order_id"`
-	Cuantity string    `json:"cuantity"`
-	Category string    `json:"category"`
-	Gendre   string    `json:"gendre"`
-	Color    string    `json:"color"`
-	Brand    string    `json:"brand"`
-	Price    string    `json:"price"`
-	Comment  string    `json:"comment"`
-	Defects  string    `json:"defects"`
+	ID          uuid.UUID `json:"id"`
+	OrderID     uuid.UUID `json:"order_id"`
+	Cuantity    string    `json:"cuantity"`
+	Category    string    `json:"category"`
+	Gendre      string    `json:"gendre"`
+	Color       string    `json:"color"`
+	Brand       string    `json:"brand"`
+	Price       string    `json:"price"`
+	Comment     string    `json:"comment"`
+	Defects     string    `json:"defects"`
+	ServiceType string    `json:"service_type"`
 }
 
 func (q *Queries) CreateGarment(ctx context.Context, arg CreateGarmentParams) (Garment, error) {
@@ -54,6 +56,7 @@ func (q *Queries) CreateGarment(ctx context.Context, arg CreateGarmentParams) (G
 		arg.Price,
 		arg.Comment,
 		arg.Defects,
+		arg.ServiceType,
 	)
 	var i Garment
 	err := row.Scan(
@@ -68,6 +71,7 @@ func (q *Queries) CreateGarment(ctx context.Context, arg CreateGarmentParams) (G
 		&i.Comment,
 		&i.Defects,
 		&i.CreatedAt,
+		&i.ServiceType,
 	)
 	return i, err
 }
@@ -86,7 +90,7 @@ func (q *Queries) DeleteGarment(ctx context.Context, id uuid.UUID) error {
 
 const getGarment = `-- name: GetGarment :one
 SELECT
-    id, order_id, cuantity, category, gendre, color, brand, price, comment, defects, created_at
+    id, order_id, cuantity, category, gendre, color, brand, price, comment, defects, created_at, service_type
 FROM
     garments
 WHERE
@@ -110,13 +114,14 @@ func (q *Queries) GetGarment(ctx context.Context, id uuid.UUID) (Garment, error)
 		&i.Comment,
 		&i.Defects,
 		&i.CreatedAt,
+		&i.ServiceType,
 	)
 	return i, err
 }
 
 const listGarmentsByOrder = `-- name: ListGarmentsByOrder :many
 SELECT
-    id, order_id, cuantity, category, gendre, color, brand, price, comment, defects, created_at
+    id, order_id, cuantity, category, gendre, color, brand, price, comment, defects, created_at, service_type
 FROM
     garments
 WHERE 
@@ -146,6 +151,7 @@ func (q *Queries) ListGarmentsByOrder(ctx context.Context, orderID uuid.UUID) ([
 			&i.Comment,
 			&i.Defects,
 			&i.CreatedAt,
+			&i.ServiceType,
 		); err != nil {
 			return nil, err
 		}
@@ -171,22 +177,24 @@ SET
     brand = $6,
     price = $7,
     comment = $8,
-    defects = $9
+    defects = $9,
+    service_type = $10
 WHERE
     id = $1
-RETURNING id, order_id, cuantity, category, gendre, color, brand, price, comment, defects, created_at
+RETURNING id, order_id, cuantity, category, gendre, color, brand, price, comment, defects, created_at, service_type
 `
 
 type UpdateGarmentParams struct {
-	ID       uuid.UUID `json:"id"`
-	Cuantity string    `json:"cuantity"`
-	Category string    `json:"category"`
-	Gendre   string    `json:"gendre"`
-	Color    string    `json:"color"`
-	Brand    string    `json:"brand"`
-	Price    string    `json:"price"`
-	Comment  string    `json:"comment"`
-	Defects  string    `json:"defects"`
+	ID          uuid.UUID `json:"id"`
+	Cuantity    string    `json:"cuantity"`
+	Category    string    `json:"category"`
+	Gendre      string    `json:"gendre"`
+	Color       string    `json:"color"`
+	Brand       string    `json:"brand"`
+	Price       string    `json:"price"`
+	Comment     string    `json:"comment"`
+	Defects     string    `json:"defects"`
+	ServiceType string    `json:"service_type"`
 }
 
 func (q *Queries) UpdateGarment(ctx context.Context, arg UpdateGarmentParams) (Garment, error) {
@@ -200,6 +208,7 @@ func (q *Queries) UpdateGarment(ctx context.Context, arg UpdateGarmentParams) (G
 		arg.Price,
 		arg.Comment,
 		arg.Defects,
+		arg.ServiceType,
 	)
 	var i Garment
 	err := row.Scan(
@@ -214,6 +223,7 @@ func (q *Queries) UpdateGarment(ctx context.Context, arg UpdateGarmentParams) (G
 		&i.Comment,
 		&i.Defects,
 		&i.CreatedAt,
+		&i.ServiceType,
 	)
 	return i, err
 }

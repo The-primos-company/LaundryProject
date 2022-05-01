@@ -6,6 +6,7 @@ import { CreateOrder } from './CreateOrder/CreateOrder'
 import { Orders } from './Orders/Orders'
 import { SearchOrder } from './SearchOrder/SearchOrder'
 import { GarmentsPrices } from './GarmentsPrices/GarmentsPrices'
+import { Clients } from './Clients/Clients'
 
 export const HomePage = () => {
   const { route } = useContext(RouterContext)
@@ -19,6 +20,8 @@ export const HomePage = () => {
       return <SearchOrder />
     case "garments-prices":
       return <GarmentsPrices />
+    case "clients":
+        return <Clients />
     default:
       return <CreateOrder />
   }

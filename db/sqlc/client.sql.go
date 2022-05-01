@@ -102,7 +102,7 @@ FROM
 WHERE 
     identification = $1
 ORDER BY
-    identification
+    created_at
     DESC
 LIMIT
     $2
@@ -154,7 +154,7 @@ FROM
 WHERE 
     name ~* $1
 ORDER BY
-    identifier
+    created_at
     DESC
 LIMIT
     $2 

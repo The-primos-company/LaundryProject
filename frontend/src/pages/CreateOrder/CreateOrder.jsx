@@ -1,12 +1,23 @@
-import  {Navbar} from '../../components/Navbar'
+import { Navbar } from "../../components/Navbar";
 import { DateTimePicker, LocalizationProvider } from "@mui/lab";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import { Box, Button, Container, TextField } from "@mui/material";
+import {
+  Box,
+  Button,
+  Container,
+  Modal,
+  TextField,
+  Typography,
+  Autocomplete,
+} from "@mui/material";
+
 import React, { useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import PrendasComponent from "../../components/PrendasComponent";
 import { PrintOrder } from "../../components/PrintOrder/PrintOrder";
 import { Order } from "../../wailsjs/go/models";
+import SaveIcon from "@mui/icons-material/Save";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 import styles from "./CreateOrder.module.css";
 import logo from "../../assets/images/logo.jpeg";
@@ -24,12 +35,16 @@ export const CreateOrder = () => {
   const [orderNumber, setOrderNumber] = useState(null);
   const [orderNumberTmp, setOrderNumberTmp] = useState(null);
   const [garments, setGarments] = useState([]);
+  const [garmentsData, setGarmentsData] = useState([]);
   const [error, setError] = useState({
     email: "",
     deliveryDate: "",
   });
   const [order, setOrder] = useState(null);
   const [updateTotal, setUpdateTotal] = useState(false);
+  const [showCreateOrderModal, setShowCreateOrderModal] = useState(false);
+  const [generateOrderLoading, setGenerateOrderLoading] = useState(false);
+  const [clients, setClients] = useState([]);
 
   let totalPrice = garments
     .map((item) => item.realTotal)
@@ -43,8 +58,12 @@ export const CreateOrder = () => {
   const printOrder = useRef();
   const handlePrint = useReactToPrint({
     content: () => printOrder.current,
+    onAfterPrint: () => setShowCreateOrderModal(!showCreateOrderModal),
   });
 
+  const printedHandler = () => {
+    console.log("entra");
+  };
   // Funciones a go
   const greet = async () => {
     // const [clientName, setClientName] = useState("");
@@ -67,8 +86,11 @@ export const CreateOrder = () => {
     )
       return;
     setUpdateTotal(true);
+    setGenerateOrderLoading(true);
     let tmpGarments = garments.map((item) => {
       delete item.realPrice;
+      item.service_type = item.service;
+      delete item.service
       return {
         ...item,
         defects: item.defects.join("-"),
@@ -76,17 +98,15 @@ export const CreateOrder = () => {
         price: item.price.toString(),
       };
     });
-
     if (totalPrice === 0) {
       totalPrice = garments
         .map((item) => parseInt(item.price) * parseInt(item.cuantity))
         .reduce((a, b) => {
-          console.log(a, b);
           return a + b;
         }, 0);
     }
 
-    var order = new Order({
+    let order = new Order({
       recieved_date: recievedDate,
       delivery_date: deliveryDate,
       client_name: clientName,
@@ -99,24 +119,62 @@ export const CreateOrder = () => {
       payment_total: totalPrice.toString(),
       garments: tmpGarments,
     });
-    //Clear
+    setOrder(order);
+    setRecievedDate(new Date());
+    setOrderNumberTmp(orderNumber);
+
+    const data = await window.go.service.OrderService.CreateOrder(order, true);
+    setOrder(data);
+
+    handlePrint();
+  };
+
+  async function saveIntoDB() {
+    let tmpGarments = garments.map((item) => {
+      delete item.realPrice;
+      return {
+        ...item,
+        defects: item.defects.join("-"),
+        cuantity: item.cuantity.toString(),
+        price: item.price.toString(),
+      };
+    });
+    let order = new Order({
+      recieved_date: recievedDate,
+      delivery_date: deliveryDate,
+      client_name: clientName,
+      client_id: clientId,
+      client_address: clientAddress,
+      client_phone: clientPhone,
+      client_email: clientEmail,
+      payment_total_payed: paymentTotalPayed.toString(),
+      garment_total: totalGarments,
+      payment_total: totalPrice.toString(),
+      garments: tmpGarments,
+      service_type: "test",
+    });
+    setOrder(order);
+    setRecievedDate(new Date());
+    setOrderNumberTmp(orderNumber);
+    await window.go.service.OrderService.CreateOrder(order, false);
+
+    clearInputs();
+    setGenerateOrderLoading(false);
+    setShowCreateOrderModal(false);
+    console.log(order);
+  }
+
+  function clearInputs() {
+    setOrderNumber(orderNumber + 1);
     setClientName("");
     setClientId("");
     setClientAddress("");
     setClientPhone("");
     setClientEmail("");
     setPaymentTotalPayed("");
-    setRecievedDate(new Date());
-    setDeliveryDate(new Date());
-    setOrderNumberTmp(orderNumber);
-    setOrderNumber(orderNumber + 1);
+    setDeliveryDate(null);
     setGarments([]);
-
-    const data = await window.go.service.OrderService.CreateOrder(order);
-    setOrder(data);
-    handlePrint();
-  };
-
+  }
 
   function ValidateEmail(mail) {
     if (/^\w+([\\.-]?\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
@@ -142,16 +200,53 @@ export const CreateOrder = () => {
   // TODO: cambiar si se va a wails
   useEffect(() => {
     const getOrderCount = async () => {
-      const data = await window.go.service.OrderService.GetNextOrderIdentifier();
+      const data =
+        await window.go.service.OrderService.GetNextOrderIdentifier();
       setOrderNumber(("000000" + data).substr(-4, 4));
     };
 
     getOrderCount();
   }, [orderNumber]);
 
+  useEffect(() => {
+    const fetchClient = async () => {
+      let clients = await window.go.service.ClientService.GetClientsByName(
+        100,
+        0,
+        ""
+      );
+      setClients(clients);
+    };
+
+    fetchClient();
+  }, []);
+
+  const handleModalCancel = async () => {
+    setShowCreateOrderModal(!showCreateOrderModal);
+    setGenerateOrderLoading(false);
+  };
+
+  const handleClient = async (ev, value, reason, details) => {
+    try {
+      let client = await window.go.service.ClientService.GetClientsByName(
+        100,
+        0,
+        value
+      );
+
+      setClientName(value);
+      setClientId(client[0].identification);
+      setClientAddress(client[0].address);
+      setClientPhone(client[0].phone);
+      setClientEmail(client[0].email);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   return (
-    <Container>
-      <Navbar/>
+    <>
+      <Navbar onafterprint={printedHandler} />
       {/* Header */}
       <div className={styles["logo-container"]}>
         <img src={logo} alt="logo" className={styles["logo"]} />
@@ -167,20 +262,19 @@ export const CreateOrder = () => {
         autoComplete="off"
       >
         <Box className={styles["details-wrap"]} autoComplete="off">
-          <TextField
-            required
-            id="outlined-name"
-            label="Cliente"
-            className={styles["input"]}
-            value={clientName}
-            onChange={(event) => setClientName(event.target.value)}
-            // value={name}
-            // onChange={handleChange}
+          <Autocomplete
+            sx={{ width: 300 }}
+            options={clients.map((client) => client.name)}
+            onChange={(ev, value, reason, details) => {
+              handleClient(ev, value, reason, details);
+            }}
+            defaultValue={clientName}
+            renderInput={(params) => <TextField {...params} />}
           />
           <TextField
             required
             id="outlined-name"
-            label="Email"
+            label="Correo Electrónico"
             className={styles["input"]}
             sx={{ marginTop: 3 }}
             error={error.email}
@@ -261,6 +355,8 @@ export const CreateOrder = () => {
           garments={garments}
           updateTotal={updateTotal}
           setUpdateTotal={setUpdateTotal}
+          garmentsData={garmentsData}
+          setGarmentsData={setGarmentsData}
         />
       </div>
       <Box
@@ -302,10 +398,55 @@ export const CreateOrder = () => {
 
       {/* Generar orden */}
       <Box sx={{ display: "flex", justifyContent: "center", marginTop: 5 }}>
-        <Button variant="text" onClick={greet}>
+        <LoadingButton
+          loading={generateOrderLoading}
+          loadingPosition="start"
+          startIcon={<SaveIcon />}
+          variant="outlined"
+          onClick={greet}
+        >
           Generar orden
-        </Button>
+        </LoadingButton>
       </Box>
+
+      <Modal
+        open={showCreateOrderModal}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "background.paper",
+            border: "2px solid #000",
+            boxShadow: 24,
+            p: 4,
+          }}
+        >
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Guardar orden
+          </Typography>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            ¿Deseas guardar y crear la nueva orden?
+          </Typography>
+
+          <Button
+            variant="text"
+            color="error"
+            onClick={() => handleModalCancel()}
+          >
+            No
+          </Button>
+          <Button variant="text" onClick={() => saveIntoDB()}>
+            Sí
+          </Button>
+        </Box>
+      </Modal>
+
       {order && (
         <PrintOrder
           order={order}
@@ -314,6 +455,6 @@ export const CreateOrder = () => {
           handlePrint={handlePrint}
         />
       )}
-    </Container>
+    </>
   );
 };

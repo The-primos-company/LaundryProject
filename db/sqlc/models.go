@@ -21,17 +21,18 @@ type Client struct {
 }
 
 type Garment struct {
-	ID        uuid.UUID `json:"id"`
-	OrderID   uuid.UUID `json:"order_id"`
-	Cuantity  string    `json:"cuantity"`
-	Category  string    `json:"category"`
-	Gendre    string    `json:"gendre"`
-	Color     string    `json:"color"`
-	Brand     string    `json:"brand"`
-	Price     string    `json:"price"`
-	Comment   string    `json:"comment"`
-	Defects   string    `json:"defects"`
-	CreatedAt time.Time `json:"created_at"`
+	ID          uuid.UUID `json:"id"`
+	OrderID     uuid.UUID `json:"order_id"`
+	Cuantity    string    `json:"cuantity"`
+	Category    string    `json:"category"`
+	Gendre      string    `json:"gendre"`
+	Color       string    `json:"color"`
+	Brand       string    `json:"brand"`
+	Price       string    `json:"price"`
+	Comment     string    `json:"comment"`
+	Defects     string    `json:"defects"`
+	CreatedAt   time.Time `json:"created_at"`
+	ServiceType string    `json:"service_type"`
 }
 
 type Order struct {
@@ -49,7 +50,6 @@ type Order struct {
 	PaymentTotal      string    `json:"payment_total"`
 	PaymentTotalReal  string    `json:"payment_total_real"`
 	CreatedAt         time.Time `json:"created_at"`
-	ServiceType       string    `json:"service_type"`
 }
 
 type Price struct {

@@ -5,9 +5,10 @@ import {
   GridCellEditStopReasons,
 } from "@mui/x-data-grid";
 import { randomId } from "@mui/x-data-grid-generator";
-import { Button } from "@mui/material";
+import { Button, TextField, Autocomplete } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import PropTypes from "prop-types";
+import SelectUnstyled from "@mui/base/SelectUnstyled";
 import MultiSelectUnstyled from "@mui/base/MultiSelectUnstyled";
 import { selectUnstyledClasses } from "@mui/base/SelectUnstyled";
 import OptionUnstyled, {
@@ -43,7 +44,7 @@ const StyledButton = styled("button")(
   font-size: 0.875rem;
   box-sizing: border-box;
   min-height: calc(1.5em + 22px);
-  min-width: 320px;
+  min-width: 250px;
   background: ${theme.palette.mode === "dark" ? grey[900] : "#fff"};
   border: 1px solid ${theme.palette.mode === "dark" ? grey[800] : grey[300]};
   border-radius: 0.75em;
@@ -82,7 +83,7 @@ const StyledListbox = styled("ul")(
   box-sizing: border-box;
   padding: 5px;
   margin: 10px 0;
-  min-width: 320px;
+  min-width: 100px;
   background: ${theme.palette.mode === "dark" ? grey[900] : "#fff"};
   border: 1px solid ${theme.palette.mode === "dark" ? grey[800] : grey[300]};
   border-radius: 0.75em;
@@ -146,6 +147,16 @@ const CustomMultiSelect = React.forwardRef(function CustomMultiSelect(
 
   return <MultiSelectUnstyled {...props} ref={ref} components={components} />;
 });
+const CustomSelect = React.forwardRef(function CustomMultiSelect(props, ref) {
+  const components = {
+    Root: StyledButton,
+    Listbox: StyledListbox,
+    Popper: StyledPopper,
+    ...props.components,
+  };
+
+  return <SelectUnstyled {...props} ref={ref} components={components} />;
+});
 
 CustomMultiSelect.propTypes = {
   /**
@@ -160,11 +171,14 @@ CustomMultiSelect.propTypes = {
   }),
 };
 
+// aqui esta el componente
 export default function PrendasComponent({
   setGarments,
   garments,
   updateTotal,
   setUpdateTotal,
+  garmentsData,
+  setGarmentsData,
 }) {
   // const [rows, setRows] = React.useState(garments);
 
@@ -172,6 +186,18 @@ export default function PrendasComponent({
     setUpdateTotal(false);
     handleTotal();
   }, [updateTotal]);
+
+  React.useEffect(() => {
+    const fetchGarments = async () => {
+      const data = await window.go.service.PriceService.GetPricesByCategory(
+        100,
+        0,
+        ""
+      );
+      setGarmentsData(data);
+    };
+    fetchGarments();
+  }, []);
 
   function handleClick() {
     let newArr = [
@@ -185,6 +211,7 @@ export default function PrendasComponent({
         price: 0,
         realTotal: 0,
         comment: "",
+        service: "",
         defects: [],
       },
     ];
@@ -228,6 +255,59 @@ export default function PrendasComponent({
     setGarments(row);
   };
 
+  const handleService = async (service, id) => {
+    let row = garments.map((item) => {
+      if (item.id === id) {
+        let price = garmentsData.filter(
+          (garment) => garment.category === item.category
+        );
+        return {
+          ...item,
+          service,
+          price:
+            service === "Lavado"
+              ? price[0].price_washing
+              : price[0].price_ironing,
+        };
+      }
+
+      return {
+        ...item,
+      };
+    });
+    setGarments(row);
+  };
+
+  const handleAutocomplete = (ev, value, reason, details, id) => {
+    let row = garments.map((item) => {
+      if (item.id === id && value) {
+        let category = garmentsData.filter(
+          (garment) => garment.category === value
+        );
+
+        let price = 0;
+
+        if (item.service === "Lavado" && item.service) {
+          price = category[0].price_washing;
+        } else if (item.service === "Aplanchado" && item.service) {
+          price = category[0].price_ironing;
+        } else {
+          price = 0;
+        }
+        return {
+          ...item,
+          category: value,
+          price,
+        };
+      }
+
+      return {
+        ...item,
+      };
+    });
+    setGarments(row);
+  };
+
   const handleOnChange = ({ field, id, props }) => {
     // let oldArr = garments.filter((row) => row.id !== id);
     // let data = garments.filter((row) => row.id === id);
@@ -236,15 +316,17 @@ export default function PrendasComponent({
     // setGarments(oldArr.concat(row));
 
     let row = garments.map((item) => {
-      if (item.id === id)
+      if (item.id === id) {
         return {
           ...item,
           [field]: props.value,
         };
+      }
       return {
         ...item,
       };
     });
+
     setGarments(row);
   };
 
@@ -263,6 +345,8 @@ export default function PrendasComponent({
     "Otros",
   ];
 
+  const service = ["Lavado", "Aplanchado"];
+
   const columns = [
     {
       field: "cuantity",
@@ -270,7 +354,24 @@ export default function PrendasComponent({
       type: "string",
       editable: true,
     },
-    { field: "category", headerName: "Categoria", editable: true },
+    {
+      field: "category",
+      headerName: "Categoria",
+      width: 300,
+      type: "actions",
+      getActions: ({ id }) => {
+        return [
+          <Autocomplete
+            sx={{ width: 300 }}
+            options={garmentsData.map((garment) => garment.category)}
+            onChange={(ev, value, reason, details) => {
+              handleAutocomplete(ev, value, reason, details, id);
+            }}
+            renderInput={(params) => <TextField {...params} />}
+          />,
+        ];
+      },
+    },
     {
       field: "gendre",
       headerName: "Genero",
@@ -281,9 +382,29 @@ export default function PrendasComponent({
     { field: "color", headerName: "Color", editable: true },
     { field: "brand", headerName: "Marca", editable: true },
     {
+      field: "service",
+      headerName: "Servicio",
+      width: 250,
+      type: "actions",
+      getActions: ({ id }) => {
+        return [
+          <CustomSelect
+            onChange={async (value) => {
+              await handleService(value, id);
+            }}
+          >
+            {service.map((c) => (
+              <StyledOption key={c} value={c}>
+                {c}
+              </StyledOption>
+            ))}
+          </CustomSelect>,
+        ];
+      },
+    },
+    {
       field: "price",
       headerName: "Precio",
-      type: "string",
       editable: true,
     },
     {

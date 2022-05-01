@@ -10,7 +10,7 @@ export const Garments = ({ order = [], height = 150, enable = true }) => {
               {item.cuantity}
             </td>
             <td className="border" style={{ fontSize: 15 }}>
-              {item.category} {item.gendre} {item.color} {item.brand}
+              {item.category} {item.gendre} {item.color} {item.brand} {item.service_type}
             </td>
           </tr>
         );

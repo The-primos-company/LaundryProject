@@ -18,14 +18,15 @@ func newGarmentService(store *db.Store) OrderService {
 }
 
 type Garment struct {
-	ID       uuid.UUID `json:"id"`
-	OrderID  uuid.UUID `json:"order_id"`
-	Cuantity string    `json:"cuantity"`
-	Category string    `json:"category"`
-	Gendre   string    `json:"gendre"`
-	Color    string    `json:"color"`
-	Brand    string    `json:"brand"`
-	Price    string    `json:"price"`
-	Comment  string    `json:"comment"`
-	Defects  string    `json:"defects"`
+	ID          uuid.UUID `json:"id"`
+	OrderID     uuid.UUID `json:"order_id"`
+	Cuantity    string    `json:"cuantity"`
+	Category    string    `json:"category"`
+	Gendre      string    `json:"gendre"`
+	Color       string    `json:"color"`
+	Brand       string    `json:"brand"`
+	Price       string    `json:"price"`
+	Comment     string    `json:"comment"`
+	Defects     string    `json:"defects"`
+	ServiceType string    `json:"service_type"`
 }

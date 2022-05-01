@@ -46,14 +46,15 @@ func (store *Store) execTx(ctx context.Context, mock bool, rollbackAux func(*Que
 }
 
 type CreateGarmentTxParams struct {
-	Cuantity string `json:"cuantity"`
-	Category string `json:"category"`
-	Gendre   string `json:"gendre"`
-	Color    string `json:"color"`
-	Brand    string `json:"brand"`
-	Price    string `json:"price"`
-	Comment  string `json:"comment"`
-	Defects  string `json:"defects"`
+	Cuantity    string `json:"cuantity"`
+	Category    string `json:"category"`
+	Gendre      string `json:"gendre"`
+	Color       string `json:"color"`
+	Brand       string `json:"brand"`
+	Price       string `json:"price"`
+	Comment     string `json:"comment"`
+	Defects     string `json:"defects"`
+	ServiceType string `json:"service_type"`
 }
 
 type CreateOrderTxParams struct {
@@ -72,16 +73,17 @@ type CreateOrderTxParams struct {
 }
 
 type CreateGarmentTxResults struct {
-	ID       uuid.UUID `json:"id"`
-	OrderID  uuid.UUID `json:"order_id"`
-	Cuantity string    `json:"cuantity"`
-	Category string    `json:"category"`
-	Gendre   string    `json:"gendre"`
-	Color    string    `json:"color"`
-	Brand    string    `json:"brand"`
-	Price    string    `json:"price"`
-	Comment  string    `json:"comment"`
-	Defects  string    `json:"defects"`
+	ID          uuid.UUID `json:"id"`
+	OrderID     uuid.UUID `json:"order_id"`
+	Cuantity    string    `json:"cuantity"`
+	Category    string    `json:"category"`
+	Gendre      string    `json:"gendre"`
+	Color       string    `json:"color"`
+	Brand       string    `json:"brand"`
+	Price       string    `json:"price"`
+	Comment     string    `json:"comment"`
+	Defects     string    `json:"defects"`
+	ServiceType string    `json:"service_type"`
 }
 
 type CreateOrderTxResults struct {
@@ -143,34 +145,37 @@ func (store *Store) CreateOrderTx(ctx context.Context, mock bool, arg CreateOrde
 
 		for i := 0; i < len(arg.Garments); i++ {
 			argG := arg.Garments[i]
-
+			fmt.Println("service type")
+			fmt.Println(argG.ServiceType)
 			garment, err := q.CreateGarment(ctx, CreateGarmentParams{
-				ID:       uuid.New(),
-				OrderID:  order.ID,
-				Cuantity: argG.Cuantity,
-				Category: argG.Category,
-				Gendre:   argG.Gendre,
-				Color:    argG.Color,
-				Brand:    argG.Brand,
-				Price:    argG.Price,
-				Comment:  argG.Comment,
-				Defects:  argG.Defects,
+				ID:          uuid.New(),
+				OrderID:     order.ID,
+				Cuantity:    argG.Cuantity,
+				Category:    argG.Category,
+				Gendre:      argG.Gendre,
+				Color:       argG.Color,
+				Brand:       argG.Brand,
+				Price:       argG.Price,
+				Comment:     argG.Comment,
+				Defects:     argG.Defects,
+				ServiceType: argG.ServiceType,
 			})
 			if err != nil {
 				return err
 			}
 
 			garments[i] = CreateGarmentTxResults{
-				ID:       garment.ID,
-				OrderID:  garment.OrderID,
-				Cuantity: garment.Cuantity,
-				Category: garment.Category,
-				Gendre:   garment.Gendre,
-				Color:    garment.Color,
-				Brand:    garment.Color,
-				Price:    garment.Price,
-				Comment:  garment.Comment,
-				Defects:  garment.Defects,
+				ID:          garment.ID,
+				OrderID:     garment.OrderID,
+				Cuantity:    garment.Cuantity,
+				Category:    garment.Category,
+				Gendre:      garment.Gendre,
+				Color:       garment.Color,
+				Brand:       garment.Brand,
+				Price:       garment.Price,
+				Comment:     garment.Comment,
+				Defects:     garment.Defects,
+				ServiceType: garment.ServiceType,
 			}
 		}
 

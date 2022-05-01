@@ -1,7 +1,14 @@
 export interface go {
   "service": {
+    "ClientService": {
+		CreateClient(arg1:Client):Promise<Client>
+		GetClientsByIdentification(arg1:number,arg2:number,arg3:string):Promise<Array<Client>>
+		GetClientsByName(arg1:number,arg2:number,arg3:string):Promise<Array<Client>>
+		GetClientsList(arg1:number,arg2:number):Promise<Array<Client>>
+		UpdateClient(arg1:Client):Promise<Client>
+    },
     "OrderService": {
-		CreateOrder(arg1:Order):Promise<Order>
+		CreateOrder(arg1:Order,arg2:boolean):Promise<Order>
 		GetNextOrderIdentifier():Promise<number>
 		GetOrderByClientName(arg1:string,arg2:number,arg3:number):Promise<Array<Order>>
 		GetOrderByIdentifier(arg1:string,arg2:number,arg3:number):Promise<Array<Order>>

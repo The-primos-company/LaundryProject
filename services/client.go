@@ -46,7 +46,23 @@ func (s *ClientService) CreateClient(arg Client) Client {
 	return Client(client)
 }
 
-func (s *ClientService) GetClientsByIdentification(identification string, limit int32, offset int32) []Client {
+func (s *ClientService) UpdateClient(arg Client) Client {
+	client, err := s.store.UpdateClient(context.Background(), db.UpdateClientParams{
+		ID:             arg.ID,
+		Name:           arg.Name,
+		Identification: arg.Identification,
+		Address:        arg.Address,
+		Phone:          arg.Phone,
+		Email:          arg.Email,
+	})
+
+	if err != nil {
+		log.Panic("error updating client", err)
+	}
+	return Client(client)
+}
+
+func (s *ClientService) GetClientsByIdentification(limit int32, offset int32, identification string) []Client {
 	result, err := s.store.GetClientByIdentification(context.Background(), db.GetClientByIdentificationParams{
 		Identification: identification,
 		Limit:          limit,
@@ -65,7 +81,7 @@ func (s *ClientService) GetClientsByIdentification(identification string, limit 
 	return clients
 }
 
-func (s *ClientService) GetClientsByName(name string, limit int32, offset int32) []Client {
+func (s *ClientService) GetClientsByName(limit int32, offset int32, name string) []Client {
 	result, err := s.store.GetClientByName(context.Background(), db.GetClientByNameParams{
 		Name:   name,
 		Limit:  limit,

@@ -57,14 +57,15 @@ func (s *OrderService) CreateOrder(arg Order, mock bool) Order {
 	for i := 0; i < len(arg.Garments); i++ {
 		argG := arg.Garments[i]
 		garments[i] = db.CreateGarmentTxParams{
-			Cuantity: argG.Cuantity,
-			Category: argG.Category,
-			Gendre:   argG.Gendre,
-			Color:    argG.Color,
-			Brand:    argG.Brand,
-			Price:    argG.Price,
-			Comment:  argG.Comment,
-			Defects:  argG.Defects,
+			Cuantity:    argG.Cuantity,
+			Category:    argG.Category,
+			Gendre:      argG.Gendre,
+			Color:       argG.Color,
+			Brand:       argG.Brand,
+			Price:       argG.Price,
+			Comment:     argG.Comment,
+			Defects:     argG.Defects,
+			ServiceType: argG.ServiceType,
 		}
 	}
 
@@ -97,15 +98,16 @@ func (s *OrderService) CreateOrder(arg Order, mock bool) Order {
 	for i := 0; i < len(order.Garments); i++ {
 		argG := order.Garments[i]
 		garmentsR[i] = Garment{
-			OrderID:  argG.OrderID,
-			Cuantity: argG.Cuantity,
-			Category: argG.Category,
-			Gendre:   argG.Gendre,
-			Color:    argG.Color,
-			Brand:    argG.Brand,
-			Price:    argG.Price,
-			Comment:  argG.Comment,
-			Defects:  argG.Defects,
+			OrderID:     argG.OrderID,
+			Cuantity:    argG.Cuantity,
+			Category:    argG.Category,
+			Gendre:      argG.Gendre,
+			Color:       argG.Color,
+			Brand:       argG.Brand,
+			Price:       argG.Price,
+			Comment:     argG.Comment,
+			Defects:     argG.Defects,
+			ServiceType: argG.ServiceType,
 		}
 	}
 
@@ -122,7 +124,6 @@ func (s *OrderService) CreateOrder(arg Order, mock bool) Order {
 		PaymentTotalPayed: order.PaymentTotalPayed,
 		PaymentTotal:      order.PaymentTotal,
 		PaymentTotalReal:  order.PaymentTotalReal,
-		ServiceType:       order.ServiceType,
 		Garments:          garmentsR,
 	}
 }
@@ -159,16 +160,17 @@ func (s *OrderService) GetOrderByClientName(clientName string, limit int32, offs
 		for j := 0; j < len(garmentsDb); j++ {
 			garmentDb := garmentsDb[j]
 			garments[j] = Garment{
-				ID:       garmentDb.ID,
-				OrderID:  garmentDb.OrderID,
-				Cuantity: garmentDb.Cuantity,
-				Category: garmentDb.Category,
-				Gendre:   garmentDb.Gendre,
-				Color:    garmentDb.Color,
-				Brand:    garmentDb.Brand,
-				Price:    garmentDb.Price,
-				Comment:  garmentDb.Comment,
-				Defects:  garmentDb.Defects,
+				ID:          garmentDb.ID,
+				OrderID:     garmentDb.OrderID,
+				Cuantity:    garmentDb.Cuantity,
+				Category:    garmentDb.Category,
+				Gendre:      garmentDb.Gendre,
+				Color:       garmentDb.Color,
+				Brand:       garmentDb.Brand,
+				Price:       garmentDb.Price,
+				Comment:     garmentDb.Comment,
+				Defects:     garmentDb.Defects,
+				ServiceType: garmentDb.ServiceType,
 			}
 		}
 
@@ -188,7 +190,6 @@ func (s *OrderService) GetOrderByClientName(clientName string, limit int32, offs
 			PaymentTotalPayed: order.PaymentTotalPayed,
 			PaymentTotal:      order.PaymentTotal,
 			PaymentTotalReal:  order.PaymentTotalReal,
-			ServiceType:       order.ServiceType,
 			Garments:          garments,
 		}
 	}
@@ -222,16 +223,17 @@ func (s *OrderService) GetOrderByIdentifier(identifier string, limit int32, offs
 		for j := 0; j < len(garmentsDb); j++ {
 			garmentDb := garmentsDb[j]
 			garments[j] = Garment{
-				ID:       garmentDb.ID,
-				OrderID:  garmentDb.OrderID,
-				Cuantity: garmentDb.Cuantity,
-				Category: garmentDb.Category,
-				Gendre:   garmentDb.Gendre,
-				Color:    garmentDb.Color,
-				Brand:    garmentDb.Brand,
-				Price:    garmentDb.Price,
-				Comment:  garmentDb.Comment,
-				Defects:  garmentDb.Defects,
+				ID:          garmentDb.ID,
+				OrderID:     garmentDb.OrderID,
+				Cuantity:    garmentDb.Cuantity,
+				Category:    garmentDb.Category,
+				Gendre:      garmentDb.Gendre,
+				Color:       garmentDb.Color,
+				Brand:       garmentDb.Brand,
+				Price:       garmentDb.Price,
+				Comment:     garmentDb.Comment,
+				Defects:     garmentDb.Defects,
+				ServiceType: garmentDb.ServiceType,
 			}
 		}
 
@@ -251,7 +253,6 @@ func (s *OrderService) GetOrderByIdentifier(identifier string, limit int32, offs
 			PaymentTotalPayed: order.PaymentTotalPayed,
 			PaymentTotal:      order.PaymentTotal,
 			PaymentTotalReal:  order.PaymentTotalReal,
-			ServiceType:       order.ServiceType,
 			Garments:          garments,
 		}
 	}
@@ -278,16 +279,17 @@ func (s *OrderService) GetOrdersList(limit int32, offset int32) []Order {
 		for j := 0; j < len(garmentsDb); j++ {
 			garmentDb := garmentsDb[j]
 			garments[j] = Garment{
-				ID:       garmentDb.ID,
-				OrderID:  garmentDb.OrderID,
-				Cuantity: garmentDb.Cuantity,
-				Category: garmentDb.Category,
-				Gendre:   garmentDb.Gendre,
-				Color:    garmentDb.Color,
-				Brand:    garmentDb.Brand,
-				Price:    garmentDb.Price,
-				Comment:  garmentDb.Comment,
-				Defects:  garmentDb.Defects,
+				ID:          garmentDb.ID,
+				OrderID:     garmentDb.OrderID,
+				Cuantity:    garmentDb.Cuantity,
+				Category:    garmentDb.Category,
+				Gendre:      garmentDb.Gendre,
+				Color:       garmentDb.Color,
+				Brand:       garmentDb.Brand,
+				Price:       garmentDb.Price,
+				Comment:     garmentDb.Comment,
+				Defects:     garmentDb.Defects,
+				ServiceType: garmentDb.ServiceType,
 			}
 		}
 
@@ -307,7 +309,6 @@ func (s *OrderService) GetOrdersList(limit int32, offset int32) []Order {
 			PaymentTotalPayed: order.PaymentTotalPayed,
 			PaymentTotal:      order.PaymentTotal,
 			PaymentTotalReal:  order.PaymentTotalReal,
-			ServiceType:       order.ServiceType,
 			Garments:          garments,
 		}
 	}

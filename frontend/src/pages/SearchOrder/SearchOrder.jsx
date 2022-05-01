@@ -64,7 +64,7 @@ export const SearchOrder = ({ setRoute }) => {
 
 
   return (
-    <Container>
+    <>
       <Navbar />
       <Grid container spacing={2}>
         <Grid item xs={3}>
@@ -108,7 +108,7 @@ export const SearchOrder = ({ setRoute }) => {
         {
           orders.map(order => {
 
-            return <Order key={order.ID} order={order} setOrder={setOrder} setOrderNumberTmp={setOrderNumberTmp} handlePrint={handlePrint}/>
+            return <Order key={order.ID} order={order} setOrder={setOrder} setOrderNumberTmp={setOrderNumberTmp} handlePrint={handlePrint} />
           })
         }
         {order && (
@@ -122,6 +122,6 @@ export const SearchOrder = ({ setRoute }) => {
 
       </Stack>
 
-    </Container>
+    </>
   )
 }

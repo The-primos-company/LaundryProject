@@ -10,10 +10,11 @@ INSERT INTO
         brand,
         price,
         comment,
-        defects
+        defects,
+        service_type
     )
 VALUES
-    ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *;
+    ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *;
 
 
 -- name: UpdateGarment :one
@@ -27,7 +28,8 @@ SET
     brand = $6,
     price = $7,
     comment = $8,
-    defects = $9
+    defects = $9,
+    service_type = $10
 WHERE
     id = $1
 RETURNING *;

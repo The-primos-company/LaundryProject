@@ -1,7 +1,7 @@
 import { Garments } from './Garments'
 import moment from "moment";
 import { forwardRef } from "react";
-import logo from "../../assets/images/logo.jpeg";
+import logo from "../../assets/images/logodark.jpeg";
 import "moment/locale/es";
 
 import "./PrintOrder.css";
@@ -34,6 +34,7 @@ export const PrintOrder = ({
 const ComponentToPrint = forwardRef((props, ref) => {
   const { order, orderNumber } = props;
 
+
   const GarmentsLogic = ({ order = [] }) => {
 
     if (order.garments.length === 1)
@@ -45,7 +46,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
     else
       return <Garments order={order} enable={false} />
   };
-
+  console.log(order.garments)
   return (
     <Container ref={ref}>
       {/* Compra */}
@@ -112,7 +113,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
                   </td>
                   {/* <td>Camisa masculino roja gucci </td> */}
                   <td className="border" style={{ fontSize: 10 }}>
-                    {item.category} {item.gendre} {item.color} {item.brand}
+                    {item.category} {item.gendre} {item.color} {item.brand} {item.service_type}
                   </td>
                   <td className="border" style={{ fontSize: 13 }}>
                     ${parseInt(item.cuantity) * parseInt(item.price)}
