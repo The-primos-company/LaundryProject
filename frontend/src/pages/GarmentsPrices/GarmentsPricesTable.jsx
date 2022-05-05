@@ -209,7 +209,6 @@ export default function GarmentsPricesTable({
     event.stopPropagation();
     try {
       let isDelete = await window.go.service.PriceService.DeletePrice(id);
-      console.log(isDelete)
       if (isDelete) {
         let data = garments.filter((row) => row.id !== id);
         setGarments(data);
@@ -228,7 +227,6 @@ export default function GarmentsPricesTable({
       price_washing: data[0].price_washing,
       price_ironing: data[0].price_ironing,
     });
-    console.log(price)
     try {
       await window.go.service.PriceService.UpdatePrice(price);
     } catch (e) {

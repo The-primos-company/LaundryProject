@@ -99,3 +99,18 @@ func (s *PriceService) GetPricesByCategory(limit int32, offset int32, category s
 	}
 	return result
 }
+
+func (s *PriceService) GetPrices() []Price {
+	prices, err := s.store.ListPricesAll(context.Background())
+
+	if err != nil {
+		log.Panic("error geting all prices", err)
+	}
+
+	result := make([]Price, len(prices))
+
+	for i := range prices {
+		result[i] = Price(prices[i])
+	}
+	return result
+}

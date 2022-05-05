@@ -182,6 +182,7 @@ export default function PrendasComponent({
 }) {
   // const [rows, setRows] = React.useState(garments);
 
+
   React.useEffect(() => {
     setUpdateTotal(false);
     handleTotal();
@@ -189,11 +190,7 @@ export default function PrendasComponent({
 
   React.useEffect(() => {
     const fetchGarments = async () => {
-      const data = await window.go.service.PriceService.GetPricesByCategory(
-        100,
-        0,
-        ""
-      );
+      const data = await window.go.service.PriceService.GetPrices();
       setGarmentsData(data);
     };
     fetchGarments();
@@ -222,7 +219,7 @@ export default function PrendasComponent({
     let row = garments.map((item) => {
       return {
         ...item,
-        realTotal: parseInt(item.cuantity) * parseInt(item.price),
+        realTotal: parseInt(item.cuantity) * parseInt(item.price.replace('.', '')),
       };
     });
     setGarments(row);
@@ -278,6 +275,21 @@ export default function PrendasComponent({
     setGarments(row);
   };
 
+  const handleGenre = (ev, value, reason, details, id) => {
+    let row = garments.map((item) => {
+      if (item.id === id && value) {
+        return {
+          ...item,
+          gendre: value,
+        };
+      }
+      return {
+        ...item,
+      };
+    });
+    setGarments(row);
+  }
+
   const handleAutocomplete = (ev, value, reason, details, id) => {
     let row = garments.map((item) => {
       if (item.id === id && value) {
@@ -289,7 +301,7 @@ export default function PrendasComponent({
 
         if (item.service === "Lavado" && item.service) {
           price = category[0].price_washing;
-        } else if (item.service === "Aplanchado" && item.service) {
+        } else if (item.service === "Planchado" && item.service) {
           price = category[0].price_ironing;
         } else {
           price = 0;
@@ -345,7 +357,9 @@ export default function PrendasComponent({
     "Otros",
   ];
 
-  const service = ["Lavado", "Aplanchado"];
+  const genre = ["Caballero", "Dama", "Unisex"]
+
+  const service = ["Lavado", "Planchado"];
 
   const columns = [
     {
@@ -372,12 +386,31 @@ export default function PrendasComponent({
         ];
       },
     },
+    // {
+    //   field: "gendre",
+    //   headerName: "Genero",
+    //   editable: true,
+    //   type: "singleSelect",
+    //   valueOptions: ["Caballero", "Dama", "Unisex"],
+    // },
     {
       field: "gendre",
       headerName: "Genero",
       editable: true,
-      type: "singleSelect",
-      valueOptions: ["Caballero", "Dama", "Unisex"],
+      width: 300,
+      type: "actions",
+      getActions: ({ id }) => {
+        return [
+          <Autocomplete
+            sx={{ width: 300 }}
+            options={genre.map((garment) => garment)}
+            onChange={(ev, value, reason, details) => {
+              handleGenre(ev, value, reason, details, id);
+            }}
+            renderInput={(params) => <TextField {...params} />}
+          />,
+        ];
+      },
     },
     { field: "color", headerName: "Color", editable: true },
     { field: "brand", headerName: "Marca", editable: true },

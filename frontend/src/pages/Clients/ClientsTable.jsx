@@ -172,7 +172,6 @@ export default function ClientsPricesTable({
   const handleEditClick = (id) => async (event) => {
     event.stopPropagation();
     let data = clients.filter((row) => row.id === id);
-    console.log(data[0]);
     var client = new Client({
       id,
       name: data[0].name,
@@ -181,7 +180,6 @@ export default function ClientsPricesTable({
       phone: data[0].phone,
       email: data[0].email,
     });
-    console.log(client)
     try {
       await window.go.service.ClientService.UpdateClient(client);
     } catch (e) {

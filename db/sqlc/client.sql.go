@@ -246,6 +246,47 @@ func (q *Queries) ListClients(ctx context.Context, arg ListClientsParams) ([]Cli
 	return items, nil
 }
 
+const listClientsAll = `-- name: ListClientsAll :many
+SELECT
+    id, name, identification, address, phone, email, created_at
+FROM
+    clients
+ORDER BY
+    created_at
+DESC
+`
+
+func (q *Queries) ListClientsAll(ctx context.Context) ([]Client, error) {
+	rows, err := q.db.QueryContext(ctx, listClientsAll)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Client
+	for rows.Next() {
+		var i Client
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Identification,
+			&i.Address,
+			&i.Phone,
+			&i.Email,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const updateClient = `-- name: UpdateClient :one
 UPDATE
     clients

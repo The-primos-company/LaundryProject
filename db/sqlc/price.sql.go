@@ -130,6 +130,45 @@ func (q *Queries) ListPrices(ctx context.Context, arg ListPricesParams) ([]Price
 	return items, nil
 }
 
+const listPricesAll = `-- name: ListPricesAll :many
+SELECT
+    id, category, price_washing, price_ironing, created_at
+FROM
+    prices
+ORDER BY
+    category
+ASC
+`
+
+func (q *Queries) ListPricesAll(ctx context.Context) ([]Price, error) {
+	rows, err := q.db.QueryContext(ctx, listPricesAll)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Price
+	for rows.Next() {
+		var i Price
+		if err := rows.Scan(
+			&i.ID,
+			&i.Category,
+			&i.PriceWashing,
+			&i.PriceIroning,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listPricesByCategory = `-- name: ListPricesByCategory :many
 SELECT
     id, category, price_washing, price_ironing, created_at

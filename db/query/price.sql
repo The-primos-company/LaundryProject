@@ -44,6 +44,15 @@ ASC
 LIMIT
     $1 OFFSET $2;
 
+-- name: ListPricesAll :many
+SELECT
+    *
+FROM
+    prices
+ORDER BY
+    category
+ASC;
+
 -- name: DeletePrice :exec
 DELETE
 FROM

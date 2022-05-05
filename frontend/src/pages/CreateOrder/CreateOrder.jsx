@@ -62,7 +62,6 @@ export const CreateOrder = () => {
   });
 
   const printedHandler = () => {
-    console.log("entra");
   };
   // Funciones a go
   const greet = async () => {
@@ -100,7 +99,7 @@ export const CreateOrder = () => {
     });
     if (totalPrice === 0) {
       totalPrice = garments
-        .map((item) => parseInt(item.price) * parseInt(item.cuantity))
+        .map((item) => parseInt(item.price.replace('.','')) * parseInt(item.cuantity))
         .reduce((a, b) => {
           return a + b;
         }, 0);
@@ -161,7 +160,6 @@ export const CreateOrder = () => {
     clearInputs();
     setGenerateOrderLoading(false);
     setShowCreateOrderModal(false);
-    console.log(order);
   }
 
   function clearInputs() {
@@ -185,7 +183,6 @@ export const CreateOrder = () => {
 
   const handleEmail = (event) => {
     const emailValid = ValidateEmail(event.target.value);
-    console.log(emailValid);
     if (!emailValid)
       setError({
         email: "Error en el correo",
@@ -210,11 +207,7 @@ export const CreateOrder = () => {
 
   useEffect(() => {
     const fetchClient = async () => {
-      let clients = await window.go.service.ClientService.GetClientsByName(
-        100,
-        0,
-        ""
-      );
+      let clients = await window.go.service.ClientService.GetClients();
       setClients(clients);
     };
 

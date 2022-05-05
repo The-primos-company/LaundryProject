@@ -49,6 +49,8 @@ export class Order {
     payment_total: string;
     payment_total_real: string;
     service_type: string;
+    payed_at: string;
+    delivered_at: string;
     garments: Garment[];
 
     static createFrom(source: any = {}) {
@@ -71,6 +73,8 @@ export class Order {
         this.payment_total = source["payment_total"];
         this.payment_total_real = source["payment_total_real"];
         this.service_type = source["service_type"];
+        this.payed_at = source["payed_at"];
+        this.delivered_at = source["delivered_at"];
         this.garments = this.convertValues(source["garments"], Garment);
     }
 
@@ -93,6 +97,53 @@ export class Order {
 	}
 }
 
+
+
+
+export class OrderPagination {
+    orders: Order[];
+    pages: number;
+    payment_pending: string;
+    payment_recolected: string;
+    orders_payment_pending: string;
+    orders_delivery_pending: string;
+    orders_payment_done: string;
+    orders_delivery_done: string;
+
+    static createFrom(source: any = {}) {
+        return new OrderPagination(source);
+    }
+
+    constructor(source: any = {}) {
+        if ('string' === typeof source) source = JSON.parse(source);
+        this.orders = this.convertValues(source["orders"], Order);
+        this.pages = source["pages"];
+        this.payment_pending = source["payment_pending"];
+        this.payment_recolected = source["payment_recolected"];
+        this.orders_payment_pending = source["orders_payment_pending"];
+        this.orders_delivery_pending = source["orders_delivery_pending"];
+        this.orders_payment_done = source["orders_payment_done"];
+        this.orders_delivery_done = source["orders_delivery_done"];
+    }
+
+	convertValues(a: any, classs: any, asMap: boolean = false): any {
+	    if (!a) {
+	        return a;
+	    }
+	    if (a.slice) {
+	        return (a as any[]).map(elem => this.convertValues(elem, classs));
+	    } else if ("object" === typeof a) {
+	        if (asMap) {
+	            for (const key of Object.keys(a)) {
+	                a[key] = new classs(a[key]);
+	            }
+	            return a;
+	        }
+	        return new classs(a);
+	    }
+	    return a;
+	}
+}
 
 
 
@@ -156,6 +207,7 @@ export class Price {
 
 
 
+
 export class Client {
     id: number[];
     name: string;
@@ -198,6 +250,7 @@ export class Client {
 	    return a;
 	}
 }
+
 
 
 

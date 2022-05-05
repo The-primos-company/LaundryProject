@@ -115,3 +115,18 @@ func (s *ClientService) GetClientsList(limit int32, offset int32) []Client {
 	}
 	return clients
 }
+
+func (s *ClientService) GetClients() []Client {
+	result, err := s.store.ListClientsAll(context.Background())
+
+	if err != nil {
+		log.Fatal("error getting all Clients list", err)
+	}
+
+	clients := make([]Client, len(result))
+
+	for i := 0; i < len(result); i++ {
+		clients[i] = Client(result[i])
+	}
+	return clients
+}

@@ -13,6 +13,13 @@ const go = {
         return window.go.service.ClientService.CreateClient(arg1);
       },
       /**
+       * GetClients
+       * @returns {Promise<Array<Client>>}  - Go Type: []service.Client
+       */
+      "GetClients": () => {
+        return window.go.service.ClientService.GetClients();
+      },
+      /**
        * GetClientsByIdentification
        * @param {number} arg1 - Go Type: int32
        * @param {number} arg2 - Go Type: int32
@@ -96,6 +103,28 @@ const go = {
       "GetOrdersList": (arg1, arg2) => {
         return window.go.service.OrderService.GetOrdersList(arg1, arg2);
       },
+      /**
+       * ListOrdersByRange
+       * @param {string} arg1 - Go Type: string
+       * @param {string} arg2 - Go Type: string
+       * @param {number} arg3 - Go Type: int32
+       * @param {number} arg4 - Go Type: int32
+       * @param {string} arg5 - Go Type: string
+       * @returns {Promise<OrderPagination>}  - Go Type: service.OrderPagination
+       */
+      "ListOrdersByRange": (arg1, arg2, arg3, arg4, arg5) => {
+        return window.go.service.OrderService.ListOrdersByRange(arg1, arg2, arg3, arg4, arg5);
+      },
+      /**
+       * SetOrderDateAt
+       * @param {UUID} arg1 - Go Type: uuid.UUID
+       * @param {string} arg2 - Go Type: string
+       * @param {string} arg3 - Go Type: string
+       * @returns {Promise<Order>}  - Go Type: service.Order
+       */
+      "SetOrderDateAt": (arg1, arg2, arg3) => {
+        return window.go.service.OrderService.SetOrderDateAt(arg1, arg2, arg3);
+      },
     },
     "PriceService": {
       /**
@@ -113,6 +142,13 @@ const go = {
        */
       "DeletePrice": (arg1) => {
         return window.go.service.PriceService.DeletePrice(arg1);
+      },
+      /**
+       * GetPrices
+       * @returns {Promise<Array<Price>>}  - Go Type: []service.Price
+       */
+      "GetPrices": () => {
+        return window.go.service.PriceService.GetPrices();
       },
       /**
        * GetPricesByCategory

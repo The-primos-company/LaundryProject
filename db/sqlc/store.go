@@ -69,6 +69,7 @@ type CreateOrderTxParams struct {
 	PaymentTotal      string                  `json:"payment_total"`
 	PaymentTotalReal  string                  `json:"payment_total_real"`
 	ServiceType       string                  `json:"service_type"`
+	PayedAt           sql.NullTime            `json:"payed_at"`
 	Garments          []CreateGarmentTxParams `json:"garments"`
 }
 
@@ -135,6 +136,7 @@ func (store *Store) CreateOrderTx(ctx context.Context, mock bool, arg CreateOrde
 			PaymentTotalPayed: arg.PaymentTotalPayed,
 			PaymentTotal:      arg.PaymentTotal,
 			PaymentTotalReal:  arg.PaymentTotalReal,
+			PayedAt:           arg.PayedAt,
 		})
 
 		if err != nil {

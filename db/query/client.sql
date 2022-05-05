@@ -80,3 +80,11 @@ DESC
 LIMIT
     $1 OFFSET $2;
 
+-- name: ListClientsAll :many
+SELECT
+    *
+FROM
+    clients
+ORDER BY
+    created_at
+DESC;

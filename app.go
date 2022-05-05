@@ -6,6 +6,8 @@ import (
 	"context"
 	"database/sql"
 	"log"
+
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 // App struct
@@ -30,6 +32,21 @@ func NewApp() *App {
 		services: services,
 	}
 	return app
+}
+
+func (a *App) beforeClose(ctx context.Context) (prevent bool) {
+	dialog, err := runtime.MessageDialog(ctx, runtime.MessageDialogOptions{
+		Type:          runtime.QuestionDialog,
+		Title:         "Cerrar el programa",
+		Message:       "¿Está seguro que desea cerrar el programa?",
+		DefaultButton: "Sí",
+		CancelButton:  "No",
+	})
+
+	if err != nil {
+		return false
+	}
+	return dialog != "Yes"
 }
 
 // startup is called at application startup

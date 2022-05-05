@@ -46,7 +46,6 @@ const ComponentToPrint = forwardRef((props, ref) => {
     else
       return <Garments order={order} enable={false} />
   };
-  console.log(order.garments)
   return (
     <Container ref={ref}>
       {/* Compra */}
@@ -210,6 +209,22 @@ const ComponentToPrint = forwardRef((props, ref) => {
           <strong style={{ marginBottom: 2 }}>
             {moment(order.recieved_date).format("MMMM D YYYY, h:mm a")}
           </strong>
+          {order.payed_at && 
+          <div>
+            <span>Fecha de pagado </span> <br></br>
+            <strong style={{ marginBottom: 2 }}>
+            {moment(order.payed_at).format("MMMM D YYYY, h:mm a")}
+            </strong>
+          </div>
+          }
+          {order.delivered_at && 
+          <div>
+            <span>Fecha de entregado </span> <br></br>
+            <strong style={{ marginBottom: 2 }}>
+            {moment(order.delivered_at).format("MMMM D YYYY, h:mm a")}
+            </strong>
+          </div>  
+          }
           <span>Entrega Aprox</span>
           <strong>
             {moment(order.delivery_date).format("MMMM D YYYY, h:mm a")}

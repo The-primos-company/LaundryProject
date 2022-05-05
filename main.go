@@ -32,13 +32,9 @@ func main() {
 
 	// Create application with options
 	err := wails.Run(&options.App{
-		Title:  "LaundryProject",
-		Width:  1024,
-		Height: 700,
-		// MinWidth:          720,
-		// MinHeight:         570,
-		// MaxWidth:          1280,
-		// MaxHeight:         740,
+		Title:             "Lavanderia Lava sur",
+		Width:             1024,
+		Height:            700,
 		DisableResize:     false,
 		Fullscreen:        false,
 		Frameless:         false,
@@ -50,6 +46,7 @@ func main() {
 		OnStartup:         app.startup,
 		OnDomReady:        app.domReady,
 		OnShutdown:        app.shutdown,
+		OnBeforeClose:     app.beforeClose,
 		Bind:              append(app.services, app),
 		// Windows platform specific options
 		Windows: &windows.Options{
