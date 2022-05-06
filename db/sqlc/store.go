@@ -206,6 +206,7 @@ type CreatePriceTxParams struct {
 	Category     string `json:"category"`
 	PriceWashing string `json:"price_washing"`
 	PriceIroning string `json:"price_ironing"`
+	PriceDyeing  string `json:"price_dyeing"`
 }
 
 type CreatePriceTxResults struct {
@@ -214,6 +215,7 @@ type CreatePriceTxResults struct {
 	PriceWashing string    `json:"price_washing"`
 	PriceIroning string    `json:"price_ironing"`
 	CreatedAt    time.Time `json:"created_at"`
+	PriceDyeing  string    `json:"price_dyeing"`
 }
 
 //This transaction creates a price, in fail it rollback the change in database
@@ -227,6 +229,7 @@ func (store *Store) CreatePriceTx(ctx context.Context, arg CreatePriceTxParams) 
 			Category:     arg.Category,
 			PriceWashing: arg.PriceWashing,
 			PriceIroning: arg.PriceIroning,
+			PriceDyeing:  arg.PriceDyeing,
 		})
 
 		if err != nil {
@@ -244,6 +247,7 @@ type UpdatePriceTxParams struct {
 	Category     string    `json:"category"`
 	PriceWashing string    `json:"price_washing"`
 	PriceIroning string    `json:"price_ironing"`
+	PriceDyeing  string    `json:"price_dyeing"`
 }
 
 type UpdatePriceTxResults struct {
@@ -252,6 +256,7 @@ type UpdatePriceTxResults struct {
 	PriceWashing string    `json:"price_washing"`
 	PriceIroning string    `json:"price_ironing"`
 	CreatedAt    time.Time `json:"created_at"`
+	PriceDyeing  string    `json:"price_dyeing"`
 }
 
 //This transaction updates a price, in fail it rollback the change in database
@@ -265,6 +270,7 @@ func (store *Store) UpdatePriceTx(ctx context.Context, arg UpdatePriceTxParams) 
 			Category:     arg.Category,
 			PriceWashing: arg.PriceWashing,
 			PriceIroning: arg.PriceIroning,
+			PriceDyeing:  arg.PriceDyeing,
 		})
 
 		if err != nil {

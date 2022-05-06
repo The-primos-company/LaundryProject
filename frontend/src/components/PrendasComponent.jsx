@@ -16,6 +16,7 @@ import OptionUnstyled, {
 } from "@mui/base/OptionUnstyled";
 import PopperUnstyled from "@mui/base/PopperUnstyled";
 import { styled } from "@mui/system";
+import { LensTwoTone } from "@mui/icons-material";
 
 const blue = {
   100: "#DAECFF",
@@ -182,6 +183,7 @@ export default function PrendasComponent({
 }) {
   // const [rows, setRows] = React.useState(garments);
 
+  console.log(garments);
 
   React.useEffect(() => {
     setUpdateTotal(false);
@@ -219,7 +221,8 @@ export default function PrendasComponent({
     let row = garments.map((item) => {
       return {
         ...item,
-        realTotal: parseInt(item.cuantity) * parseInt(item.price.replace('.', '')),
+        realTotal:
+          parseInt(item.cuantity) * parseInt(item.price.replace(".", "")),
       };
     });
     setGarments(row);
@@ -233,12 +236,6 @@ export default function PrendasComponent({
   };
 
   const handleDefects = (array, id) => {
-    // let oldArr = garments.filter((row) => row.id !== id);
-    // let data = garments.filter((row) => row.id === id);
-    // let row = data[0];
-    // row.defects = array;
-    // setGarments(oldArr.concat(row));
-
     let row = garments.map((item) => {
       if (item.id === id)
         return {
@@ -252,19 +249,26 @@ export default function PrendasComponent({
     setGarments(row);
   };
 
-  const handleService = async (service, id) => {
+  const handleService = async (ev, service, reason, details, id) => {
     let row = garments.map((item) => {
       if (item.id === id) {
         let price = garmentsData.filter(
           (garment) => garment.category === item.category
         );
+
+        let priceResult = 0;
+
+        if (service === "Lavado" && service) {
+          priceResult = price[0].price_washing;
+        } else if (service === "Planchado" && service) {
+          priceResult = price[0].price_ironing;
+        } else if (service === "Tinturado" && service) {
+          priceResult = price[0].price_dyeing;
+        }
         return {
           ...item,
           service,
-          price:
-            service === "Lavado"
-              ? price[0].price_washing
-              : price[0].price_ironing,
+          price: priceResult,
         };
       }
 
@@ -288,7 +292,18 @@ export default function PrendasComponent({
       };
     });
     setGarments(row);
-  }
+  };
+
+  const getValueSelected = (id, type) => {
+    let result = "";
+    const garment = garments.filter((item) => item.id === id);
+    if (garment.lenght === 0) {
+      return "";
+    }
+    console.log(garment[0]);
+    result = eval(`garment[0].${type}`);
+    return result;
+  };
 
   const handleAutocomplete = (ev, value, reason, details, id) => {
     let row = garments.map((item) => {
@@ -303,6 +318,8 @@ export default function PrendasComponent({
           price = category[0].price_washing;
         } else if (item.service === "Planchado" && item.service) {
           price = category[0].price_ironing;
+        } else if (item.service === "Tinturado" && item.service) {
+          price = category[0].price_dyeing;
         } else {
           price = 0;
         }
@@ -321,12 +338,6 @@ export default function PrendasComponent({
   };
 
   const handleOnChange = ({ field, id, props }) => {
-    // let oldArr = garments.filter((row) => row.id !== id);
-    // let data = garments.filter((row) => row.id === id);
-    // let row = data[0];
-    // row[field] = props.value;
-    // setGarments(oldArr.concat(row));
-
     let row = garments.map((item) => {
       if (item.id === id) {
         return {
@@ -357,9 +368,9 @@ export default function PrendasComponent({
     "Otros",
   ];
 
-  const genre = ["Caballero", "Dama", "Unisex"]
+  const genre = ["Caballero", "Dama", "Unisex"];
 
-  const service = ["Lavado", "Planchado"];
+  const services = ["Lavado", "Planchado", "Tinturado"];
 
   const columns = [
     {
@@ -378,6 +389,7 @@ export default function PrendasComponent({
           <Autocomplete
             sx={{ width: 300 }}
             options={garmentsData.map((garment) => garment.category)}
+            value={getValueSelected(id, "category")}
             onChange={(ev, value, reason, details) => {
               handleAutocomplete(ev, value, reason, details, id);
             }}
@@ -386,13 +398,6 @@ export default function PrendasComponent({
         ];
       },
     },
-    // {
-    //   field: "gendre",
-    //   headerName: "Genero",
-    //   editable: true,
-    //   type: "singleSelect",
-    //   valueOptions: ["Caballero", "Dama", "Unisex"],
-    // },
     {
       field: "gendre",
       headerName: "Genero",
@@ -402,6 +407,7 @@ export default function PrendasComponent({
       getActions: ({ id }) => {
         return [
           <Autocomplete
+            value={getValueSelected(id, "gendre")}
             sx={{ width: 300 }}
             options={genre.map((garment) => garment)}
             onChange={(ev, value, reason, details) => {
@@ -417,21 +423,19 @@ export default function PrendasComponent({
     {
       field: "service",
       headerName: "Servicio",
-      width: 250,
+      width: 300,
       type: "actions",
       getActions: ({ id }) => {
         return [
-          <CustomSelect
-            onChange={async (value) => {
-              await handleService(value, id);
+          <Autocomplete
+            value={getValueSelected(id, "service")}
+            sx={{ width: 300 }}
+            options={services.map((service) => service)}
+            onChange={(ev, value, reason, details) => {
+              handleService(ev, value, reason, details, id);
             }}
-          >
-            {service.map((c) => (
-              <StyledOption key={c} value={c}>
-                {c}
-              </StyledOption>
-            ))}
-          </CustomSelect>,
+            renderInput={(params) => <TextField {...params} />}
+          />,
         ];
       },
     },
@@ -454,7 +458,8 @@ export default function PrendasComponent({
       getActions: ({ id }) => {
         return [
           <CustomMultiSelect
-            defaultValue={[10, 20]}
+            defaultValue={getValueSelected(id, "defects")}
+            value={getValueSelected(id, "defects")}
             onChange={(value) => {
               handleDefects(value, id);
             }}
@@ -502,6 +507,7 @@ export default function PrendasComponent({
         rows={garments}
         columns={columns}
         onEditCellPropsChange={handleOnChange}
+        // renderCell={() => <TextField onKeyDown={(e) => e.stopPropagation()} />}
       />
     </>
   );

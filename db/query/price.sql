@@ -4,21 +4,23 @@ INSERT INTO
         id,
         category,
         price_washing,
-        price_ironing
+        price_ironing,
+        price_dyeing
     )
 VALUES
-    ($1, $2, $3, $4) RETURNING *;
+    (@id, @category, @price_washing, @price_ironing, @price_dyeing) RETURNING *;
 
 
 -- name: UpdatePrice :one
 UPDATE
     prices
 SET
-    category = $2,
-    price_washing = $3,
-    price_ironing = $4
+    category = @category,
+    price_washing = @price_washing,
+    price_ironing = @price_ironing,
+    price_dyeing = @price_dyeing
 WHERE
-    id = $1
+    id = @id
 RETURNING *;
 
 -- name: GetPrice :one
@@ -27,7 +29,7 @@ SELECT
 FROM
     prices
 WHERE
-    id = $1
+    id = @id
 LIMIT
     1;
 
@@ -37,12 +39,12 @@ SELECT
 FROM
     prices
 WHERE 
-    category ~* $3
+    category ~* @category
 ORDER BY
     category
 ASC
 LIMIT
-    $1 OFFSET $2;
+    @limit_arg OFFSET @offset_arg;
 
 -- name: ListPricesAll :many
 SELECT
@@ -57,7 +59,7 @@ ASC;
 DELETE
 FROM
     prices
-WHERE id = $1;
+WHERE id = @id;
 
 
 -- name: ListPrices :many
@@ -69,4 +71,4 @@ ORDER BY
     category
 ASC
 LIMIT
-    $1 OFFSET $2;
+    @limit_arg OFFSET @offset_arg;

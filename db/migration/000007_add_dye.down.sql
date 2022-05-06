@@ -1,0 +1,1 @@
+ALTER TABLE "prices" DROP COLUMN IF EXISTS price_dyeing;

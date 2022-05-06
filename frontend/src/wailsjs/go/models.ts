@@ -105,10 +105,8 @@ export class OrderPagination {
     pages: number;
     payment_pending: string;
     payment_recolected: string;
-    orders_payment_pending: string;
-    orders_delivery_pending: string;
-    orders_payment_done: string;
-    orders_delivery_done: string;
+    payment_factured: string;
+    payment_paid: string;
 
     static createFrom(source: any = {}) {
         return new OrderPagination(source);
@@ -120,10 +118,8 @@ export class OrderPagination {
         this.pages = source["pages"];
         this.payment_pending = source["payment_pending"];
         this.payment_recolected = source["payment_recolected"];
-        this.orders_payment_pending = source["orders_payment_pending"];
-        this.orders_delivery_pending = source["orders_delivery_pending"];
-        this.orders_payment_done = source["orders_payment_done"];
-        this.orders_delivery_done = source["orders_delivery_done"];
+        this.payment_factured = source["payment_factured"];
+        this.payment_paid = source["payment_paid"];
     }
 
 	convertValues(a: any, classs: any, asMap: boolean = false): any {
@@ -170,6 +166,7 @@ export class Price {
     price_washing: string;
     price_ironing: string;
     created_at: Time;
+    price_dyeing: string;
 
     static createFrom(source: any = {}) {
         return new Price(source);
@@ -182,6 +179,7 @@ export class Price {
         this.price_washing = source["price_washing"];
         this.price_ironing = source["price_ironing"];
         this.created_at = this.convertValues(source["created_at"], Time);
+        this.price_dyeing = source["price_dyeing"];
     }
 
 	convertValues(a: any, classs: any, asMap: boolean = false): any {

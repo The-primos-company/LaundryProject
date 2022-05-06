@@ -61,4 +61,5 @@ type Price struct {
 	PriceWashing string    `json:"price_washing"`
 	PriceIroning string    `json:"price_ironing"`
 	CreatedAt    time.Time `json:"created_at"`
+	PriceDyeing  string    `json:"price_dyeing"`
 }

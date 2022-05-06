@@ -26,6 +26,7 @@ type Price struct {
 	PriceWashing string    `json:"price_washing"`
 	PriceIroning string    `json:"price_ironing"`
 	CreatedAt    time.Time `json:"created_at"`
+	PriceDyeing  string    `json:"price_dyeing"`
 }
 
 func (s *PriceService) CreatePrice(arg Price) Price {
@@ -48,6 +49,7 @@ func (s *PriceService) UpdatePrice(arg Price) Price {
 		Category:     arg.Category,
 		PriceWashing: arg.PriceWashing,
 		PriceIroning: arg.PriceIroning,
+		PriceDyeing:  arg.PriceDyeing,
 	})
 
 	if err != nil {
@@ -65,8 +67,8 @@ func (s *PriceService) DeletePrice(id uuid.UUID) bool {
 
 func (s *PriceService) GetPricesList(limit int32, offset int32) []Price {
 	prices, err := s.store.ListPrices(context.Background(), db.ListPricesParams{
-		Limit:  limit,
-		Offset: offset,
+		LimitArg:  limit,
+		OffsetArg: offset,
 	})
 
 	if err != nil {
@@ -83,9 +85,9 @@ func (s *PriceService) GetPricesList(limit int32, offset int32) []Price {
 
 func (s *PriceService) GetPricesByCategory(limit int32, offset int32, category string) []Price {
 	prices, err := s.store.ListPricesByCategory(context.Background(), db.ListPricesByCategoryParams{
-		Limit:    limit,
-		Offset:   offset,
-		Category: category,
+		LimitArg:  limit,
+		OffsetArg: offset,
+		Category:  category,
 	})
 
 	if err != nil {

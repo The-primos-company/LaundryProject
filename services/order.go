@@ -284,14 +284,12 @@ func (s *OrderService) setOrderPayedAt(ID uuid.UUID, arg string) Order {
 }
 
 type OrderPagination struct {
-	Orders                []Order `json:"orders"`
-	Pages                 int64   `json:"pages"`
-	PaymentPending        string  `json:"payment_pending"`
-	PaymentRecolected     string  `json:"payment_recolected"`
-	OrdersPaymentPending  string  `json:"orders_payment_pending"`
-	OrdersDeliveryPending string  `json:"orders_delivery_pending"`
-	OrdersPaymentDone     string  `json:"orders_payment_done"`
-	OrdersDeliveryDone    string  `json:"orders_delivery_done"`
+	Orders            []Order `json:"orders"`
+	Pages             int64   `json:"pages"`
+	PaymentPending    string  `json:"payment_pending"`
+	PaymentRecolected string  `json:"payment_recolected"`
+	PaymentFactured   string  `json:"payment_factured"`
+	PaymentPaid       string  `json:"payment_paid"`
 }
 
 func (s *OrderService) ListOrdersByRange(startArg string, endArg string, limit int32, page int32, function string) OrderPagination {
@@ -312,6 +310,14 @@ func (s *OrderService) ListOrdersByRange(startArg string, endArg string, limit i
 		orderPagination = s.listOrdersByPayedAtRange(startArg, endArg, limit, page)
 	}
 
+	if function == "delivered_pending" {
+		orderPagination = s.listOrdersByDeliveredPendingRange(startArg, endArg, limit, page)
+	}
+
+	if function == "payed_pending" {
+		orderPagination = s.listOrdersByPayedPendingRange(startArg, endArg, limit, page)
+	}
+
 	for _, order := range orderPagination.Orders {
 		if val, err := strconv.ParseFloat(order.PaymentTotalReal, 32); err == nil {
 			payPending += val
@@ -326,17 +332,15 @@ func (s *OrderService) ListOrdersByRange(startArg string, endArg string, limit i
 
 func (s *OrderService) listOrdersByCreatedAtRange(startArg string, endArg string, limit int32, page int32) OrderPagination {
 	var (
-		result                []Order
-		orders                []db.Order
-		start                 time.Time = time.Now()
-		end                   time.Time = time.Now().AddDate(0, 0, 1)
-		pages                 int64
-		paymentRecolected     string
-		paymentPending        string
-		ordersPaymentPending  string
-		ordersDeliveryPending string
-		ordersPaymentDone     string
-		ordersDeliveryDone    string
+		result            []Order
+		orders            []db.Order
+		start             time.Time = time.Now()
+		end               time.Time = time.Now().AddDate(0, 0, 1)
+		pages             int64
+		paymentRecolected string
+		paymentPending    string
+		paymentFactured   string
+		paymentPaid       string
 	)
 
 	if parse, err := time.Parse(time.RFC3339, startArg); err == nil {
@@ -379,41 +383,35 @@ func (s *OrderService) listOrdersByCreatedAtRange(startArg string, endArg string
 		StartAt: start,
 		EndAt:   end,
 	}); err == nil {
-		paymentPending = data.PaymentPending
 		paymentRecolected = data.PaymentRecolected
-		ordersPaymentPending = data.OrdersPaymentPending
-		ordersDeliveryPending = data.OrdersDeliveryPending
-		ordersPaymentDone = data.OrdersPaymentDone
-		ordersDeliveryDone = data.OrdersDeliveryDone
+		paymentPending = data.PaymentPending
+		paymentFactured = data.PaymentFactured
+		paymentPaid = data.PaymentPaid
 	} else {
 		log.Fatal(err)
 	}
 
 	return OrderPagination{
-		Orders:                result,
-		Pages:                 pages,
-		PaymentPending:        paymentPending,
-		PaymentRecolected:     paymentRecolected,
-		OrdersPaymentPending:  ordersPaymentPending,
-		OrdersDeliveryPending: ordersDeliveryPending,
-		OrdersPaymentDone:     ordersPaymentDone,
-		OrdersDeliveryDone:    ordersDeliveryDone,
+		Orders:            result,
+		Pages:             pages,
+		PaymentPending:    paymentPending,
+		PaymentRecolected: paymentRecolected,
+		PaymentFactured:   paymentFactured,
+		PaymentPaid:       paymentPaid,
 	}
 }
 
 func (s *OrderService) listOrdersByPayedAtRange(startArg string, endArg string, limit int32, page int32) OrderPagination {
 	var (
-		result                []Order
-		orders                []db.Order
-		start                 time.Time = time.Now()
-		end                   time.Time = time.Now().AddDate(0, 0, 1)
-		pages                 int64
-		paymentPending        string
-		paymentRecolected     string
-		ordersPaymentPending  string
-		ordersDeliveryPending string
-		ordersPaymentDone     string
-		ordersDeliveryDone    string
+		result            []Order
+		orders            []db.Order
+		start             time.Time = time.Now()
+		end               time.Time = time.Now().AddDate(0, 0, 1)
+		pages             int64
+		paymentRecolected string
+		paymentPending    string
+		paymentFactured   string
+		paymentPaid       string
 	)
 
 	if parse, err := time.Parse(time.RFC3339, startArg); err == nil {
@@ -476,37 +474,32 @@ func (s *OrderService) listOrdersByPayedAtRange(startArg string, endArg string, 
 	}); err == nil {
 		paymentPending = data.PaymentPending
 		paymentRecolected = data.PaymentRecolected
-		ordersPaymentPending = data.OrdersPaymentPending
-		ordersDeliveryPending = data.OrdersDeliveryPending
-		ordersPaymentDone = data.OrdersPaymentDone
-		ordersDeliveryDone = data.OrdersDeliveryDone
+		paymentPending = data.PaymentPending
+		paymentFactured = data.PaymentFactured
+		paymentPaid = data.PaymentPaid
 	}
 
 	return OrderPagination{
-		Orders:                result,
-		Pages:                 pages,
-		PaymentPending:        paymentPending,
-		PaymentRecolected:     paymentRecolected,
-		OrdersPaymentPending:  ordersPaymentPending,
-		OrdersDeliveryPending: ordersDeliveryPending,
-		OrdersPaymentDone:     ordersPaymentDone,
-		OrdersDeliveryDone:    ordersDeliveryDone,
+		Orders:            result,
+		Pages:             pages,
+		PaymentPending:    paymentPending,
+		PaymentRecolected: paymentRecolected,
+		PaymentFactured:   paymentFactured,
+		PaymentPaid:       paymentPaid,
 	}
 }
 
 func (s *OrderService) listOrdersByDeliveredAtRange(startArg string, endArg string, limit int32, page int32) OrderPagination {
 	var (
-		result                []Order
-		orders                []db.Order
-		start                 time.Time = time.Now()
-		end                   time.Time = time.Now().AddDate(0, 0, 1)
-		pages                 int64
-		paymentPending        string
-		paymentRecolected     string
-		ordersPaymentPending  string
-		ordersDeliveryPending string
-		ordersPaymentDone     string
-		ordersDeliveryDone    string
+		result            []Order
+		orders            []db.Order
+		start             time.Time = time.Now()
+		end               time.Time = time.Now().AddDate(0, 0, 1)
+		pages             int64
+		paymentRecolected string
+		paymentPending    string
+		paymentFactured   string
+		paymentPaid       string
 	)
 
 	if parse, err := time.Parse(time.RFC3339, startArg); err == nil {
@@ -569,21 +562,156 @@ func (s *OrderService) listOrdersByDeliveredAtRange(startArg string, endArg stri
 	}); err == nil {
 		paymentPending = data.PaymentPending
 		paymentRecolected = data.PaymentRecolected
-		ordersPaymentPending = data.OrdersPaymentPending
-		ordersDeliveryPending = data.OrdersDeliveryPending
-		ordersPaymentDone = data.OrdersPaymentDone
-		ordersDeliveryDone = data.OrdersDeliveryDone
+		paymentPending = data.PaymentPending
+		paymentFactured = data.PaymentFactured
+		paymentPaid = data.PaymentPaid
 	}
 
 	return OrderPagination{
-		Orders:                result,
-		Pages:                 pages,
-		PaymentPending:        paymentPending,
-		PaymentRecolected:     paymentRecolected,
-		OrdersPaymentPending:  ordersPaymentPending,
-		OrdersDeliveryPending: ordersDeliveryPending,
-		OrdersPaymentDone:     ordersPaymentDone,
-		OrdersDeliveryDone:    ordersDeliveryDone,
+		Orders:            result,
+		Pages:             pages,
+		PaymentPending:    paymentPending,
+		PaymentRecolected: paymentRecolected,
+		PaymentFactured:   paymentFactured,
+		PaymentPaid:       paymentPaid,
+	}
+}
+
+func (s *OrderService) listOrdersByPayedPendingRange(startArg string, endArg string, limit int32, page int32) OrderPagination {
+	var (
+		result            []Order
+		orders            []db.Order
+		start             time.Time = time.Now()
+		end               time.Time = time.Now().AddDate(0, 0, 1)
+		pages             int64
+		paymentRecolected string
+		paymentPending    string
+		paymentFactured   string
+		paymentPaid       string
+	)
+
+	if parse, err := time.Parse(time.RFC3339, startArg); err == nil {
+		start = parse
+	}
+
+	if parse, err := time.Parse(time.RFC3339, endArg); err == nil {
+		end = parse
+	}
+
+	if page > 0 {
+		page--
+	}
+
+	orders, err := s.store.ListOrdersByPayedPendingRange(context.Background(), db.ListOrdersByPayedPendingRangeParams{
+		StartAt:   start,
+		EndAt:     end,
+		OffsetArg: limit * page,
+		LimitArg:  limit,
+	})
+
+	if err != nil {
+		log.Fatal("error filtering order by created at range", err)
+	}
+
+	if data, err := s.store.GetOrdersByPayedPendingRangePages(context.Background(), db.GetOrdersByPayedPendingRangePagesParams{
+		StartAt: start,
+		EndAt:   end,
+	}); err == nil {
+		calc := float64(data) / float64(limit)
+		pages = int64(math.Ceil(calc))
+	}
+
+	result = make([]Order, len(orders))
+	for i, order := range orders {
+		result[i] = s.toOrder(order)
+	}
+
+	if data, err := s.store.GetOrdersByPayedPendingRangeReports(context.Background(), db.GetOrdersByPayedPendingRangeReportsParams{
+		StartAt: start,
+		EndAt:   end,
+	}); err == nil {
+		paymentRecolected = data.PaymentRecolected
+		paymentPending = data.PaymentPending
+		paymentFactured = data.PaymentFactured
+		paymentPaid = data.PaymentPaid
+	}
+
+	return OrderPagination{
+		Orders:            result,
+		Pages:             pages,
+		PaymentPending:    paymentPending,
+		PaymentRecolected: paymentRecolected,
+		PaymentFactured:   paymentFactured,
+		PaymentPaid:       paymentPaid,
+	}
+}
+
+func (s *OrderService) listOrdersByDeliveredPendingRange(startArg string, endArg string, limit int32, page int32) OrderPagination {
+	var (
+		result            []Order
+		orders            []db.Order
+		start             time.Time = time.Now()
+		end               time.Time = time.Now().AddDate(0, 0, 1)
+		pages             int64
+		paymentRecolected string
+		paymentPending    string
+		paymentFactured   string
+		paymentPaid       string
+	)
+
+	if parse, err := time.Parse(time.RFC3339, startArg); err == nil {
+		start = parse
+	}
+
+	if parse, err := time.Parse(time.RFC3339, endArg); err == nil {
+		end = parse
+	}
+
+	if page > 0 {
+		page--
+	}
+
+	orders, err := s.store.ListOrdersByDeliveredPendingRange(context.Background(), db.ListOrdersByDeliveredPendingRangeParams{
+		StartAt:   start,
+		EndAt:     end,
+		OffsetArg: limit * page,
+		LimitArg:  limit,
+	})
+
+	if err != nil {
+		log.Fatal("error filtering order by created at range", err)
+	}
+
+	if data, err := s.store.GetOrdersByDeliveredPendingRangePages(context.Background(), db.GetOrdersByDeliveredPendingRangePagesParams{
+		StartAt: start,
+		EndAt:   end,
+	}); err == nil {
+		calc := float64(data) / float64(limit)
+		pages = int64(math.Ceil(calc))
+	}
+
+	result = make([]Order, len(orders))
+	for i, order := range orders {
+		result[i] = s.toOrder(order)
+	}
+
+	if data, err := s.store.GetOrdersByDeliveredPendingRangeReports(context.Background(), db.GetOrdersByDeliveredPendingRangeReportsParams{
+		StartAt: start,
+		EndAt:   end,
+	}); err == nil {
+		paymentRecolected = data.PaymentRecolected
+		paymentPending = data.PaymentPending
+		paymentFactured = data.PaymentFactured
+		paymentPaid = data.PaymentPaid
+	}
+
+	return OrderPagination{
+		Orders:            result,
+		Pages:             pages,
+		PaymentPending:    paymentPending,
+		PaymentRecolected: paymentRecolected,
+		PaymentFactured:   paymentFactured,
+		PaymentPaid:       paymentPaid,
 	}
 }
 

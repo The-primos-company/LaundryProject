@@ -249,42 +249,8 @@ const getOrdersByCreatedAtRangeReports = `-- name: GetOrdersByCreatedAtRangeRepo
 SELECT
     SUM(payment_total_payed) :: money as payment_recolected,
     SUM(payment_total_real) :: money as payment_pending,
-    (
-        SELECT
-            Count(id)::VARCHAR
-        FROM
-            orders as o
-        WHERE
-            o.created_at >= $1 AND o.created_at <= $2 
-            AND payed_at IS NULL
-    ) as orders_payment_pending,
-    (
-        SELECT
-            Count(id)::VARCHAR
-        FROM
-            orders as o
-        WHERE
-            o.created_at >= $1 AND o.created_at <= $2 
-            AND delivered_at IS NULL
-    ) as orders_delivery_pending,
-    (
-        SELECT
-            Count(id)::VARCHAR
-        FROM
-            orders as o
-        WHERE
-            o.created_at >= $1 AND o.created_at <= $2 
-            AND payed_at IS NOT NULL
-    ) as orders_payment_done,
-    (
-        SELECT
-            Count(id)::VARCHAR
-        FROM
-            orders as o
-        WHERE
-            o.created_at >= $1 AND o.created_at <= $2 
-            AND delivered_at IS NOT NULL
-    ) as orders_delivery_done
+    SUM(payment_total)::money as payment_factured,
+    SUM(payment_total)::money as payment_paid
 FROM
     orders
 WHERE  created_at >= $1 AND created_at <= $2
@@ -296,12 +262,10 @@ type GetOrdersByCreatedAtRangeReportsParams struct {
 }
 
 type GetOrdersByCreatedAtRangeReportsRow struct {
-	PaymentRecolected     string `json:"payment_recolected"`
-	PaymentPending        string `json:"payment_pending"`
-	OrdersPaymentPending  string `json:"orders_payment_pending"`
-	OrdersDeliveryPending string `json:"orders_delivery_pending"`
-	OrdersPaymentDone     string `json:"orders_payment_done"`
-	OrdersDeliveryDone    string `json:"orders_delivery_done"`
+	PaymentRecolected string `json:"payment_recolected"`
+	PaymentPending    string `json:"payment_pending"`
+	PaymentFactured   string `json:"payment_factured"`
+	PaymentPaid       string `json:"payment_paid"`
 }
 
 func (q *Queries) GetOrdersByCreatedAtRangeReports(ctx context.Context, arg GetOrdersByCreatedAtRangeReportsParams) (GetOrdersByCreatedAtRangeReportsRow, error) {
@@ -310,10 +274,8 @@ func (q *Queries) GetOrdersByCreatedAtRangeReports(ctx context.Context, arg GetO
 	err := row.Scan(
 		&i.PaymentRecolected,
 		&i.PaymentPending,
-		&i.OrdersPaymentPending,
-		&i.OrdersDeliveryPending,
-		&i.OrdersPaymentDone,
-		&i.OrdersDeliveryDone,
+		&i.PaymentFactured,
+		&i.PaymentPaid,
 	)
 	return i, err
 }
@@ -342,42 +304,8 @@ const getOrdersByDeliveredAtRangeReports = `-- name: GetOrdersByDeliveredAtRange
 SELECT
     SUM(payment_total_payed)::money as payment_recolected,
     SUM(payment_total_real)::money as payment_pending,
-    (
-        SELECT
-            Count(id)::VARCHAR
-        FROM
-            orders as o
-        WHERE
-            o.delivered_at >= $1 AND o.delivered_at <= $2 
-            AND payed_at IS NULL
-    ) as orders_payment_pending,
-    (
-        SELECT
-            Count(id)::VARCHAR
-        FROM
-            orders as o
-        WHERE
-            o.delivered_at >= $1 AND o.delivered_at <= $2 
-            AND delivered_at IS NULL
-    ) as orders_delivery_pending,
-    (
-        SELECT
-            Count(id)::VARCHAR
-        FROM
-            orders as o
-        WHERE
-            o.delivered_at >= $1 AND o.delivered_at <= $2 
-            AND payed_at IS NOT NULL
-    ) as orders_payment_done,
-    (
-        SELECT
-            Count(id)::VARCHAR
-        FROM
-            orders as o
-        WHERE
-            o.delivered_at >= $1 AND o.delivered_at <= $2 
-            AND delivered_at IS NOT NULL
-    ) as orders_delivery_done
+    SUM(payment_total)::money as payment_factured,
+    SUM(payment_total_payed)::money as payment_paid
 FROM
     orders
 WHERE  delivered_at >= $1 AND delivered_at <= $2
@@ -389,12 +317,10 @@ type GetOrdersByDeliveredAtRangeReportsParams struct {
 }
 
 type GetOrdersByDeliveredAtRangeReportsRow struct {
-	PaymentRecolected     string `json:"payment_recolected"`
-	PaymentPending        string `json:"payment_pending"`
-	OrdersPaymentPending  string `json:"orders_payment_pending"`
-	OrdersDeliveryPending string `json:"orders_delivery_pending"`
-	OrdersPaymentDone     string `json:"orders_payment_done"`
-	OrdersDeliveryDone    string `json:"orders_delivery_done"`
+	PaymentRecolected string `json:"payment_recolected"`
+	PaymentPending    string `json:"payment_pending"`
+	PaymentFactured   string `json:"payment_factured"`
+	PaymentPaid       string `json:"payment_paid"`
 }
 
 func (q *Queries) GetOrdersByDeliveredAtRangeReports(ctx context.Context, arg GetOrdersByDeliveredAtRangeReportsParams) (GetOrdersByDeliveredAtRangeReportsRow, error) {
@@ -403,10 +329,63 @@ func (q *Queries) GetOrdersByDeliveredAtRangeReports(ctx context.Context, arg Ge
 	err := row.Scan(
 		&i.PaymentRecolected,
 		&i.PaymentPending,
-		&i.OrdersPaymentPending,
-		&i.OrdersDeliveryPending,
-		&i.OrdersPaymentDone,
-		&i.OrdersDeliveryDone,
+		&i.PaymentFactured,
+		&i.PaymentPaid,
+	)
+	return i, err
+}
+
+const getOrdersByDeliveredPendingRangePages = `-- name: GetOrdersByDeliveredPendingRangePages :one
+SELECT
+    COUNT(id)
+FROM
+    orders
+WHERE  created_at >= $1 AND created_at <= $2 AND delivered_at IS NULL
+`
+
+type GetOrdersByDeliveredPendingRangePagesParams struct {
+	StartAt time.Time `json:"start_at"`
+	EndAt   time.Time `json:"end_at"`
+}
+
+func (q *Queries) GetOrdersByDeliveredPendingRangePages(ctx context.Context, arg GetOrdersByDeliveredPendingRangePagesParams) (int64, error) {
+	row := q.db.QueryRowContext(ctx, getOrdersByDeliveredPendingRangePages, arg.StartAt, arg.EndAt)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
+const getOrdersByDeliveredPendingRangeReports = `-- name: GetOrdersByDeliveredPendingRangeReports :one
+SELECT
+    SUM(payment_total_payed)::money as payment_recolected,
+    SUM(payment_total_real)::money as payment_pending,
+    SUM(payment_total)::money as payment_factured,
+    SUM(payment_total_payed)::money as payment_paid
+FROM
+    orders
+WHERE  created_at >= $1 AND created_at <= $2 AND delivered_at IS NULL
+`
+
+type GetOrdersByDeliveredPendingRangeReportsParams struct {
+	StartAt time.Time `json:"start_at"`
+	EndAt   time.Time `json:"end_at"`
+}
+
+type GetOrdersByDeliveredPendingRangeReportsRow struct {
+	PaymentRecolected string `json:"payment_recolected"`
+	PaymentPending    string `json:"payment_pending"`
+	PaymentFactured   string `json:"payment_factured"`
+	PaymentPaid       string `json:"payment_paid"`
+}
+
+func (q *Queries) GetOrdersByDeliveredPendingRangeReports(ctx context.Context, arg GetOrdersByDeliveredPendingRangeReportsParams) (GetOrdersByDeliveredPendingRangeReportsRow, error) {
+	row := q.db.QueryRowContext(ctx, getOrdersByDeliveredPendingRangeReports, arg.StartAt, arg.EndAt)
+	var i GetOrdersByDeliveredPendingRangeReportsRow
+	err := row.Scan(
+		&i.PaymentRecolected,
+		&i.PaymentPending,
+		&i.PaymentFactured,
+		&i.PaymentPaid,
 	)
 	return i, err
 }
@@ -496,42 +475,8 @@ const getOrdersByPayedAtRangeReports = `-- name: GetOrdersByPayedAtRangeReports 
 SELECT
     SUM(payment_total_payed)::money as payment_recolected,
     SUM(payment_total_real)::money as payment_pending,
-    (
-        SELECT
-            Count(id)::VARCHAR
-        FROM
-            orders as o
-        WHERE
-            o.payed_at >= $1 AND o.payed_at <= $2 
-            AND payed_at IS NULL
-    ) as orders_payment_pending,
-    (
-        SELECT
-            Count(id)::VARCHAR
-        FROM
-            orders as o
-        WHERE
-            o.payed_at >= $1 AND o.payed_at <= $2 
-            AND delivered_at IS NULL
-    ) as orders_delivery_pending,
-    (
-        SELECT
-            Count(id)::VARCHAR
-        FROM
-            orders as o
-        WHERE
-            o.payed_at >= $1 AND o.payed_at <= $2 
-            AND payed_at IS NOT NULL
-    ) as orders_payment_done,
-    (
-        SELECT
-            Count(id)::VARCHAR
-        FROM
-            orders as o
-        WHERE
-            o.payed_at >= $1 AND o.payed_at <= $2 
-            AND delivered_at IS NOT NULL
-    ) as orders_delivery_done
+    SUM(payment_total)::money as payment_factured,
+    SUM(payment_total_payed)::money as payment_paid
 FROM
     orders
 WHERE  payed_at >= $1 AND payed_at <= $2
@@ -543,12 +488,10 @@ type GetOrdersByPayedAtRangeReportsParams struct {
 }
 
 type GetOrdersByPayedAtRangeReportsRow struct {
-	PaymentRecolected     string `json:"payment_recolected"`
-	PaymentPending        string `json:"payment_pending"`
-	OrdersPaymentPending  string `json:"orders_payment_pending"`
-	OrdersDeliveryPending string `json:"orders_delivery_pending"`
-	OrdersPaymentDone     string `json:"orders_payment_done"`
-	OrdersDeliveryDone    string `json:"orders_delivery_done"`
+	PaymentRecolected string `json:"payment_recolected"`
+	PaymentPending    string `json:"payment_pending"`
+	PaymentFactured   string `json:"payment_factured"`
+	PaymentPaid       string `json:"payment_paid"`
 }
 
 func (q *Queries) GetOrdersByPayedAtRangeReports(ctx context.Context, arg GetOrdersByPayedAtRangeReportsParams) (GetOrdersByPayedAtRangeReportsRow, error) {
@@ -557,10 +500,63 @@ func (q *Queries) GetOrdersByPayedAtRangeReports(ctx context.Context, arg GetOrd
 	err := row.Scan(
 		&i.PaymentRecolected,
 		&i.PaymentPending,
-		&i.OrdersPaymentPending,
-		&i.OrdersDeliveryPending,
-		&i.OrdersPaymentDone,
-		&i.OrdersDeliveryDone,
+		&i.PaymentFactured,
+		&i.PaymentPaid,
+	)
+	return i, err
+}
+
+const getOrdersByPayedPendingRangePages = `-- name: GetOrdersByPayedPendingRangePages :one
+SELECT
+    COUNT(id)
+FROM
+    orders
+WHERE  created_at >= $1 AND created_at <= $2 AND payed_at IS NULL
+`
+
+type GetOrdersByPayedPendingRangePagesParams struct {
+	StartAt time.Time `json:"start_at"`
+	EndAt   time.Time `json:"end_at"`
+}
+
+func (q *Queries) GetOrdersByPayedPendingRangePages(ctx context.Context, arg GetOrdersByPayedPendingRangePagesParams) (int64, error) {
+	row := q.db.QueryRowContext(ctx, getOrdersByPayedPendingRangePages, arg.StartAt, arg.EndAt)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
+const getOrdersByPayedPendingRangeReports = `-- name: GetOrdersByPayedPendingRangeReports :one
+SELECT
+    SUM(payment_total_payed)::money as payment_recolected,
+    SUM(payment_total_real)::money as payment_pending,
+    SUM(payment_total)::money as payment_factured,
+    SUM(payment_total_payed)::money as payment_paid
+FROM
+    orders
+WHERE  created_at >= $1 AND created_at <= $2 AND payed_at IS NULL
+`
+
+type GetOrdersByPayedPendingRangeReportsParams struct {
+	StartAt time.Time `json:"start_at"`
+	EndAt   time.Time `json:"end_at"`
+}
+
+type GetOrdersByPayedPendingRangeReportsRow struct {
+	PaymentRecolected string `json:"payment_recolected"`
+	PaymentPending    string `json:"payment_pending"`
+	PaymentFactured   string `json:"payment_factured"`
+	PaymentPaid       string `json:"payment_paid"`
+}
+
+func (q *Queries) GetOrdersByPayedPendingRangeReports(ctx context.Context, arg GetOrdersByPayedPendingRangeReportsParams) (GetOrdersByPayedPendingRangeReportsRow, error) {
+	row := q.db.QueryRowContext(ctx, getOrdersByPayedPendingRangeReports, arg.StartAt, arg.EndAt)
+	var i GetOrdersByPayedPendingRangeReportsRow
+	err := row.Scan(
+		&i.PaymentRecolected,
+		&i.PaymentPending,
+		&i.PaymentFactured,
+		&i.PaymentPaid,
 	)
 	return i, err
 }
@@ -752,6 +748,71 @@ func (q *Queries) ListOrdersByDeliveredAtRange(ctx context.Context, arg ListOrde
 	return items, nil
 }
 
+const listOrdersByDeliveredPendingRange = `-- name: ListOrdersByDeliveredPendingRange :many
+SELECT
+    id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at, payed_at, delivered_at
+FROM
+    orders
+WHERE  created_at >= $1 AND created_at <= $2 AND delivered_at IS NULL 
+ORDER BY
+    created_at
+DESC
+LIMIT
+    $4 OFFSET $3
+`
+
+type ListOrdersByDeliveredPendingRangeParams struct {
+	StartAt   time.Time `json:"start_at"`
+	EndAt     time.Time `json:"end_at"`
+	OffsetArg int32     `json:"offset_arg"`
+	LimitArg  int32     `json:"limit_arg"`
+}
+
+func (q *Queries) ListOrdersByDeliveredPendingRange(ctx context.Context, arg ListOrdersByDeliveredPendingRangeParams) ([]Order, error) {
+	rows, err := q.db.QueryContext(ctx, listOrdersByDeliveredPendingRange,
+		arg.StartAt,
+		arg.EndAt,
+		arg.OffsetArg,
+		arg.LimitArg,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Order
+	for rows.Next() {
+		var i Order
+		if err := rows.Scan(
+			&i.ID,
+			&i.Identifier,
+			&i.RecievedDate,
+			&i.DeliveryDate,
+			&i.ClientName,
+			&i.ClientID,
+			&i.ClientAddress,
+			&i.ClientPhone,
+			&i.ClientEmail,
+			&i.GarmentTotal,
+			&i.PaymentTotalPayed,
+			&i.PaymentTotal,
+			&i.PaymentTotalReal,
+			&i.CreatedAt,
+			&i.PayedAt,
+			&i.DeliveredAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listOrdersByPayedAtRange = `-- name: ListOrdersByPayedAtRange :many
 SELECT
     id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at, payed_at, delivered_at
@@ -774,6 +835,71 @@ type ListOrdersByPayedAtRangeParams struct {
 
 func (q *Queries) ListOrdersByPayedAtRange(ctx context.Context, arg ListOrdersByPayedAtRangeParams) ([]Order, error) {
 	rows, err := q.db.QueryContext(ctx, listOrdersByPayedAtRange,
+		arg.StartAt,
+		arg.EndAt,
+		arg.OffsetArg,
+		arg.LimitArg,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Order
+	for rows.Next() {
+		var i Order
+		if err := rows.Scan(
+			&i.ID,
+			&i.Identifier,
+			&i.RecievedDate,
+			&i.DeliveryDate,
+			&i.ClientName,
+			&i.ClientID,
+			&i.ClientAddress,
+			&i.ClientPhone,
+			&i.ClientEmail,
+			&i.GarmentTotal,
+			&i.PaymentTotalPayed,
+			&i.PaymentTotal,
+			&i.PaymentTotalReal,
+			&i.CreatedAt,
+			&i.PayedAt,
+			&i.DeliveredAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listOrdersByPayedPendingRange = `-- name: ListOrdersByPayedPendingRange :many
+SELECT
+    id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at, payed_at, delivered_at
+FROM
+    orders
+WHERE  created_at >= $1 AND created_at <= $2 AND payed_at IS NULL 
+ORDER BY
+    created_at
+DESC
+LIMIT
+    $4 OFFSET $3
+`
+
+type ListOrdersByPayedPendingRangeParams struct {
+	StartAt   time.Time `json:"start_at"`
+	EndAt     time.Time `json:"end_at"`
+	OffsetArg int32     `json:"offset_arg"`
+	LimitArg  int32     `json:"limit_arg"`
+}
+
+func (q *Queries) ListOrdersByPayedPendingRange(ctx context.Context, arg ListOrdersByPayedPendingRangeParams) ([]Order, error) {
+	rows, err := q.db.QueryContext(ctx, listOrdersByPayedPendingRange,
 		arg.StartAt,
 		arg.EndAt,
 		arg.OffsetArg,

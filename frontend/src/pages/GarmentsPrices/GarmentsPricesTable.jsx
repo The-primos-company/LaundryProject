@@ -226,6 +226,7 @@ export default function GarmentsPricesTable({
       category: data[0].category,
       price_washing: data[0].price_washing,
       price_ironing: data[0].price_ironing,
+      price_dyeing: data[0].price_dyeing,
     });
     try {
       await window.go.service.PriceService.UpdatePrice(price);
@@ -255,12 +256,6 @@ export default function GarmentsPricesTable({
   };
 
   const handleOnChange = ({ field, id, props }) => {
-    // let oldArr = garments.filter((row) => row.id !== id);
-    // let data = garments.filter((row) => row.id === id);
-    // let row = data[0];
-    // row[field] = props.value;
-    // setGarments(oldArr.concat(row));
-
     let row = garments.map((item) => {
       if (item.id === id)
         return {
@@ -292,6 +287,13 @@ export default function GarmentsPricesTable({
     {
       field: "price_ironing",
       headerName: "Precio planchado",
+      type: "string",
+      width: 150,
+      editable: true,
+    },
+    {
+      field: "price_dyeing",
+      headerName: "Precio Tinturado",
       type: "string",
       width: 150,
       editable: true,

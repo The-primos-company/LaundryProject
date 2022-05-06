@@ -44,12 +44,14 @@ export const Orders = ({ setRoute }) => {
   const [orderNumberTmp, setOrderNumberTmp] = useState(null);
 
   const [paymentPending, setPaymentPending] = useState(0);
+  const [paymentFactured, setPaymentFactured] = useState(0);
   const [ordersPaymentPending, setOrdersPaymentPending] = useState(0);
   const [ordersDeliveryPending, setOrdersDeliveryPending] = useState(0);
 
   const [paymentRecolected, setPaymentRecolected] = useState(0);
   const [ordersPaymentDone, setOrdersPaymentDone] = useState(0);
   const [ordersDeliveryDone, setOrdersDeliveryDone] = useState(0);
+  const [paymentPaid, setPaymentPaid] = useState(0);
 
   const printOrder = useRef();
   const handlePrint = useReactToPrint({
@@ -91,7 +93,8 @@ export const Orders = ({ setRoute }) => {
       setOrdersDeliveryPending(data.orders_delivery_pending);
       setOrdersPaymentDone(data.orders_payment_done);
       setOrdersDeliveryDone(data.orders_delivery_done);
-
+      setPaymentPaid(data.payment_paid);
+      setPaymentFactured(data.payment_factured);
     };
     getOrder();
   }, [clearFields, refreshSeeOrders]);
@@ -100,6 +103,8 @@ export const Orders = ({ setRoute }) => {
     { value: "created_at", label: "Fecha de recibido" },
     { value: "delivered_at", label: "Fecha de entregado" },
     { value: "payed_at", label: "Fecha de pagado" },
+    { value: "delivered_pending", label: "Ordenes pendientes de entrega" },
+    { value: "payed_pending", label: "Ordenes pendientes de pago" },
   ];
 
   const clearFilter = () => {
@@ -137,6 +142,8 @@ export const Orders = ({ setRoute }) => {
     setOrdersDeliveryPending(data.orders_delivery_pending);
     setOrdersPaymentDone(data.orders_payment_done);
     setOrdersDeliveryDone(data.orders_delivery_done);
+    setPaymentPaid(data.payment_paid);
+    setPaymentFactured(data.payment_factured);
   };
 
   const onSubmit = async () => {
@@ -155,6 +162,8 @@ export const Orders = ({ setRoute }) => {
     setOrdersDeliveryPending(data.orders_delivery_pending);
     setOrdersPaymentDone(data.orders_payment_done);
     setOrdersDeliveryDone(data.orders_delivery_done);
+    setPaymentPaid(data.payment_paid);
+    setPaymentFactured(data.payment_factured);
   };
 
   return (
@@ -170,22 +179,20 @@ export const Orders = ({ setRoute }) => {
             >
               <Stack>
                 <Typography sx={{ mb: 1.5 }} variant="h6" color="text.terceary">
-                  Ventas pendientes: <strong>{paymentPending}</strong>
+                  Total saldo: <strong>{paymentPending}</strong>
                 </Typography>
-                <Typography sx={{ mb: 1.5 }} color="text.terceary">
-                  Ordenes por pagar <strong>{ordersPaymentPending}</strong>
-                  <br />
-                  Ordenes por entregar <strong>{ordersDeliveryPending}</strong>
+                <Typography sx={{ mb: 1.5 }} variant="h6" color="text.terceary">
+                  Total cancelado : <strong>{paymentPaid}</strong>
+                  {/* payment_paid */}
                 </Typography>
               </Stack>
               <Stack>
                 <Typography sx={{ mb: 1.5 }} variant="h6" color="text.terceary">
-                  Ventas realizadas: <strong>{paymentRecolected}</strong>
+                  Total Abono: <strong>{paymentRecolected}</strong>
                 </Typography>
-                <Typography sx={{ mb: 1.5 }} color="text.terceary">
-                  Ordenes pagadas <strong>{ordersPaymentDone}</strong>
-                  <br />
-                  Ordenes entregadas <strong>{ordersDeliveryDone}</strong>
+                <Typography sx={{ mb: 1.5 }} variant="h6" color="text.terceary">
+                  Total facturado: <strong>{paymentFactured}</strong>
+                  {/* payment_factured */}
                 </Typography>
               </Stack>
             </Stack>
