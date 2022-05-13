@@ -5,9 +5,9 @@ import { Container } from '@mui/material'
 export const App = () => {
   return (
     <RouterProvider>
-      <Container maxWidth='lg'>
-        <HomePage />
-      </Container>
+      <div style={{marginLeft:100, marginRight:100}}>
+      <HomePage />
+      </div>
     </RouterProvider>
   )
 
