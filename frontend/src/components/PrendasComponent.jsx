@@ -84,7 +84,7 @@ const StyledListbox = styled("ul")(
   box-sizing: border-box;
   padding: 5px;
   margin: 10px 0;
-  min-width: 100px;
+  min-width: 220px;
   background: ${theme.palette.mode === "dark" ? grey[900] : "#fff"};
   border: 1px solid ${theme.palette.mode === "dark" ? grey[800] : grey[300]};
   border-radius: 0.75em;
@@ -375,7 +375,8 @@ export default function PrendasComponent({
   const columns = [
     {
       field: "cuantity",
-      headerName: "Cantidad",
+      headerName: "Can",
+      width: 50,
       type: "string",
       editable: true,
     },
@@ -402,13 +403,13 @@ export default function PrendasComponent({
       field: "gendre",
       headerName: "Genero",
       editable: true,
-      width: 300,
+      width: 160,
       type: "actions",
       getActions: ({ id }) => {
         return [
           <Autocomplete
             value={getValueSelected(id, "gendre")}
-            sx={{ width: 300 }}
+            sx={{ width: 160 }}
             options={genre.map((garment) => garment)}
             onChange={(ev, value, reason, details) => {
               handleGenre(ev, value, reason, details, id);
@@ -418,18 +419,18 @@ export default function PrendasComponent({
         ];
       },
     },
-    { field: "color", headerName: "Color", editable: true },
+    { field: "color", headerName: "Color", editable: true, width: 160 },
     { field: "brand", headerName: "Marca", editable: true },
     {
       field: "service",
       headerName: "Servicio",
-      width: 300,
+      width: 160,
       type: "actions",
       getActions: ({ id }) => {
         return [
           <Autocomplete
             value={getValueSelected(id, "service")}
-            sx={{ width: 300 }}
+            sx={{ width: 160 }}
             options={services.map((service) => service)}
             onChange={(ev, value, reason, details) => {
               handleService(ev, value, reason, details, id);
@@ -448,12 +449,13 @@ export default function PrendasComponent({
       field: "comment",
       headerName: "Observaciones",
       editable: true,
+      width: 220,
     },
     {
       field: "defects",
       type: "actions",
       headerName: "Defectos",
-      width: 300,
+      width: 220,
       editable: true,
       getActions: ({ id }) => {
         return [
@@ -507,6 +509,7 @@ export default function PrendasComponent({
         rows={garments}
         columns={columns}
         onEditCellPropsChange={handleOnChange}
+        disableColumnFilter={true}
         // renderCell={() => <TextField onKeyDown={(e) => e.stopPropagation()} />}
       />
     </>

@@ -1,4 +1,4 @@
-import * as React from "react";
+import React,{useState,useEffect} from "react";
 import {
   DataGrid,
   GridActionsCellItem,
@@ -17,7 +17,6 @@ import OptionUnstyled, {
 import PopperUnstyled from "@mui/base/PopperUnstyled";
 import { styled } from "@mui/system";
 
-import { Price } from '../../wailsjs/go/models'
 
 const blue = {
   100: "#DAECFF",
@@ -163,201 +162,54 @@ CustomMultiSelect.propTypes = {
   }),
 };
 
-export default function GarmentsPricesTable({
-  setGarments,
-  garments,
-  updateTotal,
-  setUpdateTotal,
+export default function ResultsGarmentsTable({
+  setGarments, garments
 }) {
-  // const [rows, setRows] = React.useState(garments);
-
-
-  React.useEffect(() => {
-    setUpdateTotal(false);
-    handleTotal();
-  }, [updateTotal]);
-
-  function handleClick() {
-    let newArr = [
-      {
-        id: randomId(),
-        cuantity: 1,
-        category: "",
-        gendre: "",
-        color: "",
-        brand: "",
-        price: 0,
-        realTotal: 0,
-        comment: "",
-        defects: [],
-      },
-    ];
-    setGarments(garments.concat(newArr));
-  }
-
-  function handleTotal() {
-    let row = garments.map((item) => {
-      return {
-        ...item,
-        realTotal: parseInt(item.cuantity) * parseInt(item.price),
-      };
-    });
-    setGarments(row);
-  }
-
-  const handleDeleteClick = (id) => async (event) => {
-    event.stopPropagation();
-    try {
-      let isDelete = await window.go.service.PriceService.DeletePrice(id);
-      if (isDelete) {
-        let data = garments.filter((row) => row.id !== id);
-        setGarments(data);
-      }
-    } catch (e) {
-      console.error(e)
-    }
-  };
-
-  const handleEditClick = (id) => async (event) => {
-    event.stopPropagation();
-    let data = garments.filter((row) => row.id === id);
-    var price = new Price({
-      id,
-      category: data[0].category,
-      price_washing: data[0].price_washing,
-      price_ironing: data[0].price_ironing,
-      price_dyeing: data[0].price_dyeing,
-      cost_washing: data[0].cost_washing,
-      cost_ironing: data[0].cost_ironing,
-      cost_dyeing: data[0].cost_dyeing,
-    });
-    try {
-      console.log(price);
-      await window.go.service.PriceService.UpdatePrice(price);
-    } catch (e) {
-      console.error(e)
-    }
-  }
-
-  const handleDefects = (array, id) => {
-    // let oldArr = garments.filter((row) => row.id !== id);
-    // let data = garments.filter((row) => row.id === id);
-    // let row = data[0];
-    // row.defects = array;
-    // setGarments(oldArr.concat(row));
-
-    let row = garments.map((item) => {
-      if (item.id === id)
-        return {
-          ...item,
-          defects: array,
-        };
-      return {
-        ...item,
-      };
-    });
-    setGarments(row);
-  };
-
-  const handleOnChange = ({ field, id, props }) => {
-    let row = garments.map((item) => {
-      if (item.id === id)
-        return {
-          ...item,
-          [field]: props.value,
-        };
-      return {
-        ...item,
-      };
-    });
-    setGarments(row);
-  };
+useEffect(() => {
+}, [])
 
   const columns = [
     {
+      field: "cuantity",
+      headerName: "Total",
+      type: "string",
+      width: 150,
+      editable: true,
+    },
+    {
       field: "category",
-      headerName: "Nombre de la prenda",
+      headerName: "Prendas",
       type: "string",
       width: 150,
       editable: true,
     },
     {
-      field: "price_washing",
-      headerName: "Precio lavado",
+      field: "service_type",
+      headerName: "Servicio",
       type: "string",
       width: 150,
       editable: true,
     },
     {
-      field: "price_ironing",
-      headerName: "Precio planchado",
+      field: "price_total",
+      headerName: "Total facturado",
       type: "string",
       width: 150,
       editable: true,
     },
     {
-      field: "price_dyeing",
-      headerName: "Precio Tinturado",
+      field: "cost_total",
+      headerName: "Costo de servicio",
       type: "string",
       width: 150,
       editable: true,
     },
     {
-      field: "cost_washing",
-      headerName: "Costo lavado",
+      field: "utilities",
+      headerName: "Utilidades",
       type: "string",
       width: 150,
       editable: true,
-    },
-    {
-      field: "cost_ironing",
-      headerName: "Costo planchado",
-      type: "string",
-      width: 150,
-      editable: true,
-    },
-    {
-      field: "cost_dyeing",
-      headerName: "Costo Tinturado",
-      type: "string",
-      width: 150,
-      editable: true,
-    },
-    {
-      field: "actions",
-      type: "actions",
-      headerName: "Accion",
-      width: 200,
-      cellClassName: "actions",
-      getActions: ({ id }) => {
-        return [
-          <GridActionsCellItem
-            icon={<EditIcon />}
-            onClick={handleEditClick(id)}
-            label="Delete"
-            color="inherit"
-            experimentalFeatures={{ newEditingApi: true }}
-            onCellEditStop={(params, event) => {
-              if (params.reason === GridCellEditStopReasons.cellFocusOut) {
-                event.defaultMuiPrevented = true;
-              }
-            }}
-          />,
-          <GridActionsCellItem
-            icon={<DeleteIcon />}
-            onClick={handleDeleteClick(id)}
-            label="Delete"
-            color="inherit"
-            experimentalFeatures={{ newEditingApi: true }}
-            onCellEditStop={(params, event) => {
-              if (params.reason === GridCellEditStopReasons.cellFocusOut) {
-                event.defaultMuiPrevented = true;
-              }
-            }}
-          />,
-
-        ];
-      },
     },
   ];
 
@@ -366,9 +218,9 @@ export default function GarmentsPricesTable({
       {" "}
 
       <DataGrid
+        autoPageSize={true}
         rows={garments}
         columns={columns}
-        onEditCellPropsChange={handleOnChange}
       />
     </>
   );

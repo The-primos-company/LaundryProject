@@ -13,10 +13,11 @@ INSERT INTO
         payment_total_payed,
         payment_total,
         payment_total_real,
+        payment_paid,
         payed_at
     )
 VALUES
-    ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *;
+    ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *;
 
 
 -- name: UpdateOrder :one
@@ -32,7 +33,8 @@ SET
     delivery_date = $8,
     garment_total = $9,
     payment_total_payed = $10,
-    payment_total = $11
+    payment_paid = $11,
+    payment_total = $12
 WHERE
     id = $1
 RETURNING *;
@@ -124,7 +126,7 @@ UPDATE
 SET
     payed_at = $2,
     payment_total_real = 0,
-    payment_total_payed = orders.payment_total
+    payment_paid = payment_total_real
 WHERE
     id = $1
 RETURNING *;
@@ -226,50 +228,50 @@ WHERE  created_at >= @start_at AND created_at <= @end_at AND payed_at IS NULL;
 
 -- name: GetOrdersByCreatedAtRangeReports :one
 SELECT
-    SUM(payment_total_payed) :: money as payment_recolected,
-    SUM(payment_total_real) :: money as payment_pending,
-    SUM(payment_total)::money as payment_factured,
-    SUM(payment_total_payed)::money as payment_paid
+    COALESCE(SUM(payment_total_payed)::money, '$0')::VARCHAR as payment_recolected,
+    COALESCE(SUM(payment_total_real)::money, '$0')::VARCHAR  as payment_pending,
+    COALESCE(SUM(payment_total)::money, '$0')::VARCHAR  as payment_factured,
+    COALESCE((SUM(payment_total_payed)::money + SUM(payment_paid)::money)::money, '$0')::VARCHAR  as payment_paid
 FROM
     orders
 WHERE  created_at >= @start_at AND created_at <= @end_at;
 
 -- name: GetOrdersByDeliveredAtRangeReports :one
 SELECT
-    SUM(payment_total_payed)::money as payment_recolected,
-    SUM(payment_total_real)::money as payment_pending,
-    SUM(payment_total)::money as payment_factured,
-    SUM(payment_total_payed)::money as payment_paid
+    COALESCE(SUM(payment_total_payed)::money, '$0')::VARCHAR as payment_recolected,
+    COALESCE(SUM(payment_total_real)::money, '$0')::VARCHAR  as payment_pending,
+    COALESCE(SUM(payment_total)::money, '$0')::VARCHAR  as payment_factured,
+    COALESCE((SUM(payment_total_payed)::money + SUM(payment_paid)::money)::money, '$0')::VARCHAR  as payment_paid
 FROM
     orders
 WHERE  delivered_at >= @start_at AND delivered_at <= @end_at;
 
 -- name: GetOrdersByPayedAtRangeReports :one
 SELECT
-    SUM(payment_total_payed)::money as payment_recolected,
-    SUM(payment_total_real)::money as payment_pending,
-    SUM(payment_total)::money as payment_factured,
-    SUM(payment_total_payed)::money as payment_paid
+    COALESCE(SUM(payment_total_payed)::money, '$0')::VARCHAR as payment_recolected,
+    COALESCE(SUM(payment_total_real)::money, '$0')::VARCHAR  as payment_pending,
+    COALESCE(SUM(payment_total)::money, '$0')::VARCHAR  as payment_factured,
+    COALESCE((SUM(payment_total_payed)::money + SUM(payment_paid)::money)::money, '$0')::VARCHAR  as payment_paid
 FROM
     orders
 WHERE  payed_at >= @start_at AND payed_at <= @end_at;
 
 -- name: GetOrdersByDeliveredPendingRangeReports :one
 SELECT
-    SUM(payment_total_payed)::money as payment_recolected,
-    SUM(payment_total_real)::money as payment_pending,
-    SUM(payment_total)::money as payment_factured,
-    SUM(payment_total_payed)::money as payment_paid
+    COALESCE(SUM(payment_total_payed)::money, '$0')::VARCHAR as payment_recolected,
+    COALESCE(SUM(payment_total_real)::money, '$0')::VARCHAR  as payment_pending,
+    COALESCE(SUM(payment_total)::money, '$0')::VARCHAR  as payment_factured,
+    COALESCE((SUM(payment_total_payed)::money + SUM(payment_paid)::money)::money, '$0')::VARCHAR  as payment_paid
 FROM
     orders
 WHERE  created_at >= @start_at AND created_at <= @end_at AND delivered_at IS NULL;
 
 -- name: GetOrdersByPayedPendingRangeReports :one
 SELECT
-    SUM(payment_total_payed)::money as payment_recolected,
-    SUM(payment_total_real)::money as payment_pending,
-    SUM(payment_total)::money as payment_factured,
-    SUM(payment_total_payed)::money as payment_paid
+    COALESCE(SUM(payment_total_payed)::money, '$0')::VARCHAR as payment_recolected,
+    COALESCE(SUM(payment_total_real)::money, '$0')::VARCHAR  as payment_pending,
+    COALESCE(SUM(payment_total)::money, '$0')::VARCHAR  as payment_factured,
+    COALESCE((SUM(payment_total_payed)::money + SUM(payment_paid)::money)::money, '$0')::VARCHAR  as payment_paid
 FROM
     orders
 WHERE  created_at >= @start_at AND created_at <= @end_at AND payed_at IS NULL;

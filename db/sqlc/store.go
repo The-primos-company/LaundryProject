@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	log "github.com/sirupsen/logrus"
 )
 
 // Store provides all functionalities to execute db queries and transactions
@@ -101,6 +102,7 @@ type CreateOrderTxResults struct {
 	PaymentTotalPayed string                   `json:"payment_total_payed"`
 	PaymentTotal      string                   `json:"payment_total"`
 	PaymentTotalReal  string                   `json:"payment_total_real"`
+	PaymentPaid       string                   `json:"payment_paid"`
 	ServiceType       string                   `json:"service_type"`
 	Garments          []CreateGarmentTxResults `json:"garments"`
 }
@@ -194,6 +196,7 @@ func (store *Store) CreateOrderTx(ctx context.Context, mock bool, arg CreateOrde
 			PaymentTotalPayed: order.PaymentTotalPayed,
 			PaymentTotal:      order.PaymentTotal,
 			PaymentTotalReal:  order.PaymentTotalReal,
+			PaymentPaid:       order.PaymentPaid,
 			Garments:          garments,
 		}
 		return nil
@@ -207,6 +210,9 @@ type CreatePriceTxParams struct {
 	PriceWashing string `json:"price_washing"`
 	PriceIroning string `json:"price_ironing"`
 	PriceDyeing  string `json:"price_dyeing"`
+	CostWashing  string `json:"cost_washing"`
+	CostIroning  string `json:"cost_ironing"`
+	CostDyeing   string `json:"cost_dyeing"`
 }
 
 type CreatePriceTxResults struct {
@@ -216,6 +222,9 @@ type CreatePriceTxResults struct {
 	PriceIroning string    `json:"price_ironing"`
 	CreatedAt    time.Time `json:"created_at"`
 	PriceDyeing  string    `json:"price_dyeing"`
+	CostWashing  string    `json:"cost_washing"`
+	CostIroning  string    `json:"cost_ironing"`
+	CostDyeing   string    `json:"cost_dyeing"`
 }
 
 //This transaction creates a price, in fail it rollback the change in database
@@ -230,6 +239,9 @@ func (store *Store) CreatePriceTx(ctx context.Context, arg CreatePriceTxParams) 
 			PriceWashing: arg.PriceWashing,
 			PriceIroning: arg.PriceIroning,
 			PriceDyeing:  arg.PriceDyeing,
+			CostWashing:  arg.CostWashing,
+			CostIroning:  arg.CostIroning,
+			CostDyeing:   arg.CostDyeing,
 		})
 
 		if err != nil {
@@ -248,6 +260,9 @@ type UpdatePriceTxParams struct {
 	PriceWashing string    `json:"price_washing"`
 	PriceIroning string    `json:"price_ironing"`
 	PriceDyeing  string    `json:"price_dyeing"`
+	CostWashing  string    `json:"cost_washing"`
+	CostIroning  string    `json:"cost_ironing"`
+	CostDyeing   string    `json:"cost_dyeing"`
 }
 
 type UpdatePriceTxResults struct {
@@ -257,6 +272,9 @@ type UpdatePriceTxResults struct {
 	PriceIroning string    `json:"price_ironing"`
 	CreatedAt    time.Time `json:"created_at"`
 	PriceDyeing  string    `json:"price_dyeing"`
+	CostWashing  string    `json:"cost_washing"`
+	CostIroning  string    `json:"cost_ironing"`
+	CostDyeing   string    `json:"cost_dyeing"`
 }
 
 //This transaction updates a price, in fail it rollback the change in database
@@ -271,6 +289,9 @@ func (store *Store) UpdatePriceTx(ctx context.Context, arg UpdatePriceTxParams) 
 			PriceWashing: arg.PriceWashing,
 			PriceIroning: arg.PriceIroning,
 			PriceDyeing:  arg.PriceDyeing,
+			CostWashing:  arg.CostWashing,
+			CostIroning:  arg.CostIroning,
+			CostDyeing:   arg.CostDyeing,
 		})
 
 		if err != nil {
@@ -281,4 +302,63 @@ func (store *Store) UpdatePriceTx(ctx context.Context, arg UpdatePriceTxParams) 
 		return nil
 	})
 	return result, err
+}
+
+type SumaryGarmentsArgs struct {
+	StartAt string `json:"cuantity"`
+	EndAt   string `json:"category"`
+}
+
+type SumaryGarmentsResults struct {
+	Cuantity    int64  `json:"cuantity"`
+	Category    string `json:"category"`
+	ServiceType string `json:"service_type"`
+	PriceTotal  string `json:"price_total"`
+	CostTotal   string `json:"cost_total"`
+	Utilities   string `json:"utilities"`
+}
+type GetPriceReportByCategoryRow struct {
+	Price     string `json:"price"`
+	Cost      string `json:"cost"`
+	Utilities string `json:"utilities"`
+}
+
+func (store *Store) SumaryGarmentsStore(ctx context.Context, arg SumaryGarmentsArgs) []SumaryGarmentsResults {
+	var (
+		start  time.Time = time.Now()
+		end    time.Time = time.Now().AddDate(0, 0, 1)
+		result []SumaryGarmentsResults
+	)
+
+	if parse, err := time.Parse(time.RFC3339, arg.StartAt); err == nil {
+		start = parse
+	}
+
+	if parse, err := time.Parse(time.RFC3339, arg.EndAt); err == nil {
+		end = parse
+	}
+
+	reports, err := store.SumaryGarments(ctx, SumaryGarmentsParams{
+		StartAt: start,
+		EndAt:   end,
+	})
+
+	if err != nil {
+		log.Fatal("error filtering order by created at range", err)
+	}
+
+	result = make([]SumaryGarmentsResults, len(reports))
+	for i := range reports {
+		report := reports[i]
+
+		result[i] = SumaryGarmentsResults{
+			Cuantity:    report.Total,
+			Category:    report.Category,
+			ServiceType: report.ServiceType,
+			PriceTotal:  report.PriceTotal,
+			CostTotal:   report.CostTotal,
+			Utilities:   report.Utilities,
+		}
+	}
+	return result
 }

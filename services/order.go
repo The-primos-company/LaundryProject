@@ -4,10 +4,11 @@ import (
 	db "The_primos_company/project_L/db/sqlc"
 	"context"
 	"database/sql"
-	"log"
 	"math"
 	"strconv"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/google/uuid"
 )
@@ -37,6 +38,7 @@ type Order struct {
 	PaymentTotalPayed string    `json:"payment_total_payed"`
 	PaymentTotal      string    `json:"payment_total"`
 	PaymentTotalReal  string    `json:"payment_total_real"`
+	PaymentPaid       string    `json:"payment_paid"`
 	ServiceType       string    `json:"service_type"`
 	PayedAt           string    `json:"payed_at"`
 	DeliveredAt       string    `json:"delivered_at"`
@@ -56,6 +58,7 @@ func (s *OrderService) CreateOrder(arg Order, mock bool) Order {
 	paymentTotalPayed, errPtp := strconv.Atoi(arg.PaymentTotalPayed)
 
 	if errPt != nil || errPtp != nil {
+		log.Info(arg.PaymentTotal, arg.PaymentTotalPayed, arg.Garments)
 		log.Panic("error parsing totals to int", errPt, errPtp)
 	}
 	paymentTotalReal := paymentTotal - paymentTotalPayed
@@ -136,6 +139,7 @@ func (s *OrderService) CreateOrder(arg Order, mock bool) Order {
 		PaymentTotalPayed: order.PaymentTotalPayed,
 		PaymentTotal:      order.PaymentTotal,
 		PaymentTotalReal:  order.PaymentTotalReal,
+		PaymentPaid:       order.PaymentPaid,
 		Garments:          garmentsR,
 	}
 }
@@ -770,6 +774,7 @@ func (s *OrderService) toOrder(order db.Order) Order {
 		PaymentTotalPayed: order.PaymentTotalPayed,
 		PaymentTotal:      order.PaymentTotal,
 		PaymentTotalReal:  order.PaymentTotalReal,
+		PaymentPaid:       order.PaymentPaid,
 		Garments:          garments,
 		PayedAt:           payedAt,
 		DeliveredAt:       deliveredAt,

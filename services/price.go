@@ -3,8 +3,9 @@ package service
 import (
 	db "The_primos_company/project_L/db/sqlc"
 	"context"
-	"log"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/google/uuid"
 )
@@ -27,6 +28,9 @@ type Price struct {
 	PriceIroning string    `json:"price_ironing"`
 	CreatedAt    time.Time `json:"created_at"`
 	PriceDyeing  string    `json:"price_dyeing"`
+	CostWashing  string    `json:"cost_washing"`
+	CostIroning  string    `json:"cost_ironing"`
+	CostDyeing   string    `json:"cost_dyeing"`
 }
 
 func (s *PriceService) CreatePrice(arg Price) Price {
@@ -34,6 +38,10 @@ func (s *PriceService) CreatePrice(arg Price) Price {
 		Category:     arg.Category,
 		PriceWashing: arg.PriceWashing,
 		PriceIroning: arg.PriceIroning,
+		PriceDyeing:  arg.PriceDyeing,
+		CostWashing:  arg.CostWashing,
+		CostIroning:  arg.CostIroning,
+		CostDyeing:   arg.CostDyeing,
 	})
 
 	if err != nil {
@@ -50,6 +58,9 @@ func (s *PriceService) UpdatePrice(arg Price) Price {
 		PriceWashing: arg.PriceWashing,
 		PriceIroning: arg.PriceIroning,
 		PriceDyeing:  arg.PriceDyeing,
+		CostWashing:  arg.CostWashing,
+		CostIroning:  arg.CostIroning,
+		CostDyeing:   arg.CostDyeing,
 	})
 
 	if err != nil {

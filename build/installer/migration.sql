@@ -62,6 +62,12 @@ ALTER TABLE "garments" ADD COLUMN IF NOT EXISTS service_type varchar NOT NULL;
 ALTER TABLE "orders" ADD COLUMN IF NOT EXISTS payed_at timestamptz;
 ALTER TABLE "orders" ADD COLUMN IF NOT EXISTS delivered_at timestamptz;
 
+ALTER TABLE "prices" ADD COLUMN IF NOT EXISTS price_dyeing varchar NOT NULL DEFAULT '0';
+ALTER TABLE "orders" ADD COLUMN IF NOT EXISTS payment_paid MONEY NOT NULL DEFAULT '0';
+ALTER TABLE "prices" ADD COLUMN IF NOT EXISTS cost_washing varchar NOT NULL DEFAULT '0';
+ALTER TABLE "prices" ADD COLUMN IF NOT EXISTS cost_ironing varchar NOT NULL DEFAULT '0';
+ALTER TABLE "prices" ADD COLUMN IF NOT EXISTS cost_dyeing varchar NOT NULL DEFAULT '0';
+
 INSERT INTO 
 	public.prices (id, category, price_washing, price_ironing, created_at)
 VALUES

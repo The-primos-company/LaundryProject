@@ -29,6 +29,8 @@ import DraftsIcon from "@mui/icons-material/Drafts";
 import { Box } from "@mui/system";
 import { PrintOrder } from "../../components/PrintOrder/PrintOrder";
 import { Order } from "../SearchOrder/Order";
+import ResultsOrdersTable from "./ResultsOrdersTable";
+import moment from "moment";
 
 export const Orders = ({ setRoute }) => {
   const [order, setOrder] = useState(null);
@@ -252,6 +254,23 @@ export const Orders = ({ setRoute }) => {
           />
         )}
       />
+      {orders &&
+        <div style={{ height: 650, width: "100%", marginBottom: 60 }}>
+          {<ResultsOrdersTable orders={orders.map(order => {
+            const recieved_date = order.recieved_date ? moment(order.recieved_date).format("MMMM D YYYY, h:mm a") : "No recibido";
+            const payed_at = order.payed_at ? moment(order.payed_at).format("MMMM D YYYY, h:mm a") : "-";
+            const delivered_at = order.delivered_at ? moment(order.delivered_at).format("MMMM D YYYY, h:mm a") : "-";
+            const delivery_date = order.delivery_date ? moment(order.delivery_date).format("MMMM D YYYY, h:mm a"): "Sin fecha de entrega";
+            return {
+            ...order, 
+            id: order.ID,
+            recieved_date,
+            payed_at ,
+            delivered_at,
+            delivery_date,
+            }})} />}
+        </div>
+      }
       <Stack>
         {orders &&
           orders.map((order) => {

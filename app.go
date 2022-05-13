@@ -5,7 +5,8 @@ import (
 	service "The_primos_company/project_L/services"
 	"context"
 	"database/sql"
-	"log"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )

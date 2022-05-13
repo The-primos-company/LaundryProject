@@ -7,6 +7,7 @@ package db
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -152,6 +153,128 @@ func (q *Queries) ListGarmentsByOrder(ctx context.Context, orderID uuid.UUID) ([
 			&i.Defects,
 			&i.CreatedAt,
 			&i.ServiceType,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const sumaryGarments = `-- name: SumaryGarments :many
+SELECT
+    SUM(cuantity) as total,
+    g.category,
+    g.service_type,
+    (
+        SELECT
+            SUM(a.price_total)
+        FROM
+            (
+                SELECT
+                    g1.price :: int * SUM(g1.cuantity) as price_total
+                FROM
+                    garments as g1
+                WHERE
+                    g1.category = g.category
+                    and g1.service_type = g.service_type
+                    AND g1.created_at >= $1
+                    AND g1.created_at <= $2
+                GROUP BY
+                    g1.service_type,
+                    g1.category,
+                    g1.price
+            ) as a
+    )  ::money as price_total,
+        (
+        SELECT
+            CASE
+                WHEN g.service_type = 'Lavado' THEN p.cost_washing :: INT * SUM(g.cuantity)
+                WHEN g.service_type = 'Planchado' THEN p.cost_ironing :: INT * SUM(g.cuantity)
+                WHEN g.service_type = 'Tinturado' THEN p.cost_dyeing :: INT * SUM(g.cuantity)
+                ELSE 0
+            END
+    ) ::money as cost_total,
+    ((
+        SELECT
+            SUM(a.price_total)
+        FROM
+            (
+                SELECT
+                    g1.price :: int * SUM(g1.cuantity) as price_total
+                FROM
+                    garments as g1
+                WHERE
+                    g1.category = g.category
+                    and g1.service_type = g.service_type
+                    AND g1.created_at >= $1
+                    AND g1.created_at <= $2
+                GROUP BY
+                    g1.service_type,
+                    g1.category,
+                    g1.price
+            ) as a
+    ) - (
+        SELECT
+            CASE
+                WHEN g.service_type = 'Lavado' THEN p.cost_washing :: INT * SUM(g.cuantity)
+                WHEN g.service_type = 'Planchado' THEN p.cost_ironing :: INT * SUM(g.cuantity)
+                WHEN g.service_type = 'Tinturado' THEN p.cost_dyeing :: INT * SUM(g.cuantity)
+                ELSE 0
+            END
+    )::INT) ::money utilities
+FROM
+    garments as g
+    INNER JOIN prices as p ON g.category = p.category
+WHERE
+    g.created_at >= $1
+    AND g.created_at <= $2
+GROUP BY
+    g.service_type,
+    g.category,
+    p.cost_dyeing,
+    p.cost_washing,
+    p.cost_ironing
+ORDER BY
+    g.category
+`
+
+type SumaryGarmentsParams struct {
+	StartAt time.Time `json:"start_at"`
+	EndAt   time.Time `json:"end_at"`
+}
+
+type SumaryGarmentsRow struct {
+	Total       int64  `json:"total"`
+	Category    string `json:"category"`
+	ServiceType string `json:"service_type"`
+	PriceTotal  string `json:"price_total"`
+	CostTotal   string `json:"cost_total"`
+	Utilities   string `json:"utilities"`
+}
+
+func (q *Queries) SumaryGarments(ctx context.Context, arg SumaryGarmentsParams) ([]SumaryGarmentsRow, error) {
+	rows, err := q.db.QueryContext(ctx, sumaryGarments, arg.StartAt, arg.EndAt)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []SumaryGarmentsRow
+	for rows.Next() {
+		var i SumaryGarmentsRow
+		if err := rows.Scan(
+			&i.Total,
+			&i.Category,
+			&i.ServiceType,
+			&i.PriceTotal,
+			&i.CostTotal,
+			&i.Utilities,
 		); err != nil {
 			return nil, err
 		}

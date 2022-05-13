@@ -3,8 +3,9 @@ package service
 import (
 	db "The_primos_company/project_L/db/sqlc"
 	"context"
-	"log"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/google/uuid"
 )

@@ -8,6 +8,9 @@ export interface go {
 		GetClientsList(arg1:number,arg2:number):Promise<Array<Client>>
 		UpdateClient(arg1:Client):Promise<Client>
     },
+    "GarmentService": {
+		GetSumaryGarments(arg1:string,arg2:string):Promise<Array<SumaryGarmentsResults>>
+    },
     "OrderService": {
 		CreateOrder(arg1:Order,arg2:boolean):Promise<Order>
 		GetNextOrderIdentifier():Promise<number>

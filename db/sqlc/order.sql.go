@@ -28,10 +28,11 @@ INSERT INTO
         payment_total_payed,
         payment_total,
         payment_total_real,
+        payment_paid,
         payed_at
     )
 VALUES
-    ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at, payed_at, delivered_at
+    ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at, payed_at, delivered_at, payment_paid
 `
 
 type CreateOrderParams struct {
@@ -47,6 +48,7 @@ type CreateOrderParams struct {
 	PaymentTotalPayed string       `json:"payment_total_payed"`
 	PaymentTotal      string       `json:"payment_total"`
 	PaymentTotalReal  string       `json:"payment_total_real"`
+	PaymentPaid       string       `json:"payment_paid"`
 	PayedAt           sql.NullTime `json:"payed_at"`
 }
 
@@ -64,6 +66,7 @@ func (q *Queries) CreateOrder(ctx context.Context, arg CreateOrderParams) (Order
 		arg.PaymentTotalPayed,
 		arg.PaymentTotal,
 		arg.PaymentTotalReal,
+		arg.PaymentPaid,
 		arg.PayedAt,
 	)
 	var i Order
@@ -84,6 +87,7 @@ func (q *Queries) CreateOrder(ctx context.Context, arg CreateOrderParams) (Order
 		&i.CreatedAt,
 		&i.PayedAt,
 		&i.DeliveredAt,
+		&i.PaymentPaid,
 	)
 	return i, err
 }
@@ -131,7 +135,7 @@ func (q *Queries) GetNextOrderIdentifier(ctx context.Context) (int32, error) {
 
 const getOrder = `-- name: GetOrder :one
 SELECT
-    id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at, payed_at, delivered_at
+    id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at, payed_at, delivered_at, payment_paid
 FROM
     orders
 WHERE
@@ -160,13 +164,14 @@ func (q *Queries) GetOrder(ctx context.Context, id uuid.UUID) (Order, error) {
 		&i.CreatedAt,
 		&i.PayedAt,
 		&i.DeliveredAt,
+		&i.PaymentPaid,
 	)
 	return i, err
 }
 
 const getOrdersByClientName = `-- name: GetOrdersByClientName :many
 SELECT 
-    id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at, payed_at, delivered_at
+    id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at, payed_at, delivered_at, payment_paid
 FROM 
     orders
 WHERE 
@@ -211,6 +216,7 @@ func (q *Queries) GetOrdersByClientName(ctx context.Context, arg GetOrdersByClie
 			&i.CreatedAt,
 			&i.PayedAt,
 			&i.DeliveredAt,
+			&i.PaymentPaid,
 		); err != nil {
 			return nil, err
 		}
@@ -247,10 +253,10 @@ func (q *Queries) GetOrdersByCreatedAtRangePages(ctx context.Context, arg GetOrd
 
 const getOrdersByCreatedAtRangeReports = `-- name: GetOrdersByCreatedAtRangeReports :one
 SELECT
-    SUM(payment_total_payed) :: money as payment_recolected,
-    SUM(payment_total_real) :: money as payment_pending,
-    SUM(payment_total)::money as payment_factured,
-    SUM(payment_total)::money as payment_paid
+    COALESCE(SUM(payment_total_payed)::money, '$0')::VARCHAR as payment_recolected,
+    COALESCE(SUM(payment_total_real)::money, '$0')::VARCHAR  as payment_pending,
+    COALESCE(SUM(payment_total)::money, '$0')::VARCHAR  as payment_factured,
+    COALESCE((SUM(payment_total_payed)::money + SUM(payment_paid)::money)::money, '$0')::VARCHAR  as payment_paid
 FROM
     orders
 WHERE  created_at >= $1 AND created_at <= $2
@@ -302,10 +308,10 @@ func (q *Queries) GetOrdersByDeliveredAtRangePages(ctx context.Context, arg GetO
 
 const getOrdersByDeliveredAtRangeReports = `-- name: GetOrdersByDeliveredAtRangeReports :one
 SELECT
-    SUM(payment_total_payed)::money as payment_recolected,
-    SUM(payment_total_real)::money as payment_pending,
-    SUM(payment_total)::money as payment_factured,
-    SUM(payment_total_payed)::money as payment_paid
+    COALESCE(SUM(payment_total_payed)::money, '$0')::VARCHAR as payment_recolected,
+    COALESCE(SUM(payment_total_real)::money, '$0')::VARCHAR  as payment_pending,
+    COALESCE(SUM(payment_total)::money, '$0')::VARCHAR  as payment_factured,
+    COALESCE((SUM(payment_total_payed)::money + SUM(payment_paid)::money)::money, '$0')::VARCHAR  as payment_paid
 FROM
     orders
 WHERE  delivered_at >= $1 AND delivered_at <= $2
@@ -357,10 +363,10 @@ func (q *Queries) GetOrdersByDeliveredPendingRangePages(ctx context.Context, arg
 
 const getOrdersByDeliveredPendingRangeReports = `-- name: GetOrdersByDeliveredPendingRangeReports :one
 SELECT
-    SUM(payment_total_payed)::money as payment_recolected,
-    SUM(payment_total_real)::money as payment_pending,
-    SUM(payment_total)::money as payment_factured,
-    SUM(payment_total_payed)::money as payment_paid
+    COALESCE(SUM(payment_total_payed)::money, '$0')::VARCHAR as payment_recolected,
+    COALESCE(SUM(payment_total_real)::money, '$0')::VARCHAR  as payment_pending,
+    COALESCE(SUM(payment_total)::money, '$0')::VARCHAR  as payment_factured,
+    COALESCE((SUM(payment_total_payed)::money + SUM(payment_paid)::money)::money, '$0')::VARCHAR  as payment_paid
 FROM
     orders
 WHERE  created_at >= $1 AND created_at <= $2 AND delivered_at IS NULL
@@ -392,7 +398,7 @@ func (q *Queries) GetOrdersByDeliveredPendingRangeReports(ctx context.Context, a
 
 const getOrdersByIdentifier = `-- name: GetOrdersByIdentifier :many
 SELECT 
-    id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at, payed_at, delivered_at
+    id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at, payed_at, delivered_at, payment_paid
 FROM 
     orders
 WHERE 
@@ -437,6 +443,7 @@ func (q *Queries) GetOrdersByIdentifier(ctx context.Context, arg GetOrdersByIden
 			&i.CreatedAt,
 			&i.PayedAt,
 			&i.DeliveredAt,
+			&i.PaymentPaid,
 		); err != nil {
 			return nil, err
 		}
@@ -473,10 +480,10 @@ func (q *Queries) GetOrdersByPayedAtRangePages(ctx context.Context, arg GetOrder
 
 const getOrdersByPayedAtRangeReports = `-- name: GetOrdersByPayedAtRangeReports :one
 SELECT
-    SUM(payment_total_payed)::money as payment_recolected,
-    SUM(payment_total_real)::money as payment_pending,
-    SUM(payment_total)::money as payment_factured,
-    SUM(payment_total_payed)::money as payment_paid
+    COALESCE(SUM(payment_total_payed)::money, '$0')::VARCHAR as payment_recolected,
+    COALESCE(SUM(payment_total_real)::money, '$0')::VARCHAR  as payment_pending,
+    COALESCE(SUM(payment_total)::money, '$0')::VARCHAR  as payment_factured,
+    COALESCE((SUM(payment_total_payed)::money + SUM(payment_paid)::money)::money, '$0')::VARCHAR  as payment_paid
 FROM
     orders
 WHERE  payed_at >= $1 AND payed_at <= $2
@@ -528,10 +535,10 @@ func (q *Queries) GetOrdersByPayedPendingRangePages(ctx context.Context, arg Get
 
 const getOrdersByPayedPendingRangeReports = `-- name: GetOrdersByPayedPendingRangeReports :one
 SELECT
-    SUM(payment_total_payed)::money as payment_recolected,
-    SUM(payment_total_real)::money as payment_pending,
-    SUM(payment_total)::money as payment_factured,
-    SUM(payment_total_payed)::money as payment_paid
+    COALESCE(SUM(payment_total_payed)::money, '$0')::VARCHAR as payment_recolected,
+    COALESCE(SUM(payment_total_real)::money, '$0')::VARCHAR  as payment_pending,
+    COALESCE(SUM(payment_total)::money, '$0')::VARCHAR  as payment_factured,
+    COALESCE((SUM(payment_total_payed)::money + SUM(payment_paid)::money)::money, '$0')::VARCHAR  as payment_paid
 FROM
     orders
 WHERE  created_at >= $1 AND created_at <= $2 AND payed_at IS NULL
@@ -563,7 +570,7 @@ func (q *Queries) GetOrdersByPayedPendingRangeReports(ctx context.Context, arg G
 
 const listOrders = `-- name: ListOrders :many
 SELECT
-    id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at, payed_at, delivered_at
+    id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at, payed_at, delivered_at, payment_paid
 FROM
     orders
 ORDER BY
@@ -604,6 +611,7 @@ func (q *Queries) ListOrders(ctx context.Context, arg ListOrdersParams) ([]Order
 			&i.CreatedAt,
 			&i.PayedAt,
 			&i.DeliveredAt,
+			&i.PaymentPaid,
 		); err != nil {
 			return nil, err
 		}
@@ -620,7 +628,7 @@ func (q *Queries) ListOrders(ctx context.Context, arg ListOrdersParams) ([]Order
 
 const listOrdersByCreatedAtRange = `-- name: ListOrdersByCreatedAtRange :many
 SELECT
-    id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at, payed_at, delivered_at
+    id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at, payed_at, delivered_at, payment_paid
 FROM
     orders
 WHERE  created_at >= $1 AND created_at <= $2
@@ -669,6 +677,7 @@ func (q *Queries) ListOrdersByCreatedAtRange(ctx context.Context, arg ListOrders
 			&i.CreatedAt,
 			&i.PayedAt,
 			&i.DeliveredAt,
+			&i.PaymentPaid,
 		); err != nil {
 			return nil, err
 		}
@@ -685,7 +694,7 @@ func (q *Queries) ListOrdersByCreatedAtRange(ctx context.Context, arg ListOrders
 
 const listOrdersByDeliveredAtRange = `-- name: ListOrdersByDeliveredAtRange :many
 SELECT
-    id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at, payed_at, delivered_at
+    id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at, payed_at, delivered_at, payment_paid
 FROM
     orders
 WHERE  delivered_at >= $1 AND delivered_at <= $2
@@ -734,6 +743,7 @@ func (q *Queries) ListOrdersByDeliveredAtRange(ctx context.Context, arg ListOrde
 			&i.CreatedAt,
 			&i.PayedAt,
 			&i.DeliveredAt,
+			&i.PaymentPaid,
 		); err != nil {
 			return nil, err
 		}
@@ -750,7 +760,7 @@ func (q *Queries) ListOrdersByDeliveredAtRange(ctx context.Context, arg ListOrde
 
 const listOrdersByDeliveredPendingRange = `-- name: ListOrdersByDeliveredPendingRange :many
 SELECT
-    id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at, payed_at, delivered_at
+    id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at, payed_at, delivered_at, payment_paid
 FROM
     orders
 WHERE  created_at >= $1 AND created_at <= $2 AND delivered_at IS NULL 
@@ -799,6 +809,7 @@ func (q *Queries) ListOrdersByDeliveredPendingRange(ctx context.Context, arg Lis
 			&i.CreatedAt,
 			&i.PayedAt,
 			&i.DeliveredAt,
+			&i.PaymentPaid,
 		); err != nil {
 			return nil, err
 		}
@@ -815,7 +826,7 @@ func (q *Queries) ListOrdersByDeliveredPendingRange(ctx context.Context, arg Lis
 
 const listOrdersByPayedAtRange = `-- name: ListOrdersByPayedAtRange :many
 SELECT
-    id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at, payed_at, delivered_at
+    id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at, payed_at, delivered_at, payment_paid
 FROM
     orders
 WHERE  payed_at >= $1 AND payed_at <= $2
@@ -864,6 +875,7 @@ func (q *Queries) ListOrdersByPayedAtRange(ctx context.Context, arg ListOrdersBy
 			&i.CreatedAt,
 			&i.PayedAt,
 			&i.DeliveredAt,
+			&i.PaymentPaid,
 		); err != nil {
 			return nil, err
 		}
@@ -880,7 +892,7 @@ func (q *Queries) ListOrdersByPayedAtRange(ctx context.Context, arg ListOrdersBy
 
 const listOrdersByPayedPendingRange = `-- name: ListOrdersByPayedPendingRange :many
 SELECT
-    id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at, payed_at, delivered_at
+    id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at, payed_at, delivered_at, payment_paid
 FROM
     orders
 WHERE  created_at >= $1 AND created_at <= $2 AND payed_at IS NULL 
@@ -929,6 +941,7 @@ func (q *Queries) ListOrdersByPayedPendingRange(ctx context.Context, arg ListOrd
 			&i.CreatedAt,
 			&i.PayedAt,
 			&i.DeliveredAt,
+			&i.PaymentPaid,
 		); err != nil {
 			return nil, err
 		}
@@ -950,7 +963,7 @@ SET
     delivered_at = $2
 WHERE
     id = $1
-RETURNING id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at, payed_at, delivered_at
+RETURNING id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at, payed_at, delivered_at, payment_paid
 `
 
 type SetOrderDeliveredAtParams struct {
@@ -978,6 +991,7 @@ func (q *Queries) SetOrderDeliveredAt(ctx context.Context, arg SetOrderDelivered
 		&i.CreatedAt,
 		&i.PayedAt,
 		&i.DeliveredAt,
+		&i.PaymentPaid,
 	)
 	return i, err
 }
@@ -988,10 +1002,10 @@ UPDATE
 SET
     payed_at = $2,
     payment_total_real = 0,
-    payment_total_payed = orders.payment_total
+    payment_paid = payment_total_real
 WHERE
     id = $1
-RETURNING id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at, payed_at, delivered_at
+RETURNING id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at, payed_at, delivered_at, payment_paid
 `
 
 type SetOrderPayedAtParams struct {
@@ -1019,6 +1033,7 @@ func (q *Queries) SetOrderPayedAt(ctx context.Context, arg SetOrderPayedAtParams
 		&i.CreatedAt,
 		&i.PayedAt,
 		&i.DeliveredAt,
+		&i.PaymentPaid,
 	)
 	return i, err
 }
@@ -1045,10 +1060,11 @@ SET
     delivery_date = $8,
     garment_total = $9,
     payment_total_payed = $10,
-    payment_total = $11
+    payment_paid = $11,
+    payment_total = $12
 WHERE
     id = $1
-RETURNING id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at, payed_at, delivered_at
+RETURNING id, identifier, recieved_date, delivery_date, client_name, client_id, client_address, client_phone, client_email, garment_total, payment_total_payed, payment_total, payment_total_real, created_at, payed_at, delivered_at, payment_paid
 `
 
 type UpdateOrderParams struct {
@@ -1062,6 +1078,7 @@ type UpdateOrderParams struct {
 	DeliveryDate      time.Time `json:"delivery_date"`
 	GarmentTotal      string    `json:"garment_total"`
 	PaymentTotalPayed string    `json:"payment_total_payed"`
+	PaymentPaid       string    `json:"payment_paid"`
 	PaymentTotal      string    `json:"payment_total"`
 }
 
@@ -1077,6 +1094,7 @@ func (q *Queries) UpdateOrder(ctx context.Context, arg UpdateOrderParams) (Order
 		arg.DeliveryDate,
 		arg.GarmentTotal,
 		arg.PaymentTotalPayed,
+		arg.PaymentPaid,
 		arg.PaymentTotal,
 	)
 	var i Order
@@ -1097,6 +1115,7 @@ func (q *Queries) UpdateOrder(ctx context.Context, arg UpdateOrderParams) (Order
 		&i.CreatedAt,
 		&i.PayedAt,
 		&i.DeliveredAt,
+		&i.PaymentPaid,
 	)
 	return i, err
 }

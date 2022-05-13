@@ -18,10 +18,13 @@ INSERT INTO
         category,
         price_washing,
         price_ironing,
-        price_dyeing
+        price_dyeing,
+        cost_washing,
+        cost_ironing,
+        cost_dyeing
     )
 VALUES
-    ($1, $2, $3, $4, $5) RETURNING id, category, price_washing, price_ironing, created_at, price_dyeing
+    ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id, category, price_washing, price_ironing, created_at, price_dyeing, cost_washing, cost_ironing, cost_dyeing
 `
 
 type CreatePriceParams struct {
@@ -30,6 +33,9 @@ type CreatePriceParams struct {
 	PriceWashing string    `json:"price_washing"`
 	PriceIroning string    `json:"price_ironing"`
 	PriceDyeing  string    `json:"price_dyeing"`
+	CostWashing  string    `json:"cost_washing"`
+	CostIroning  string    `json:"cost_ironing"`
+	CostDyeing   string    `json:"cost_dyeing"`
 }
 
 func (q *Queries) CreatePrice(ctx context.Context, arg CreatePriceParams) (Price, error) {
@@ -39,6 +45,9 @@ func (q *Queries) CreatePrice(ctx context.Context, arg CreatePriceParams) (Price
 		arg.PriceWashing,
 		arg.PriceIroning,
 		arg.PriceDyeing,
+		arg.CostWashing,
+		arg.CostIroning,
+		arg.CostDyeing,
 	)
 	var i Price
 	err := row.Scan(
@@ -48,6 +57,9 @@ func (q *Queries) CreatePrice(ctx context.Context, arg CreatePriceParams) (Price
 		&i.PriceIroning,
 		&i.CreatedAt,
 		&i.PriceDyeing,
+		&i.CostWashing,
+		&i.CostIroning,
+		&i.CostDyeing,
 	)
 	return i, err
 }
@@ -66,7 +78,7 @@ func (q *Queries) DeletePrice(ctx context.Context, id uuid.UUID) error {
 
 const getPrice = `-- name: GetPrice :one
 SELECT
-    id, category, price_washing, price_ironing, created_at, price_dyeing
+    id, category, price_washing, price_ironing, created_at, price_dyeing, cost_washing, cost_ironing, cost_dyeing
 FROM
     prices
 WHERE
@@ -85,13 +97,16 @@ func (q *Queries) GetPrice(ctx context.Context, id uuid.UUID) (Price, error) {
 		&i.PriceIroning,
 		&i.CreatedAt,
 		&i.PriceDyeing,
+		&i.CostWashing,
+		&i.CostIroning,
+		&i.CostDyeing,
 	)
 	return i, err
 }
 
 const listPrices = `-- name: ListPrices :many
 SELECT
-    id, category, price_washing, price_ironing, created_at, price_dyeing
+    id, category, price_washing, price_ironing, created_at, price_dyeing, cost_washing, cost_ironing, cost_dyeing
 FROM
     prices
 ORDER BY
@@ -122,6 +137,9 @@ func (q *Queries) ListPrices(ctx context.Context, arg ListPricesParams) ([]Price
 			&i.PriceIroning,
 			&i.CreatedAt,
 			&i.PriceDyeing,
+			&i.CostWashing,
+			&i.CostIroning,
+			&i.CostDyeing,
 		); err != nil {
 			return nil, err
 		}
@@ -138,7 +156,7 @@ func (q *Queries) ListPrices(ctx context.Context, arg ListPricesParams) ([]Price
 
 const listPricesAll = `-- name: ListPricesAll :many
 SELECT
-    id, category, price_washing, price_ironing, created_at, price_dyeing
+    id, category, price_washing, price_ironing, created_at, price_dyeing, cost_washing, cost_ironing, cost_dyeing
 FROM
     prices
 ORDER BY
@@ -162,6 +180,9 @@ func (q *Queries) ListPricesAll(ctx context.Context) ([]Price, error) {
 			&i.PriceIroning,
 			&i.CreatedAt,
 			&i.PriceDyeing,
+			&i.CostWashing,
+			&i.CostIroning,
+			&i.CostDyeing,
 		); err != nil {
 			return nil, err
 		}
@@ -178,7 +199,7 @@ func (q *Queries) ListPricesAll(ctx context.Context) ([]Price, error) {
 
 const listPricesByCategory = `-- name: ListPricesByCategory :many
 SELECT
-    id, category, price_washing, price_ironing, created_at, price_dyeing
+    id, category, price_washing, price_ironing, created_at, price_dyeing, cost_washing, cost_ironing, cost_dyeing
 FROM
     prices
 WHERE 
@@ -212,6 +233,9 @@ func (q *Queries) ListPricesByCategory(ctx context.Context, arg ListPricesByCate
 			&i.PriceIroning,
 			&i.CreatedAt,
 			&i.PriceDyeing,
+			&i.CostWashing,
+			&i.CostIroning,
+			&i.CostDyeing,
 		); err != nil {
 			return nil, err
 		}
@@ -233,10 +257,13 @@ SET
     category = $1,
     price_washing = $2,
     price_ironing = $3,
-    price_dyeing = $4
+    price_dyeing = $4,
+    cost_washing = $5,
+    cost_ironing = $6, 
+    cost_dyeing = $7
 WHERE
-    id = $5
-RETURNING id, category, price_washing, price_ironing, created_at, price_dyeing
+    id = $8
+RETURNING id, category, price_washing, price_ironing, created_at, price_dyeing, cost_washing, cost_ironing, cost_dyeing
 `
 
 type UpdatePriceParams struct {
@@ -244,6 +271,9 @@ type UpdatePriceParams struct {
 	PriceWashing string    `json:"price_washing"`
 	PriceIroning string    `json:"price_ironing"`
 	PriceDyeing  string    `json:"price_dyeing"`
+	CostWashing  string    `json:"cost_washing"`
+	CostIroning  string    `json:"cost_ironing"`
+	CostDyeing   string    `json:"cost_dyeing"`
 	ID           uuid.UUID `json:"id"`
 }
 
@@ -253,6 +283,9 @@ func (q *Queries) UpdatePrice(ctx context.Context, arg UpdatePriceParams) (Price
 		arg.PriceWashing,
 		arg.PriceIroning,
 		arg.PriceDyeing,
+		arg.CostWashing,
+		arg.CostIroning,
+		arg.CostDyeing,
 		arg.ID,
 	)
 	var i Price
@@ -263,6 +296,9 @@ func (q *Queries) UpdatePrice(ctx context.Context, arg UpdatePriceParams) (Price
 		&i.PriceIroning,
 		&i.CreatedAt,
 		&i.PriceDyeing,
+		&i.CostWashing,
+		&i.CostIroning,
+		&i.CostDyeing,
 	)
 	return i, err
 }

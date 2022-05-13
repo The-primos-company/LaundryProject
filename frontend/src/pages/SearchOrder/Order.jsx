@@ -80,6 +80,8 @@ const CardComponent = ({
           <br />
           Abono: <strong>{order.payment_total_payed}</strong>
           <br />
+          Pagado: <strong>{order.payment_paid}</strong>
+          <br />
           Saldo: <strong>{order.payment_total_real}</strong>
         </Typography>
         <Typography variant="body2">

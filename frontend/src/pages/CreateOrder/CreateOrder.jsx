@@ -65,22 +65,8 @@ export const CreateOrder = () => {
   };
   // Funciones a go
   const greet = async () => {
-    // const [clientName, setClientName] = useState("");
-    // const [clientId, setClientId] = useState("");
-    // const [paymentTotalPayed, setPaymentTotalPayed] = useState(0);
-    // const [clientAddress, setClientAddress] = useState("");
-    // const [clientPhone, setClientPhone] = useState("");
-    // const [clientEmail, setClientEmail] = useState("");
-    // const [recievedDate, setRecievedDate] = useState(new Date());
-    // const [deliveryDate, setDeliveryDate] = useState(null);
-    // const [orderNumber, setOrderNumber] = useState(null);
-    // const [garments, setGarments] = useState([]);
     if (
-      //error.email !== "" ||
       clientName === "" ||
-      //clientId === "" ||
-      //clientAddress === "" ||
-      //clientPhone === "" ||
       deliveryDate === null
     )
       return;
@@ -99,7 +85,10 @@ export const CreateOrder = () => {
     });
     if (totalPrice === 0) {
       totalPrice = garments
-        .map((item) => parseInt(item.price.replace('.','')) * parseInt(item.cuantity))
+        .map((item) => {
+          const price = item.price ? item.price.replace('.','') : "0"
+          return parseInt(price) * parseInt(item.cuantity)
+        })
         .reduce((a, b) => {
           return a + b;
         }, 0);
@@ -169,7 +158,7 @@ export const CreateOrder = () => {
     setClientAddress("");
     setClientPhone("");
     setClientEmail("");
-    setPaymentTotalPayed("");
+    setPaymentTotalPayed(0);
     setDeliveryDate(null);
     setGarments([]);
   }

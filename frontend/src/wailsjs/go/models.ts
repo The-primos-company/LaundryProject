@@ -48,6 +48,7 @@ export class Order {
     payment_total_payed: string;
     payment_total: string;
     payment_total_real: string;
+    payment_paid: string;
     service_type: string;
     payed_at: string;
     delivered_at: string;
@@ -72,6 +73,7 @@ export class Order {
         this.payment_total_payed = source["payment_total_payed"];
         this.payment_total = source["payment_total"];
         this.payment_total_real = source["payment_total_real"];
+        this.payment_paid = source["payment_paid"];
         this.service_type = source["service_type"];
         this.payed_at = source["payed_at"];
         this.delivered_at = source["delivered_at"];
@@ -141,13 +143,30 @@ export class OrderPagination {
 	}
 }
 
+export class SumaryGarmentsResults {
+    id: number;
+    cuantity: number;
+    category: string;
+    service_type: string;
+    price_total: string;
+    cost_total: string;
+    utilities: string;
 
+    static createFrom(source: any = {}) {
+        return new SumaryGarmentsResults(source);
+    }
 
-
-
-
-
-
+    constructor(source: any = {}) {
+        if ('string' === typeof source) source = JSON.parse(source);
+        this.id = source["id"];
+        this.cuantity = source["cuantity"];
+        this.category = source["category"];
+        this.service_type = source["service_type"];
+        this.price_total = source["price_total"];
+        this.cost_total = source["cost_total"];
+        this.utilities = source["utilities"];
+    }
+}
 export class Time {
 
 
@@ -167,6 +186,9 @@ export class Price {
     price_ironing: string;
     created_at: Time;
     price_dyeing: string;
+    cost_washing: string;
+    cost_ironing: string;
+    cost_dyeing: string;
 
     static createFrom(source: any = {}) {
         return new Price(source);
@@ -180,6 +202,9 @@ export class Price {
         this.price_ironing = source["price_ironing"];
         this.created_at = this.convertValues(source["created_at"], Time);
         this.price_dyeing = source["price_dyeing"];
+        this.cost_washing = source["cost_washing"];
+        this.cost_ironing = source["cost_ironing"];
+        this.cost_dyeing = source["cost_dyeing"];
     }
 
 	convertValues(a: any, classs: any, asMap: boolean = false): any {

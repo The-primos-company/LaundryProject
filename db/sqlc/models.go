@@ -53,6 +53,7 @@ type Order struct {
 	CreatedAt         time.Time    `json:"created_at"`
 	PayedAt           sql.NullTime `json:"payed_at"`
 	DeliveredAt       sql.NullTime `json:"delivered_at"`
+	PaymentPaid       string       `json:"payment_paid"`
 }
 
 type Price struct {
@@ -62,4 +63,7 @@ type Price struct {
 	PriceIroning string    `json:"price_ironing"`
 	CreatedAt    time.Time `json:"created_at"`
 	PriceDyeing  string    `json:"price_dyeing"`
+	CostWashing  string    `json:"cost_washing"`
+	CostIroning  string    `json:"cost_ironing"`
+	CostDyeing   string    `json:"cost_dyeing"`
 }

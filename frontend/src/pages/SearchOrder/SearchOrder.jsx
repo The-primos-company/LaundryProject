@@ -40,11 +40,20 @@ export const SearchOrder = ({ setRoute }) => {
   useEffect(() => {
     setRefreshSeeOrders(false)
     const fetchData = async () => {
-      const data = await window.go.service.OrderService.GetOrderByClientName(
-        searchValue,
-        10,
-        0
-      );
+      let data = []
+      if (searchBy === "nombreDelCliente") {
+        data= await window.go.service.OrderService.GetOrderByClientName(
+          searchValue,
+          10,
+          0
+        );
+      } else  {
+        data= await window.go.service.OrderService.GetOrderByIdentifier(
+          searchValue,
+          10,
+          0
+        );
+    }
       setOrders(data);
     };
 
@@ -69,7 +78,7 @@ export const SearchOrder = ({ setRoute }) => {
       0
     );
     setOrders(data);
-    setSearchValue("");
+    //setSearchValue("");
   };
   const onClickId = async () => {
     if (searchValue === "") return;
@@ -80,7 +89,7 @@ export const SearchOrder = ({ setRoute }) => {
       0
     );
     setOrders(data);
-    setSearchValue("");
+    //setSearchValue("");
   };
 
   return (

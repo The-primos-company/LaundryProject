@@ -18,6 +18,9 @@ export const GarmentsPrices = () => {
   const [priceWashing, setPriceWashing] = useState("")
   const [priceIroning, setPriceIroning] = useState("")
   const [priceDyeing, setPriceDyeing] = useState("")
+  const [costWashing, setCostWashing] = useState("")
+  const [costIroning, setCostIroning] = useState("")
+  const [costDyeing, setCostDyeing] = useState("")
   const [clearList, setClearList] = useState(false)
 
 
@@ -35,12 +38,15 @@ export const GarmentsPrices = () => {
 
 
   const addGarment = async () => {
-    if (!category || !priceWashing || !priceIroning || !priceDyeing) return
+    if (!category || !priceWashing || !priceIroning || !priceDyeing|| !costWashing || !costIroning || !costDyeing) return
     var price = new Price({
       category,
       price_washing: priceWashing,
       price_ironing: priceIroning,
       price_dyeing: priceDyeing,
+      cost_washing: costWashing,
+      cost_ironing: costIroning,
+      cost_dyeing: costDyeing,
     });
     try {
       await window.go.service.PriceService.CreatePrice(price);
@@ -48,6 +54,9 @@ export const GarmentsPrices = () => {
       setPriceWashing("")
       setPriceIroning("")
       setPriceDyeing("")
+      setCostWashing("")
+      setCostIroning("")
+      setCostDyeing("")
       setClearList(true)
     } catch (e) {
       console.error(e)
@@ -67,7 +76,10 @@ export const GarmentsPrices = () => {
         <TextField id="outlined-basic" label="Nombre de la prenda *" variant="outlined" value={category} onChange={(e) => setCategory(e.target.value)} />
         <TextField id="outlined-basic" label="Precio lavado *" variant="outlined" value={priceWashing} onChange={(e) => setPriceWashing(e.target.value)} />
         <TextField id="outlined-basic" label="Precio planchado *" variant="outlined" value={priceIroning} onChange={(e) => setPriceIroning(e.target.value)} />
-        <TextField id="outlined-basic" label="Precio tinturado *" variant="outlined" value={priceIroning} onChange={(e) => setPriceDyeing(e.target.value)} />
+        <TextField id="outlined-basic" label="Precio tinturado *" variant="outlined" value={priceDyeing} onChange={(e) => setPriceDyeing(e.target.value)} />
+        <TextField id="outlined-basic" label="Costo lavado *" variant="outlined" value={costWashing} onChange={(e) => setCostWashing(e.target.value)} />
+        <TextField id="outlined-basic" label="Costo planchado *" variant="outlined" value={costIroning} onChange={(e) => setCostIroning(e.target.value)} />
+        <TextField id="outlined-basic" label="Costo tinturado *" variant="outlined" value={costDyeing} onChange={(e) => setCostDyeing(e.target.value)} />
       </Stack>
       <Stack direction="row" spacing={2} justifyContent="space-around"
         alignItems="center">

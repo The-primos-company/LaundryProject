@@ -13,6 +13,7 @@ export const Navbar = () => {
       <Button onClick={() => setRoute("search-order")}>Buscar orden</Button>
       <Button onClick={() => setRoute("garments-prices")}>Prendas y precios</Button>
       <Button onClick={() => setRoute("clients")}>Clientes</Button>
+      <Button onClick={() => setRoute("results")}>Resultados</Button>
     </>
   )
 }

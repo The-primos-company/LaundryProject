@@ -3,8 +3,9 @@ package main
 import (
 	"database/sql"
 	"embed"
-	"log"
 
+	"github.com/evalphobia/logrus_sentry"
+	log "github.com/sirupsen/logrus"
 	"github.com/wailsapp/wails/v2/pkg/options/mac"
 
 	_ "github.com/lib/pq"
@@ -30,8 +31,18 @@ const (
 func main() {
 	app := NewApp()
 
+	hook, err := logrus_sentry.NewSentryHook("https://9449b777c93c4a0ebc67f12f7b5d7dde@o1239630.ingest.sentry.io/6391217", []log.Level{
+		log.PanicLevel,
+		log.FatalLevel,
+		log.ErrorLevel,
+	})
+
+	if err == nil {
+		log.AddHook(hook)
+	}
+
 	// Create application with options
-	err := wails.Run(&options.App{
+	err = wails.Run(&options.App{
 		Title:             "Lavanderia Lava sur",
 		Width:             1024,
 		Height:            700,
