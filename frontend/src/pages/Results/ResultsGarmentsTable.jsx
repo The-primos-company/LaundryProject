@@ -170,15 +170,15 @@ useEffect(() => {
 
   const columns = [
     {
-      field: "cuantity",
-      headerName: "Total",
+      field: "category",
+      headerName: "Prendas",
       type: "string",
       width: 150,
       editable: true,
     },
     {
-      field: "category",
-      headerName: "Prendas",
+      field: "cuantity",
+      headerName: "Total",
       type: "string",
       width: 150,
       editable: true,

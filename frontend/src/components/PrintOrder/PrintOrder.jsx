@@ -68,7 +68,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
           justifyContent="space-between"
         >
           <span>Orden de servicio</span>
-          <strong>{orderNumber}</strong>
+          <strong>{order.identifier}</strong>
         </Stack>
 
         <Stack direction={"column"} sx={{ marginBottom: 2 }}>
@@ -81,14 +81,6 @@ const ComponentToPrint = forwardRef((props, ref) => {
           </span>
           <span>
             Cedula: <strong>{order.client_id}</strong>
-          </span>
-          <span>
-            Direccion: <span>{order.client_address}</span>
-          </span>
-
-          <span>Telefono: {order.client_phone}</span>
-          <span>
-            Email: <span>{order.client_email}</span>
           </span>
         </Stack>
         <table style={{ marginBottom: 10 }}>
@@ -184,7 +176,7 @@ const ComponentToPrint = forwardRef((props, ref) => {
           justifyContent="space-between"
         >
           <span>Orden de servicio</span>
-          <strong>{orderNumber}</strong>
+          <strong>{order.identifier}</strong>
         </Stack>
         <Stack>
           <table>

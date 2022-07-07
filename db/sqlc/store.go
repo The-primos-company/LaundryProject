@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/google/uuid"
@@ -115,11 +116,12 @@ func (store *Store) CreateOrderTx(ctx context.Context, mock bool, arg CreateOrde
 
 	if mock {
 		rollbackAux = func(q *Queries) error {
-			indentifier, err := q.GetCurrentOrderIdentifierSequence(ctx)
+			identifier, err := q.GetCurrentOrderIdentifierSequence(ctx)
 			if err != nil {
+				log.Error("getting identifier when creating order rollback", err)
 				return err
 			}
-			return q.SetSequence(ctx, int64(indentifier))
+			return q.SetSequence(ctx, int64(identifier))
 		}
 	}
 
@@ -144,13 +146,29 @@ func (store *Store) CreateOrderTx(ctx context.Context, mock bool, arg CreateOrde
 		if err != nil {
 			return err
 		}
+
+		//verify identifier
+		newIdentifier := order.Identifier
+		identifierExists, _ := store.ExistOrderByIdentifier(ctx, int32(order.Identifier))
+		if identifierExists {
+			re, _ := store.GetNextOrderIdentifier(ctx)
+			newIdentifier = re
+			log.Info("identifier number: ", order.Identifier, " has already an order asigned, identifier nuevo: ", newIdentifier)
+		}
+
+		if order.Identifier != newIdentifier {
+			store.SetSequence(ctx, int64(newIdentifier))
+			orderUpdated, errUp := q.UpdateOrderIdentifier(ctx, UpdateOrderIdentifierParams{ID: order.ID, Identifier: newIdentifier})
+			order.Identifier = orderUpdated.Identifier
+			if errUp != nil {
+				log.Error("Error updating new identifier: ", newIdentifier)
+			}
+		}
 		//create garments
 		garments := make([]CreateGarmentTxResults, len(arg.Garments))
 
 		for i := 0; i < len(arg.Garments); i++ {
 			argG := arg.Garments[i]
-			fmt.Println("service type")
-			fmt.Println(argG.ServiceType)
 			garment, err := q.CreateGarment(ctx, CreateGarmentParams{
 				ID:          uuid.New(),
 				OrderID:     order.ID,
@@ -185,6 +203,7 @@ func (store *Store) CreateOrderTx(ctx context.Context, mock bool, arg CreateOrde
 
 		result = CreateOrderTxResults{
 			ID:                order.ID,
+			Identifier:        strconv.Itoa(int(order.Identifier)),
 			RecievedDate:      order.RecievedDate,
 			DeliveryDate:      order.DeliveryDate,
 			ClientName:        order.ClientName,
@@ -310,6 +329,14 @@ type SumaryGarmentsArgs struct {
 }
 
 type SumaryGarmentsResults struct {
+	Data            []SumaryGarment `json:"data"`
+	TotalGarments   int64           `json:"total_garments"`
+	TotalPriceTotal string          `json:"total_price_total"`
+	TotalCost       string          `json:"total_cost"`
+	TotalUtilities  string          `json:"total_utilities"`
+}
+
+type SumaryGarment struct {
 	Cuantity    int64  `json:"cuantity"`
 	Category    string `json:"category"`
 	ServiceType string `json:"service_type"`
@@ -323,11 +350,11 @@ type GetPriceReportByCategoryRow struct {
 	Utilities string `json:"utilities"`
 }
 
-func (store *Store) SumaryGarmentsStore(ctx context.Context, arg SumaryGarmentsArgs) []SumaryGarmentsResults {
+func (store *Store) SumaryGarmentsStore(ctx context.Context, arg SumaryGarmentsArgs) SumaryGarmentsResults {
 	var (
 		start  time.Time = time.Now()
 		end    time.Time = time.Now().AddDate(0, 0, 1)
-		result []SumaryGarmentsResults
+		result []SumaryGarment
 	)
 
 	if parse, err := time.Parse(time.RFC3339, arg.StartAt); err == nil {
@@ -342,16 +369,24 @@ func (store *Store) SumaryGarmentsStore(ctx context.Context, arg SumaryGarmentsA
 		StartAt: start,
 		EndAt:   end,
 	})
-
 	if err != nil {
 		log.Fatal("error filtering order by created at range", err)
 	}
 
-	result = make([]SumaryGarmentsResults, len(reports))
+	reportsTotals, err := store.SumaryGarmentsResults(ctx, SumaryGarmentsResultsParams{
+		StartAt: start,
+		EndAt:   end,
+	})
+
+	if err != nil {
+		log.Fatal("error getting totals", err)
+	}
+
+	result = make([]SumaryGarment, len(reports))
 	for i := range reports {
 		report := reports[i]
 
-		result[i] = SumaryGarmentsResults{
+		result[i] = SumaryGarment{
 			Cuantity:    report.Total,
 			Category:    report.Category,
 			ServiceType: report.ServiceType,
@@ -360,5 +395,11 @@ func (store *Store) SumaryGarmentsStore(ctx context.Context, arg SumaryGarmentsA
 			Utilities:   report.Utilities,
 		}
 	}
-	return result
+	return SumaryGarmentsResults{
+		Data:            result,
+		TotalGarments:   int64(reportsTotals.TotalGarments),
+		TotalPriceTotal: reportsTotals.TotalPriceTotal,
+		TotalCost:       reportsTotals.TotalCost,
+		TotalUtilities:  reportsTotals.TotalUtilities,
+	}
 }

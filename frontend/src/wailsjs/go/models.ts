@@ -143,7 +143,7 @@ export class OrderPagination {
 	}
 }
 
-export class SumaryGarmentsResults {
+export class SumaryGarment {
     id: number;
     cuantity: number;
     category: string;
@@ -153,7 +153,7 @@ export class SumaryGarmentsResults {
     utilities: string;
 
     static createFrom(source: any = {}) {
-        return new SumaryGarmentsResults(source);
+        return new SumaryGarment(source);
     }
 
     constructor(source: any = {}) {
@@ -166,6 +166,44 @@ export class SumaryGarmentsResults {
         this.cost_total = source["cost_total"];
         this.utilities = source["utilities"];
     }
+}
+export class SumaryGarmentsResults {
+    data: SumaryGarment[];
+    total_garments: number;
+    total_price_total: string;
+    total_cost: string;
+    total_utilities: string;
+
+    static createFrom(source: any = {}) {
+        return new SumaryGarmentsResults(source);
+    }
+
+    constructor(source: any = {}) {
+        if ('string' === typeof source) source = JSON.parse(source);
+        this.data = this.convertValues(source["data"], SumaryGarment);
+        this.total_garments = source["total_garments"];
+        this.total_price_total = source["total_price_total"];
+        this.total_cost = source["total_cost"];
+        this.total_utilities = source["total_utilities"];
+    }
+
+	convertValues(a: any, classs: any, asMap: boolean = false): any {
+	    if (!a) {
+	        return a;
+	    }
+	    if (a.slice) {
+	        return (a as any[]).map(elem => this.convertValues(elem, classs));
+	    } else if ("object" === typeof a) {
+	        if (asMap) {
+	            for (const key of Object.keys(a)) {
+	                a[key] = new classs(a[key]);
+	            }
+	            return a;
+	        }
+	        return new classs(a);
+	    }
+	    return a;
+	}
 }
 export class Time {
 

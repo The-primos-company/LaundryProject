@@ -46,6 +46,7 @@ type Order struct {
 }
 
 func (s *OrderService) CreateOrder(arg Order, mock bool) Order {
+	log.Info("creating order: ", arg, ", mocking?: ", mock)
 	deliveryDate, err := time.Parse(time.RFC3339, arg.DeliveryDate)
 	payed_at := sql.NullTime{
 		Valid: false,
@@ -58,7 +59,7 @@ func (s *OrderService) CreateOrder(arg Order, mock bool) Order {
 	paymentTotalPayed, errPtp := strconv.Atoi(arg.PaymentTotalPayed)
 
 	if errPt != nil || errPtp != nil {
-		log.Info(arg.PaymentTotal, arg.PaymentTotalPayed, arg.Garments)
+		log.Info(arg.PaymentTotal, " - ", arg.PaymentTotalPayed, " - ", arg.Garments)
 		log.Panic("error parsing totals to int", errPt, errPtp)
 	}
 	paymentTotalReal := paymentTotal - paymentTotalPayed
@@ -128,6 +129,7 @@ func (s *OrderService) CreateOrder(arg Order, mock bool) Order {
 
 	return Order{
 		ID:                order.ID,
+		Identifier:        order.Identifier,
 		RecievedDate:      order.RecievedDate.Format(time.RFC3339),
 		DeliveryDate:      order.DeliveryDate.Format(time.RFC3339),
 		ClientName:        order.ClientName,
@@ -779,4 +781,12 @@ func (s *OrderService) toOrder(order db.Order) Order {
 		PayedAt:           payedAt,
 		DeliveredAt:       deliveredAt,
 	}
+}
+
+func (s *OrderService) GetCurrentOrderSequence() int32 {
+	identifier, err := s.store.GetCurrentOrderIdentifierSequence(context.Background())
+	if err != nil {
+		log.Panic("Error getting current identifier", err)
+	}
+	return int32(identifier)
 }

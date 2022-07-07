@@ -62,7 +62,7 @@ const go = {
        * GetSumaryGarments
        * @param {string} arg1 - Go Type: string
        * @param {string} arg2 - Go Type: string
-       * @returns {Promise<Array<SumaryGarmentsResults>>}  - Go Type: []service.SumaryGarmentsResults
+       * @returns {Promise<SumaryGarmentsResults>}  - Go Type: service.SumaryGarmentsResults
        */
       "GetSumaryGarments": (arg1, arg2) => {
         return window.go.service.GarmentService.GetSumaryGarments(arg1, arg2);
@@ -77,6 +77,13 @@ const go = {
        */
       "CreateOrder": (arg1, arg2) => {
         return window.go.service.OrderService.CreateOrder(arg1, arg2);
+      },
+      /**
+       * GetCurrentOrderSequence
+       * @returns {Promise<number>}  - Go Type: int32
+       */
+      "GetCurrentOrderSequence": () => {
+        return window.go.service.OrderService.GetCurrentOrderSequence();
       },
       /**
        * GetNextOrderIdentifier

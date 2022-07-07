@@ -9,10 +9,11 @@ export interface go {
 		UpdateClient(arg1:Client):Promise<Client>
     },
     "GarmentService": {
-		GetSumaryGarments(arg1:string,arg2:string):Promise<Array<SumaryGarmentsResults>>
+		GetSumaryGarments(arg1:string,arg2:string):Promise<SumaryGarmentsResults>
     },
     "OrderService": {
 		CreateOrder(arg1:Order,arg2:boolean):Promise<Order>
+		GetCurrentOrderSequence():Promise<number>
 		GetNextOrderIdentifier():Promise<number>
 		GetOrderByClientName(arg1:string,arg2:number,arg3:number):Promise<Array<Order>>
 		GetOrderByIdentifier(arg1:string,arg2:number,arg3:number):Promise<Array<Order>>

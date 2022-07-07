@@ -31,10 +31,13 @@ import { PrintOrder } from "../../components/PrintOrder/PrintOrder";
 import { Order } from "../SearchOrder/Order";
 import ResultsOrdersTable from "./ResultsOrdersTable";
 import moment from "moment";
+import { PrintOrDownload } from "../../components/PrintOrDownload";
 
 export const Orders = ({ setRoute }) => {
   const [order, setOrder] = useState(null);
   const [orders, setOrders] = useState(null);
+  const [ordersPdf, setOrdersPdf] = useState(null);
+  const [totalPages, setTotalPages] = useState(1)
   const [loading, setLoading] = useState(false);
   const [filterBy, setfilterBy] = useState("created_at");
   const [inicio, setInicio] = useState(null);
@@ -85,9 +88,19 @@ export const Orders = ({ setRoute }) => {
         0,
         filterBy
       );
+
+      const dataPdf = await window.go.service.OrderService.ListOrdersByRange(
+        oneMonthAgo.toISOString(),
+        dateNow.toISOString(),
+        10*data.pages,
+        0,
+        filterBy
+      );
+
       setInicio(oneMonthAgo.toISOString());
       setFin(dateNow.toISOString());
       setOrders(data.orders);
+      setOrdersPdf(dataPdf.orders);
       setPage(data.pages);
       setPaymentPending(data.payment_pending);
       setPaymentRecolected(data.payment_recolected);
@@ -97,6 +110,8 @@ export const Orders = ({ setRoute }) => {
       setOrdersDeliveryDone(data.orders_delivery_done);
       setPaymentPaid(data.payment_paid);
       setPaymentFactured(data.payment_factured);
+
+      console.log("pages =>",totalPages, " datapdf => ", dataPdf)
     };
     getOrder();
   }, [clearFields, refreshSeeOrders]);
@@ -118,15 +133,7 @@ export const Orders = ({ setRoute }) => {
     setClearFields(true);
   };
 
-  function notificationsLabel(count) {
-    if (count === 0) {
-      return "no notifications";
-    }
-    if (count > 99) {
-      return "more than 99 notifications";
-    }
-    return `${count} notifications`;
-  }
+
 
   const pageHandle = async (e, page) => {
     let data = await window.go.service.OrderService.ListOrdersByRange(
@@ -166,7 +173,22 @@ export const Orders = ({ setRoute }) => {
     setOrdersDeliveryDone(data.orders_delivery_done);
     setPaymentPaid(data.payment_paid);
     setPaymentFactured(data.payment_factured);
+
+
+    const dataPdf = await window.go.service.OrderService.ListOrdersByRange(
+      inicio,
+      fin,
+      10*data.pages,
+      0,
+      filterBy
+    );
+    setOrdersPdf(dataPdf.orders);
   };
+
+  const PdfPrint = useRef();
+  const handlePdfPrint = useReactToPrint({
+    content: () => PdfPrint.current,
+  });
 
   return (
     <>
@@ -240,6 +262,7 @@ export const Orders = ({ setRoute }) => {
               </LocalizationProvider>
               <Button onClick={onSubmit}>Buscar</Button>
               <Button onClick={clearFilter}>Limpiar</Button>
+              <PrintOrDownload PdfPrint={PdfPrint} handlePdfPrint={handlePdfPrint} orders={ordersPdf}/>
             </Stack>
           </>
         )}

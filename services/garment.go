@@ -33,6 +33,14 @@ type Garment struct {
 }
 
 type SumaryGarmentsResults struct {
+	Data            []SumaryGarment `json:"data"`
+	TotalGarments   int64           `json:"total_garments"`
+	TotalPriceTotal string          `json:"total_price_total"`
+	TotalCost       string          `json:"total_cost"`
+	TotalUtilities  string          `json:"total_utilities"`
+}
+
+type SumaryGarment struct {
 	ID          int    `json:"id"`
 	Cuantity    int64  `json:"cuantity"`
 	Category    string `json:"category"`
@@ -42,26 +50,32 @@ type SumaryGarmentsResults struct {
 	Utilities   string `json:"utilities"`
 }
 
-func (s *GarmentService) GetSumaryGarments(startArg string, endArg string) []SumaryGarmentsResults {
+func (s *GarmentService) GetSumaryGarments(startArg string, endArg string) SumaryGarmentsResults {
 	reports := s.store.SumaryGarmentsStore(context.Background(), db.SumaryGarmentsArgs{
 		StartAt: startArg,
 		EndAt:   endArg,
 	})
 
-	result := make([]SumaryGarmentsResults, len(reports))
+	result := make([]SumaryGarment, len(reports.Data))
 
-	for i := range reports {
-		result[i] = SumaryGarmentsResults{
+	for i := range reports.Data {
+		result[i] = SumaryGarment{
 			ID:          i,
-			Cuantity:    reports[i].Cuantity,
-			Category:    reports[i].Category,
-			ServiceType: reports[i].ServiceType,
-			PriceTotal:  reports[i].PriceTotal,
-			CostTotal:   reports[i].CostTotal,
-			Utilities:   reports[i].Utilities,
+			Cuantity:    reports.Data[i].Cuantity,
+			Category:    reports.Data[i].Category,
+			ServiceType: reports.Data[i].ServiceType,
+			PriceTotal:  reports.Data[i].PriceTotal,
+			CostTotal:   reports.Data[i].CostTotal,
+			Utilities:   reports.Data[i].Utilities,
 		}
 	}
 
-	return result
+	return SumaryGarmentsResults{
+		Data:            result,
+		TotalGarments:   reports.TotalGarments,
+		TotalPriceTotal: reports.TotalPriceTotal,
+		TotalCost:       reports.TotalCost,
+		TotalUtilities:  reports.TotalUtilities,
+	}
 
 }

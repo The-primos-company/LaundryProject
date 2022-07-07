@@ -1,4 +1,4 @@
-import { Navbar } from "../../components/Navbar";
+ import { Navbar } from "../../components/Navbar";
 import { DateTimePicker, LocalizationProvider } from "@mui/lab";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import {
@@ -36,6 +36,7 @@ export const CreateOrder = () => {
   const [orderNumberTmp, setOrderNumberTmp] = useState(null);
   const [garments, setGarments] = useState([]);
   const [garmentsData, setGarmentsData] = useState([]);
+  const [disableSi, setDisableSi] = useState(false);
   const [error, setError] = useState({
     email: "",
     deliveryDate: "",
@@ -75,7 +76,7 @@ export const CreateOrder = () => {
     let tmpGarments = garments.map((item) => {
       delete item.realPrice;
       item.service_type = item.service;
-      delete item.service
+      //delete item.service
       return {
         ...item,
         defects: item.defects.join("-"),
@@ -93,7 +94,7 @@ export const CreateOrder = () => {
           return a + b;
         }, 0);
     }
-
+    const ptp = paymentTotalPayed === '' ? '0' : paymentTotalPayed.toString()
     let order = new Order({
       recieved_date: recievedDate,
       delivery_date: deliveryDate,
@@ -102,7 +103,7 @@ export const CreateOrder = () => {
       client_address: clientAddress,
       client_phone: clientPhone,
       client_email: clientEmail,
-      payment_total_payed: paymentTotalPayed.toString(),
+      payment_total_payed: ptp,
       garment_total: totalGarments,
       payment_total: totalPrice.toString(),
       garments: tmpGarments,
@@ -113,11 +114,13 @@ export const CreateOrder = () => {
 
     const data = await window.go.service.OrderService.CreateOrder(order, true);
     setOrder(data);
+    console.log(data);
 
     handlePrint();
   };
 
   async function saveIntoDB() {
+    setDisableSi(true);
     let tmpGarments = garments.map((item) => {
       delete item.realPrice;
       return {
@@ -127,6 +130,7 @@ export const CreateOrder = () => {
         price: item.price.toString(),
       };
     });
+    const ptp = paymentTotalPayed === '' ? '0' : paymentTotalPayed.toString()
     let order = new Order({
       recieved_date: recievedDate,
       delivery_date: deliveryDate,
@@ -135,7 +139,7 @@ export const CreateOrder = () => {
       client_address: clientAddress,
       client_phone: clientPhone,
       client_email: clientEmail,
-      payment_total_payed: paymentTotalPayed.toString(),
+      payment_total_payed: ptp,
       garment_total: totalGarments,
       payment_total: totalPrice.toString(),
       garments: tmpGarments,
@@ -144,11 +148,15 @@ export const CreateOrder = () => {
     setOrder(order);
     setRecievedDate(new Date());
     setOrderNumberTmp(orderNumber);
-    await window.go.service.OrderService.CreateOrder(order, false);
-
+    try {
+      await window.go.service.OrderService.CreateOrder(order, false);
     clearInputs();
     setGenerateOrderLoading(false);
     setShowCreateOrderModal(false);
+    setDisableSi(false);
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   function clearInputs() {
@@ -188,7 +196,7 @@ export const CreateOrder = () => {
     const getOrderCount = async () => {
       const data =
         await window.go.service.OrderService.GetNextOrderIdentifier();
-      setOrderNumber(("000000" + data).substr(-4, 4));
+      setOrderNumber(("0000000" + data).substr(-4, 4));
     };
 
     getOrderCount();
@@ -423,7 +431,7 @@ export const CreateOrder = () => {
           >
             No
           </Button>
-          <Button variant="text" onClick={() => saveIntoDB()}>
+          <Button disabled={disableSi} variant="text" onClick={() => saveIntoDB()}>
             Sí
           </Button>
         </Box>

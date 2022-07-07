@@ -1,31 +1,67 @@
-import React, { useContext } from 'react'
+import React, { useContext } from "react";
 
-import { RouterContext } from '../context/RouterContext'
+import { RouterContext } from "../context/RouterContext";
+import { AuthProvider } from "../context/AuthContext";
 
-import { CreateOrder } from './CreateOrder/CreateOrder'
-import { Orders } from './Orders/Orders'
-import { SearchOrder } from './SearchOrder/SearchOrder'
-import { GarmentsPrices } from './GarmentsPrices/GarmentsPrices'
-import { Clients } from './Clients/Clients'
-import { Results } from './Results/Results'
+import { CreateOrder } from "./CreateOrder/CreateOrder";
+import { Orders } from "./Orders/Orders";
+import { SearchOrder } from "./SearchOrder/SearchOrder";
+import { GarmentsPrices } from "./GarmentsPrices/GarmentsPrices";
+import { Clients } from "./Clients/Clients";
+import { Results } from "./Results/Results";
+import { Login } from "./Login/Login";
 
 export const HomePage = () => {
-  const { route } = useContext(RouterContext)
+  const { route } = useContext(RouterContext);
 
   switch (route) {
     case "create-order":
-      return <CreateOrder />
+      return (
+        <AuthProvider>
+          <CreateOrder />
+        </AuthProvider>
+      );
     case "orders":
-      return <Orders />
+      return (
+        <AuthProvider>
+         <Orders />
+        </AuthProvider>
+      );
     case "search-order":
-      return <SearchOrder />
+      return (
+        <AuthProvider>
+         <SearchOrder />
+        </AuthProvider>
+      );
     case "garments-prices":
-      return <GarmentsPrices />
+      return (
+        <AuthProvider>
+          <GarmentsPrices />
+        </AuthProvider>
+      );
     case "clients":
-        return <Clients />
+      return (
+        <AuthProvider>
+         <Clients />
+        </AuthProvider>
+      );
     case "results":
-        return <Results />
+      return (
+        <AuthProvider>
+        <Results />
+        </AuthProvider>
+      );
+    case "login":
+      return (
+        <AuthProvider>
+        <Login />
+        </AuthProvider>
+      );
     default:
-      return <CreateOrder />
+      return (
+        <AuthProvider>
+         <Login />
+        </AuthProvider>
+      );
   }
-}
+};

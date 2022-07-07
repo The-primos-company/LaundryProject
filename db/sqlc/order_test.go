@@ -100,3 +100,15 @@ func TestGetNextIdentifier(t *testing.T) {
 	require.NotEmpty(t, order)
 	require.Equal(t, nextIdentifier, order.Identifier+1)
 }
+
+func TestGetUpdateValues(t *testing.T) {
+
+	order, err := testQueries.ListOrders(context.Background(), ListOrdersParams{
+		Limit:  1000,
+		Offset: 0,
+	})
+
+	require.NoError(t, err)
+
+	print(order)
+}

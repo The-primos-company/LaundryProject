@@ -39,6 +39,15 @@ WHERE
     id = $1
 RETURNING *;
 
+-- name: UpdateOrderIdentifier :one
+UPDATE
+    orders
+SET
+    identifier = $2
+WHERE
+    id = $1
+RETURNING *;
+
 -- name: GetOrder :one
 SELECT
     *
@@ -76,6 +85,17 @@ ORDER BY
 LIMIT
     $2 
 OFFSET $3;
+
+-- name: ExistOrderByIdentifier :one
+SELECT EXISTS(
+SELECT 
+    *
+FROM 
+    orders
+WHERE 
+    identifier = $1
+);
+
 
 -- name: ListOrders :many
 SELECT
@@ -138,7 +158,7 @@ FROM
     orders
 WHERE  created_at >= @start_at AND created_at <= @end_at
 ORDER BY
-    created_at
+    identifier
 DESC
 LIMIT
     @limit_arg OFFSET @offset_arg;
@@ -174,7 +194,7 @@ FROM
     orders
 WHERE  created_at >= @start_at AND created_at <= @end_at AND payed_at IS NULL 
 ORDER BY
-    created_at
+    identifier
 DESC
 LIMIT
     @limit_arg OFFSET @offset_arg;
@@ -186,7 +206,7 @@ FROM
     orders
 WHERE  created_at >= @start_at AND created_at <= @end_at AND delivered_at IS NULL 
 ORDER BY
-    created_at
+    identifier
 DESC
 LIMIT
     @limit_arg OFFSET @offset_arg;
